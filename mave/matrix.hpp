@@ -112,7 +112,7 @@ operator-(const matrix<T1, R, C>& lhs, const matrix<T2, R, C>& rhs) noexcept
 }
 template<typename T1, typename T2, std::size_t R, std::size_t C>
 inline matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C>
-operator*(const matrix<T1, R, C>& lhs, const T2& rhs) noexcept
+operator*(const matrix<T1, R, C>& lhs, const T2 rhs) noexcept
 {
     matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C> retval;
     for(std::size_t i=0; i<R*C; ++i) {retval[i] = lhs[i] * rhs;}
@@ -120,7 +120,7 @@ operator*(const matrix<T1, R, C>& lhs, const T2& rhs) noexcept
 }
 template<typename T1, typename T2, std::size_t R, std::size_t C>
 inline matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C>
-operator*(const T1& lhs, const matrix<T2, R, C>& rhs) noexcept
+operator*(const T1 lhs, const matrix<T2, R, C>& rhs) noexcept
 {
     matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C> retval;
     for(std::size_t i=0; i<R*C; ++i) {retval[i] = lhs * rhs[i];}
@@ -128,7 +128,7 @@ operator*(const T1& lhs, const matrix<T2, R, C>& rhs) noexcept
 }
 template<typename T1, typename T2, std::size_t R, std::size_t C>
 inline matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C>
-operator/(const matrix<T1, R, C>& lhs, const T2& rhs) noexcept
+operator/(const matrix<T1, R, C>& lhs, const T2 rhs) noexcept
 {
     matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C> retval;
     for(std::size_t i=0; i<R*C; ++i) {retval[i] = lhs[i] / rhs;}
