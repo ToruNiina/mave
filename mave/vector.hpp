@@ -2,22 +2,6 @@
 #define MAVE_VECTOR_HPP
 #include "matrix.hpp"
 
-// #ifdef __FMA__
-// #include "fma/fma.hpp"
-// #else
-// #include "fma/no_fma.hpp"
-// #endif //__FMA__
-
-// #if defined(__AVX2__)
-// #  include "avx2/vector3d.hpp"
-// #  include "avx2/vector3f.hpp"
-// #  include "avx2/vector3i.hpp"
-// #elif defined(__AVX__)
-#  include "avx/vector3d.hpp"
-// #  include "avx/vector3f.hpp"
-// #  include "avx/vector3i.hpp"
-// #endif //__AVX__
-
 namespace mave
 {
 
@@ -36,6 +20,11 @@ inline T length(const vector<T, 3>& v) noexcept
 {
     return std::sqrt(length_sq(v));
 }
+template<typename T>
+inline T rlength(const vector<T, 3>& v) noexcept
+{
+    return 1.0 / std::sqrt(length_sq(v));
+}
 
 template<typename T>
 inline std::pair<T, T>
@@ -48,6 +37,13 @@ inline std::pair<T, T>
 length(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 {
     return std::make_pair(length(v1), length(v2));
+}
+template<typename T>
+inline std::pair<T, T>
+rlength(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+{
+    return std::make_pair(1.0 / std::sqrt(length_sq(v1)),
+                          1.0 / std::sqrt(length_sq(v2)));
 }
 
 template<typename T>
@@ -64,6 +60,15 @@ length(const vector<T, 3>& v1, const vector<T, 3>& v2,
 {
     return std::make_tuple(length(v1), length(v2), length(v3));
 }
+template<typename T>
+inline std::tuple<T, T, T>
+rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
+        const vector<T, 3>& v3) noexcept
+{
+    return std::make_tuple(1.0 / std::sqrt(length_sq(v1)),
+                           1.0 / std::sqrt(length_sq(v2)),
+                           1.0 / std::sqrt(length_sq(v3)));
+}
 
 template<typename T>
 inline std::tuple<T, T, T, T>
@@ -78,6 +83,16 @@ length(const vector<T, 3>& v1, const vector<T, 3>& v2,
        const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
 {
     return std::make_tuple(length(v1), length(v2), length(v3), length(v4));
+}
+template<typename T>
+inline std::tuple<T, T, T, T>
+rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
+        const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
+{
+    return std::make_tuple(1.0 / std::sqrt(length_sq(v1)),
+                           1.0 / std::sqrt(length_sq(v2)),
+                           1.0 / std::sqrt(length_sq(v3)),
+                           1.0 / std::sqrt(length_sq(v4)));
 }
 
 // regularize ----------------------------------------------------------------
@@ -139,4 +154,22 @@ inline T scalar_triple_product(
 }
 
 } // mave
+
+// #ifdef __FMA__
+// #include "fma/fma.hpp"
+// #else
+// #include "fma/no_fma.hpp"
+// #endif //__FMA__
+
+// #if defined(__AVX2__)
+// #  include "avx2/vector3d.hpp"
+// #  include "avx2/vector3f.hpp"
+// #  include "avx2/vector3i.hpp"
+// #elif defined(__AVX__)
+#  include "avx/vector3d.hpp"
+// #  include "avx/vector3f.hpp"
+// #  include "avx/vector3i.hpp"
+// #endif //__AVX__
+
+
 #endif // MAVE_MATH_VECTOR_HPP
