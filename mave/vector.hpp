@@ -92,7 +92,7 @@ template<typename T>
 inline std::pair<vector<T, 3>, vector<T, 3>>
 regularize(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 {
-    return std::make_pair(v1 * (1.0 / length(v1), v2 * (1.0 / length(v2));
+    return std::make_pair(v1 * (1.0 / length(v1), v2 * (1.0 / length(v2))));
 }
 
 template<typename T>
