@@ -134,30 +134,35 @@ struct alignas(32) matrix<double, 3, 1>
     alignas(32) storage_type vs_;
 };
 
+template<>
 inline matrix<double, 3, 1> operator+(
     const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& rhs) noexcept
 {
     return matrix<double, 3, 1>(_mm256_add_pd(
                 _mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data())));
 }
+template<>
 inline matrix<double, 3, 1> operator-(
     const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& rhs) noexcept
 {
     return matrix<double, 3, 1>(_mm256_sub_pd(
                 _mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data())));
 }
+template<>
 inline matrix<double, 3, 1> operator*(
     const double lhs, const matrix<double, 3, 1>& rhs) noexcept
 {
     return matrix<double, 3, 1>(_mm256_mul_pd(
                 _mm256_set1_pd(lhs), _mm256_load_pd(rhs.data())));
 }
+template<>
 inline matrix<double, 3, 1> operator*(
     const matrix<double, 3, 1>& lhs, const double rhs) noexcept
 {
     return matrix<double, 3, 1>(_mm256_mul_pd(
                 _mm256_load_pd(lhs.data()), _mm256_set1_pd(rhs)));
 }
+template<>
 inline matrix<double, 3, 1> operator/(
     const matrix<double, 3, 1>& lhs, const double rhs) noexcept
 {
@@ -165,6 +170,7 @@ inline matrix<double, 3, 1> operator/(
                 _mm256_load_pd(lhs.data()), _mm256_set1_pd(rhs)));
 }
 
+template<>
 inline double dot_product(
     const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& rhs) noexcept
 {
@@ -173,6 +179,7 @@ inline double dot_product(
     return sq[0] + sq[1] + sq[2];
 }
 
+template<>
 inline matrix<double, 3, 1> cross_product(
     const matrix<double, 3, 1>& x, const matrix<double, 3, 1>& y) noexcept
 {
@@ -186,6 +193,7 @@ inline matrix<double, 3, 1> cross_product(
     return matrix<double, 3, 1>(tmp[1], tmp[2], tmp[0]);
 }
 
+template<>
 inline double length_sq(const matrix<double, 3, 1>& v) noexcept
 {
     return dot_product(v, v);
@@ -195,6 +203,7 @@ inline double length(const matrix<double, 3, 1>& v) noexcept
     return std::sqrt(length_sq(v));
 }
 
+template<>
 inline double rlength(const matrix<double, 3, 1>& v) noexcept
 {
     // Q. WTF
@@ -209,12 +218,14 @@ inline double rlength(const matrix<double, 3, 1>& v) noexcept
     return lsq * (1.5 - lsq_half * lsq * lsq);
 }
 
+template<>
 inline matrix<double, 3, 1> regularize(const matrix<double, 3, 1>& v) noexcept
 {
     return matrix<double, 3, 1>(_mm256_mul_pd(
             _mm256_load_pd(v.data()), _mm256_set1_pd(rlength(v))));
 }
 
+template<>
 inline std::pair<double, double> length_sq(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
@@ -228,6 +239,7 @@ inline std::pair<double, double> length_sq(
     return std::make_pair(hadd[0] + hadd[2], hadd[1] + hadd[3]);
 }
 
+template<>
 inline std::pair<double, double> length(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
