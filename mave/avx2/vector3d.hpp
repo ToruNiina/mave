@@ -552,20 +552,28 @@ inline matrix<double, 3, 1> cross_product(
     const __m256d x_ = _mm256_permute4x64_pd(arg2, 0x03000201);
 
     const __m256d z = _mm256_sub_pd(
-            _mm256_mul_pd(_mm256_load_pd(x.data()), y_),
-            _mm256_mul_pd(_mm256_load_pd(y.data()), x_));
+            _mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
 
     return _mm256_permute4x64_pd(z, 0x03000201);
 }
 
 template<>
 inline double scalar_triple_product(
-    const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& mid,
-    const matrix<double, 3, 1>& rhs) noexcept
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+    const matrix<double, 3, 1>& v3) noexcept
 {
-    return (lhs[1] * mid[2] - lhs[2] * mid[1]) * rhs[0] +
-           (lhs[2] * mid[0] - lhs[0] * mid[2]) * rhs[1] +
-           (lhs[0] * mid[1] - lhs[1] * mid[0]) * rhs[2];
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+
+    const __m256d y_ = _mm256_permute4x64_pd(arg1, 0x03000201);
+    const __m256d x_ = _mm256_permute4x64_pd(arg2, 0x03000201);
+
+    const matrix<double, 3, 1> z = _mm256_sub_pd(
+            _mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
+    return z[0] + z[1] + z[2];
 }
 
 } // mave
