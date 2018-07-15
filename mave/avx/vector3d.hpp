@@ -5,11 +5,11 @@
 #error "mave/avx/vector3d.hpp requires avx support but __AVX__ is not defined."
 #endif
 
-#ifndef __SSE2__
-#error "mave/avx/vector3d.hpp requires sse2 support but __SSE2__ is not defined."
+#ifndef MAVE_VECTOR_HPP
+#error "do not use mave/avx/vector3d.hpp alone. please include mave/vector.hpp."
 #endif
 
-#include <immintrin.h>
+#include <x86intrin.h> // for *nix
 #include <type_traits>
 #include <array>
 #include <cmath>
@@ -88,32 +88,28 @@ struct alignas(32) matrix<double, 3, 1>
     {
         const __m256d v1 = _mm256_load_pd(this->data());
         const __m256d v2 = _mm256_load_pd(other.data());
-        const __m256d v3 = _mm256_add_pd(v1, v2);
-        _mm256_store_pd(this->data(), v3);
+        _mm256_store_pd(this->data(), _mm256_add_pd(v1, v2));
         return *this;
     }
     matrix& operator-=(const matrix<double, 3, 1>& other) noexcept
     {
         const __m256d v1 = _mm256_load_pd(this->data());
         const __m256d v2 = _mm256_load_pd(other.data());
-        const __m256d v3 = _mm256_sub_pd(v1, v2);
-        _mm256_store_pd(this->data(), v3);
+        _mm256_store_pd(this->data(), _mm256_sub_pd(v1, v2));
         return *this;
     }
     matrix& operator*=(const double other) noexcept
     {
         const __m256d v1 = _mm256_load_pd(this->data());
         const __m256d v2 = _mm256_set1_pd(other);
-        const __m256d v3 = _mm256_mul_pd(v1, v2);
-        _mm256_store_pd(this->data(), v3);
+        _mm256_store_pd(this->data(), _mm256_mul_pd(v1, v2));
         return *this;
     }
     matrix& operator/=(const double other) noexcept
     {
         const __m256d v1 = _mm256_load_pd(this->data());
         const __m256d v2 = _mm256_set1_pd(other);
-        const __m256d v3 = _mm256_div_pd(v1, v2);
-        _mm256_store_pd(this->data(), v3);
+        _mm256_store_pd(this->data(), _mm256_div_pd(v1, v2));
         return *this;
     }
 
@@ -138,34 +134,411 @@ struct alignas(32) matrix<double, 3, 1>
 
 template<>
 inline matrix<double, 3, 1> operator+(
-    const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& rhs) noexcept
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    return _mm256_add_pd(_mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data()));
+    return _mm256_add_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
 }
 template<>
 inline matrix<double, 3, 1> operator-(
-    const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& rhs) noexcept
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    return _mm256_sub_pd(_mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data()));
+    return _mm256_sub_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
 }
 template<>
 inline matrix<double, 3, 1> operator*(
-    const double lhs, const matrix<double, 3, 1>& rhs) noexcept
+    const double v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    return _mm256_mul_pd(_mm256_set1_pd(lhs), _mm256_load_pd(rhs.data()));
+    return _mm256_mul_pd(_mm256_set1_pd(v1), _mm256_load_pd(v2.data()));
 }
 template<>
 inline matrix<double, 3, 1> operator*(
-    const matrix<double, 3, 1>& lhs, const double rhs) noexcept
+    const matrix<double, 3, 1>& v1, const double v2) noexcept
 {
-    return _mm256_mul_pd(_mm256_load_pd(lhs.data()), _mm256_set1_pd(rhs));
+    return _mm256_mul_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(v2));
 }
 template<>
 inline matrix<double, 3, 1> operator/(
-    const matrix<double, 3, 1>& lhs, const double rhs) noexcept
+    const matrix<double, 3, 1>& v1, const double v2) noexcept
 {
-    return _mm256_div_pd(_mm256_load_pd(lhs.data()), _mm256_set1_pd(rhs));
+    return _mm256_div_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(v2));
 }
+
+// ---------------------------------------------------------------------------
+// length
+// ---------------------------------------------------------------------------
+
+// length_sq -----------------------------------------------------------------
+
+template<>
+inline double length_sq(const matrix<double, 3, 1>& v) noexcept
+{
+    const matrix<double, 3, 1> sq(_mm256_mul_pd(
+        _mm256_load_pd(v.data()), _mm256_load_pd(v.data())));
+    return sq[0] + sq[1] + sq[2];
+}
+
+template<>
+inline std::pair<double, double> length_sq(
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
+{
+    // to assure the 4th value is 0, mask it
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+
+    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
+    return std::make_pair(hadd[0] + hadd[2], hadd[1] + hadd[3]);
+}
+
+template<>
+inline std::tuple<double, double, double> length_sq(
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+    const matrix<double, 3, 1>& v3) noexcept
+{
+    // to assure the 4th value is 0, mask it
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
+
+    // |ax|ay|az|00| |bx|by|bz|00|
+    //  |  |  |  |    |  |  |  |
+    //  +--'  +--'    +--'  +--'
+    //  |  .--|-------'     |
+    //  |  |  |  .----------'
+    // |aa|bb|a0|b0|
+    //  |   \ /  |   at AVX, there are no equivalent operation.
+    //  |    X   |   after AVX2, there is `_mm_permute4x64_pd`.
+    //  |   / \  |
+    // |aa|a0|bb|b0| |c1|c2|c3|00|
+    //  |  |  |  |    |  |  |  |
+    //  +--'  +--'    +--'  +--'
+    //  |  .--|-------'     |
+    //  |  |  |  .----------'
+    // |a2|cc|b2|c0|
+
+    const matrix<double, 3, 1> hadd1(_mm256_hadd_pd(mul1, mul2));
+    const matrix<double, 3, 1> hadd2(_mm256_hadd_pd(
+        _mm256_set_pd(hadd1[3], hadd1[1], hadd1[2], hadd1[0]), mul3));
+
+    return std::make_tuple(hadd2[0], hadd2[2], hadd2[1] + hadd2[3]);
+}
+
+template<>
+inline std::tuple<double, double, double, double> length_sq(
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+    const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
+{
+    // to assure the 4th value is 0, mask it
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+    const __m256d arg4 = _mm256_maskload_pd(v4.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
+    const __m256d mul4 = _mm256_mul_pd(arg4, arg4);
+
+    // |ax|ay|az|00| |bx|by|bz|00| |cx|cy|cz|00| |dx|dy|dz|00|
+    //  |  |  |  |    |  |  |  |    |  |  |  |    |  |  |  |
+    //  +--'  +--'    +--'  +--'    +--'  +--'    +--'  +--'
+    //  |  .--|-------'     |       |  .--|-------'     |
+    //  |  |  |  .----------'       |  |  |  .----------'
+    // |aa|bb|a0|b0|               |cc|dd|c0|d0|
+
+    const matrix<double, 3, 1> hadd12(_mm256_hadd_pd(mul1, mul2));
+    const matrix<double, 3, 1> hadd34(_mm256_hadd_pd(mul3, mul4));
+
+    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
+        _mm256_set_pd(hadd12[3], hadd12[1], hadd12[2], hadd12[0]),
+        _mm256_set_pd(hadd34[3], hadd34[1], hadd34[2], hadd34[0])));
+
+    return std::make_tuple(hadd[0], hadd[1], hadd[2], hadd[3]);
+}
+
+template<>
+inline double length(const matrix<double, 3, 1>& v) noexcept
+{
+    return std::sqrt(length_sq(v));
+}
+
+template<>
+inline std::pair<double, double> length(
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
+{
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+
+    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
+    const __m128d lensq = _mm_set_pd(hadd[1] + hadd[3], hadd[0] + hadd[2]);
+    alignas(16) double len[2];
+    _mm_store_pd(len, _mm_sqrt_pd(lensq));
+
+    return std::make_pair(len[0], len[1]);
+}
+
+template<>
+inline std::tuple<double, double, double> length(
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+    const matrix<double, 3, 1>& v3) noexcept
+{
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
+
+    const matrix<double, 3, 1> hadd1(_mm256_hadd_pd(mul1, mul2));
+    const matrix<double, 3, 1> hadd2(_mm256_hadd_pd(
+        _mm256_set_pd(hadd1[3], hadd1[1], hadd1[2], hadd1[0]), mul3));
+
+    const matrix<double, 3, 1> retval(_mm256_sqrt_pd(
+        _mm256_set_pd(0.0, hadd2[1] + hadd2[3], hadd2[2], hadd2[0])));
+
+    return std::make_tuple(retval[0], retval[1], retval[2]);
+}
+
+template<>
+inline std::tuple<double, double, double, double> length(
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+    const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
+{
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+    const __m256d arg4 = _mm256_maskload_pd(v4.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
+    const __m256d mul4 = _mm256_mul_pd(arg4, arg4);
+
+    const matrix<double, 3, 1> hadd12(_mm256_hadd_pd(mul1, mul2));
+    const matrix<double, 3, 1> hadd34(_mm256_hadd_pd(mul3, mul4));
+
+    const matrix<double, 3, 1> retval = _mm256_sqrt_pd(_mm256_hadd_pd(
+        _mm256_set_pd(hadd12[3], hadd12[1], hadd12[2], hadd12[0]),
+        _mm256_set_pd(hadd34[3], hadd34[1], hadd34[2], hadd34[0])));
+
+    return std::make_tuple(retval[0], retval[1], retval[2], retval[3]);
+}
+
+// rlength -------------------------------------------------------------------
+
+template<>
+inline double rlength(const matrix<double, 3, 1>& v) noexcept
+{
+    return 1.0 / std::sqrt(length_sq(v));
+}
+template<>
+inline std::pair<double, double>
+rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
+{
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+
+    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
+    const __m128d lensq = _mm_set_pd(hadd[1] + hadd[3], hadd[0] + hadd[2]);
+    alignas(16) double len[2];
+    _mm_store_pd(len, _mm_div_pd(_mm_set1_pd(1.0), _mm_sqrt_pd(lensq)));
+    return std::make_pair(len[0], len[1]);
+}
+template<>
+inline std::tuple<double, double, double>
+rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+        const matrix<double, 3, 1>& v3) noexcept
+{
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
+
+    const matrix<double, 3, 1> hadd1(_mm256_hadd_pd(mul1, mul2));
+    const matrix<double, 3, 1> hadd2(_mm256_hadd_pd(
+        _mm256_set_pd(hadd1[3], hadd1[1], hadd1[2], hadd1[0]), mul3));
+
+    const matrix<double, 3, 1> retval(_mm256_div_pd(
+        _mm256_set1_pd(1.0), _mm256_sqrt_pd(
+            _mm256_set_pd(0.0, hadd2[1] + hadd2[3], hadd2[2], hadd2[0]))));
+    return std::make_tuple(retval[0], retval[1], retval[2]);
+}
+template<>
+inline std::tuple<double, double, double, double>
+rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+        const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
+{
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+    const __m256d arg4 = _mm256_maskload_pd(v4.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
+    const __m256d mul4 = _mm256_mul_pd(arg4, arg4);
+
+    const matrix<double, 3, 1> hadd12(_mm256_hadd_pd(mul1, mul2));
+    const matrix<double, 3, 1> hadd34(_mm256_hadd_pd(mul3, mul4));
+
+    const matrix<double, 3, 1> retval = _mm256_div_pd(_mm256_set1_pd(1.0),
+        _mm256_sqrt_pd(_mm256_hadd_pd(
+            _mm256_set_pd(hadd12[3], hadd12[1], hadd12[2], hadd12[0]),
+            _mm256_set_pd(hadd34[3], hadd34[1], hadd34[2], hadd34[0]))));
+    return std::make_tuple(retval[0], retval[1], retval[2], retval[3]);
+}
+
+// regularize ----------------------------------------------------------------
+
+template<>
+inline matrix<double, 3, 1> regularize(const matrix<double, 3, 1>& v) noexcept
+{
+    return _mm256_mul_pd(
+            _mm256_load_pd(v.data()), _mm256_set1_pd(rlength(v)));
+}
+template<>
+inline std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2
+           ) noexcept
+{
+    const auto rl = rlength(v1, v2);
+    return std::make_pair(v1 * std::get<0>(rl), v2 * std::get<1>(rl));
+}
+template<>
+inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>>
+regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+           const matrix<double, 3, 1>& v3) noexcept
+{
+    const auto rl = rlength(v1, v2, v3);
+    return std::make_tuple(v1 * std::get<0>(rl), v2 * std::get<1>(rl),
+                           v3 * std::get<2>(rl));
+}
+template<>
+inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+           const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4
+           ) noexcept
+{
+    const auto rl = rlength(v1, v2, v3, v4);
+    return std::make_tuple(v1 * std::get<0>(rl), v2 * std::get<1>(rl),
+                           v3 * std::get<2>(rl), v4 * std::get<3>(rl));
+}
+// ---------------------------------------------------------------------------
+// math functions
+// ---------------------------------------------------------------------------
+
+template<>
+inline matrix<double, 3, 1> max(
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
+{
+    return _mm256_max_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
+}
+
+template<>
+inline matrix<double, 3, 1> min(
+    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
+{
+    return _mm256_min_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
+}
+
+// floor ---------------------------------------------------------------------
+
+template<>
+inline matrix<double, 3, 1> floor(const matrix<double, 3, 1>& v) noexcept
+{
+    return _mm256_floor_pd(_mm256_load_pd(v.data()));
+}
+
+template<>
+inline std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+floor(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
+{
+    return std::make_pair(floor(v1), floor(v2));
+}
+template<>
+inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>>
+floor(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+      const matrix<double, 3, 1>& v3) noexcept
+{
+    return std::make_tuple(floor(v1), floor(v2), floor(v3));
+}
+template<>
+inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+floor(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+      const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
+{
+    return std::make_tuple(floor(v1), floor(v2), floor(v3), floor(v4));
+}
+
+// ceil ----------------------------------------------------------------------
+
+template<>
+inline matrix<double, 3, 1> ceil(const matrix<double, 3, 1>& v) noexcept
+{
+    return _mm256_ceil_pd(_mm256_load_pd(v.data()));
+}
+template<>
+inline std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+ceil(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
+{
+    return std::make_pair(ceil(v1), ceil(v2));
+}
+template<>
+inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>>
+ceil(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+     const matrix<double, 3, 1>& v3) noexcept
+{
+    return std::make_tuple(ceil(v1), ceil(v2), ceil(v3));
+}
+template<>
+inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+ceil(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
+     const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
+{
+    return std::make_tuple(ceil(v1), ceil(v2), ceil(v3), ceil(v4));
+}
+
+// ---------------------------------------------------------------------------
 
 template<>
 inline double dot_product(
@@ -191,71 +564,14 @@ inline matrix<double, 3, 1> cross_product(
 }
 
 template<>
-inline double length_sq(const matrix<double, 3, 1>& v) noexcept
+inline double scalar_triple_product(
+    const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& mid,
+    const matrix<double, 3, 1>& rhs) noexcept
 {
-    return dot_product(v, v);
+    return (lhs[1] * mid[2] - lhs[2] * mid[1]) * rhs[0] +
+           (lhs[2] * mid[0] - lhs[0] * mid[2]) * rhs[1] +
+           (lhs[0] * mid[1] - lhs[1] * mid[0]) * rhs[2];
 }
-inline double length(const matrix<double, 3, 1>& v) noexcept
-{
-    return std::sqrt(length_sq(v));
-}
-
-template<>
-inline double rlength(const matrix<double, 3, 1>& v) noexcept
-{
-    // Q. WTF
-    // A. see https://en.wikipedia.org/wiki/Fast_inverse_square_root.
-    //    or do some google with "fast inverse square root".
-
-    double lsq = dot_product(v, v);
-    const double lsq_half = lsq * 0.5;
-    std::int64_t i = *reinterpret_cast<const std::int64_t*>(&lsq);
-    i = 0x5FE6EB50C7B537A9 - (i >> 1);
-    lsq = *reinterpret_cast<const double*>(&i);
-    return lsq * (1.5 - lsq_half * lsq * lsq);
-}
-
-template<>
-inline matrix<double, 3, 1> regularize(const matrix<double, 3, 1>& v) noexcept
-{
-    return matrix<double, 3, 1>(_mm256_mul_pd(
-            _mm256_load_pd(v.data()), _mm256_set1_pd(rlength(v))));
-}
-
-template<>
-inline std::pair<double, double> length_sq(
-    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
-{
-    const __m256d arg1 = _mm256_load_pd(v1.data());
-    const __m256d arg2 = _mm256_load_pd(v2.data());
-
-    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
-    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
-
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
-    return std::make_pair(hadd[0] + hadd[2], hadd[1] + hadd[3]);
-}
-
-template<>
-inline std::pair<double, double> length(
-    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
-{
-    const std::pair<double, double> lensq(length_sq(v1, v2));
-    alignas(16) double len[2];
-    _mm_store_pd(len, _mm_sqrt_pd(_mm_set_pd(lensq.second, lensq.first)));
-    return std::make_pair(len[0], len[1]);
-}
-
-// inline matrix<int, 3, 1> ceil(const matrix<double, 3, 1>& v) noexcept
-// {
-//     return matrix<int, 3, 1>(_mm256_cvtpd_epi32(
-//                 _mm256_ceil_pd(_mm256_load_pd(v.data()))));
-// }
-// inline matrix<int, 3, 1> floor(const matrix<double, 3, 1>& v) noexcept
-// {
-//     return matrix<int, 3, 1>(_mm256_cvtpd_epi32(
-//                 _mm256_floor_pd(_mm256_load_pd(v.data()))));
-// }
 
 } // mave
 #endif // MAVE_MATH_MATRIX_HPP
