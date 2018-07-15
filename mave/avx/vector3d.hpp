@@ -427,16 +427,29 @@ rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
 template<>
 inline matrix<double, 3, 1> regularize(const matrix<double, 3, 1>& v) noexcept
 {
-    return _mm256_mul_pd(
-            _mm256_load_pd(v.data()), _mm256_set1_pd(rlength(v)));
+    return v * rlength(v);
 }
 template<>
 inline std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2
            ) noexcept
 {
-    const auto rl = rlength(v1, v2);
-    return std::make_pair(v1 * std::get<0>(rl), v2 * std::get<1>(rl));
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+
+    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
+    const __m256 v1sq = _mm256_set1_pd(hadd[0] + hadd[2]);
+    const __m256 v2sq = _mm256_set1_pd(hadd[1] + hadd[3]);
+
+    const matrix<double, 3, 1> rv1 = _mm256_div_pd(arg1, _mm256_sqrt_pd(v1sq));
+    const matrix<double, 3, 1> rv2 = _mm256_div_pd(arg2, _mm256_sqrt_pd(v2sq));
+
+    return std::make_pair(rv1, rv2);
 }
 template<>
 inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
@@ -444,9 +457,29 @@ inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3) noexcept
 {
-    const auto rl = rlength(v1, v2, v3);
-    return std::make_tuple(v1 * std::get<0>(rl), v2 * std::get<1>(rl),
-                           v3 * std::get<2>(rl));
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
+
+    const matrix<double, 3, 1> hadd1(_mm256_hadd_pd(mul1, mul2));
+    const matrix<double, 3, 1> hadd2(_mm256_hadd_pd(
+        _mm256_set_pd(hadd1[3], hadd1[1], hadd1[2], hadd1[0]), mul3));
+
+    const __m256d v1sq = _mm256_set1_pd(hadd2[0]);
+    const __m256d v2sq = _mm256_set1_pd(hadd2[2]);
+    const __m256d v3sq = _mm256_set1_pd(hadd2[1] + hadd2[3]);
+
+    const matrix<double, 3, 1> rv1 = _mm256_div_pd(arg1, _mm256_sqrt_pd(v1sq));
+    const matrix<double, 3, 1> rv2 = _mm256_div_pd(arg2, _mm256_sqrt_pd(v2sq));
+    const matrix<double, 3, 1> rv3 = _mm256_div_pd(arg3, _mm256_sqrt_pd(v3sq));
+
+    return std::make_tuple(rv1, rv2, rv3);
 }
 template<>
 inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
@@ -455,10 +488,38 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4
            ) noexcept
 {
-    const auto rl = rlength(v1, v2, v3, v4);
-    return std::make_tuple(v1 * std::get<0>(rl), v2 * std::get<1>(rl),
-                           v3 * std::get<2>(rl), v4 * std::get<3>(rl));
+    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+
+    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
+    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+    const __m256d arg4 = _mm256_maskload_pd(v4.data(), mask);
+
+    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
+    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
+    const __m256d mul4 = _mm256_mul_pd(arg4, arg4);
+
+    const matrix<double, 3, 1> hadd12(_mm256_hadd_pd(mul1, mul2));
+    const matrix<double, 3, 1> hadd34(_mm256_hadd_pd(mul3, mul4));
+
+    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
+        _mm256_set_pd(hadd12[3], hadd12[1], hadd12[2], hadd12[0]),
+        _mm256_set_pd(hadd34[3], hadd34[1], hadd34[2], hadd34[0])));
+
+    const __m256d v1sq = _mm256_set1_pd(v1sq);
+    const __m256d v2sq = _mm256_set1_pd(v2sq);
+    const __m256d v3sq = _mm256_set1_pd(v3sq);
+    const __m256d v4sq = _mm256_set1_pd(v4sq);
+
+    const matrix<double, 3, 1> rv1 = _mm256_div_pd(arg1, _mm256_sqrt_pd(v1sq));
+    const matrix<double, 3, 1> rv2 = _mm256_div_pd(arg2, _mm256_sqrt_pd(v2sq));
+    const matrix<double, 3, 1> rv3 = _mm256_div_pd(arg3, _mm256_sqrt_pd(v3sq));
+    const matrix<double, 3, 1> rv4 = _mm256_div_pd(arg4, _mm256_sqrt_pd(v4sq));
+
+    return std::make_tuple(rv1, rv2, rv3, rv4);
 }
+
 // ---------------------------------------------------------------------------
 // math functions
 // ---------------------------------------------------------------------------
