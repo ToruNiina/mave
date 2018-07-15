@@ -276,14 +276,14 @@ inline T scalar_triple_product(
 
 } // mave
 
-#if defined(__AVX__)
+#if defined(__AVX2__)
+#  include "avx2/vector3d.hpp"
+#elif defined(__AVX__)
 #  include "avx/vector3d.hpp"
-// #  include "avx/vector3f.hpp"
-// #  include "avx/vector3i.hpp"
 #endif //__AVX__
 
-// #if __FMA__
-// #include "fma/fma.hpp"
-// #endif //__FMA__
+#if __FMA__
+#include "fma/fma.hpp"
+#endif //__FMA__
 
 #endif // MAVE_MATH_VECTOR_HPP
