@@ -25,6 +25,8 @@ struct alignas(32) matrix<double, 3, 1>
     static constexpr std::size_t total_size  = 3;
     using value_type      = double;
     using storage_type    = std::array<double, 4>; // XXX for AVX packing
+    using pointer         = value_type*;
+    using const_pointer   = value_type const*;
     using reference       = value_type&;
     using const_reference = value_type const&;
     using size_type       = std::size_t;
@@ -117,8 +119,8 @@ struct alignas(32) matrix<double, 3, 1>
 
     size_type size() const noexcept {return total_size;}
 
-    double*       data()       noexcept {return vs_.data();}
-    double const* data() const noexcept {return vs_.data();}
+    pointer       data()       noexcept {return vs_.data();}
+    const_pointer data() const noexcept {return vs_.data();}
 
     reference               at(size_type i)       {return vs_.at(i);}
     const_reference         at(size_type i) const {return vs_.at(i);}
