@@ -77,7 +77,7 @@ class aligned_allocator
 
     size_type max_size() const noexcept
     {
-        return std::numeric_limits<value_type>::max() /
+        return std::numeric_limits<size_type>::max() /
                std::max(sizeof(value_type), alignment);
     }
 
