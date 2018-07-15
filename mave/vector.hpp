@@ -1,6 +1,7 @@
 #ifndef MAVE_VECTOR_HPP
 #define MAVE_VECTOR_HPP
 #include "matrix.hpp"
+#include <tuple>
 
 namespace mave
 {
@@ -126,6 +127,34 @@ regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
 {
     return std::make_tuple(v1 * (1.0 / length(v1)), v2 * (1.0 / length(v2)),
                            v3 * (1.0 / length(v3)), v4 * (1.0 / length(v4)));
+}
+
+// math functions ------------------------------------------------------------
+
+template<typename T>
+inline vector<T, 3> max(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+{
+    return vector<T, 3>(std::max(v1[0], v2[0]), std::max(v1[1], v2[1]),
+                        std::max(v1[2], v2[2]));
+}
+
+template<typename T>
+inline vector<T, 3> min(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+{
+    return vector<T, 3>(std::min(v1[0], v2[0]), std::min(v1[1], v2[1]),
+                        std::min(v1[2], v2[2]));
+}
+
+template<typename T>
+inline vector<T, 3> floor(const vector<T, 3>& v) noexcept
+{
+    return vector<T, 3>(std::floor(v[0]), std::floor(v[1]), std::floor(v[2]));
+}
+
+template<typename T>
+inline vector<T, 3> ceil(const vector<T, 3>& v) noexcept
+{
+    return vector<T, 3>(std::ceil(v[0]), std::ceil(v[1]), std::ceil(v[2]));
 }
 
 // ---------------------------------------------------------------------------
