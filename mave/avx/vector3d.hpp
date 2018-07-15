@@ -140,36 +140,31 @@ template<>
 inline matrix<double, 3, 1> operator+(
     const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& rhs) noexcept
 {
-    return matrix<double, 3, 1>(_mm256_add_pd(
-                _mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data())));
+    return _mm256_add_pd(_mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data()));
 }
 template<>
 inline matrix<double, 3, 1> operator-(
     const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& rhs) noexcept
 {
-    return matrix<double, 3, 1>(_mm256_sub_pd(
-                _mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data())));
+    return _mm256_sub_pd(_mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data()));
 }
 template<>
 inline matrix<double, 3, 1> operator*(
     const double lhs, const matrix<double, 3, 1>& rhs) noexcept
 {
-    return matrix<double, 3, 1>(_mm256_mul_pd(
-                _mm256_set1_pd(lhs), _mm256_load_pd(rhs.data())));
+    return _mm256_mul_pd(_mm256_set1_pd(lhs), _mm256_load_pd(rhs.data()));
 }
 template<>
 inline matrix<double, 3, 1> operator*(
     const matrix<double, 3, 1>& lhs, const double rhs) noexcept
 {
-    return matrix<double, 3, 1>(_mm256_mul_pd(
-                _mm256_load_pd(lhs.data()), _mm256_set1_pd(rhs)));
+    return _mm256_mul_pd(_mm256_load_pd(lhs.data()), _mm256_set1_pd(rhs));
 }
 template<>
 inline matrix<double, 3, 1> operator/(
     const matrix<double, 3, 1>& lhs, const double rhs) noexcept
 {
-    return matrix<double, 3, 1>(_mm256_div_pd(
-                _mm256_load_pd(lhs.data()), _mm256_set1_pd(rhs)));
+    return _mm256_div_pd(_mm256_load_pd(lhs.data()), _mm256_set1_pd(rhs));
 }
 
 template<>
@@ -188,7 +183,7 @@ inline matrix<double, 3, 1> cross_product(
     const __m256d y_ = _mm256_set_pd(0.0, y[0], y[2], y[1]);
     const __m256d x_ = _mm256_set_pd(0.0, x[0], x[2], x[1]);
 
-    matrix<double, 3, 1> tmp(_mm256_sub_pd(
+    const matrix<double, 3, 1> tmp(_mm256_sub_pd(
             _mm256_mul_pd(_mm256_load_pd(x.data()), y_),
             _mm256_mul_pd(_mm256_load_pd(y.data()), x_)));
 
