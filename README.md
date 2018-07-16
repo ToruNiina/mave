@@ -1,4 +1,6 @@
 mave
 ====
 
-SIMD-oriented small (upto 4x4) matrix and vector library
+SIMD-oriented small matrix and vector library
+
+It focuses on 3D vector operations (e.g. physical simulation, graphics, etc).
