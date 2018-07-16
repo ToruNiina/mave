@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE test_length
+#define BOOST_TEST_MODULE test_rlength
 #include <boost/test/included/unit_test.hpp>
 #include <boost/mpl/list.hpp>
 
@@ -24,7 +24,7 @@ T rlength_ref(const mave::vector<T, N>& v)
     return 1.0 / std::sqrt(retval);
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_1arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(rlength_1arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors = mave::test::generate_random<T>(N, mt);
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_1arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_2arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(rlength_2arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors = mave::test::generate_random<T>(N, mt);
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_2arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_3arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(rlength_3arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors = mave::test::generate_random<T>(N, mt);
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_3arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_4arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(rlength_4arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors = mave::test::generate_random<T>(N, mt);

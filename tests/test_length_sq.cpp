@@ -24,7 +24,7 @@ T length_sq_ref(const mave::vector<T, N>& v)
     return retval;
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_1arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(length_sq_1arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors = mave::test::generate_random<T>(N, mt);
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_1arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_2arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(length_sq_2arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors = mave::test::generate_random<T>(N, mt);
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_2arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_3arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(length_sq_3arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors = mave::test::generate_random<T>(N, mt);
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_3arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_4arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(length_sq_4arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors = mave::test::generate_random<T>(N, mt);
