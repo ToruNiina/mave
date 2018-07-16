@@ -17,7 +17,7 @@ template<typename T, std::size_t N>
 T length_ref(const mave::vector<T, N>& v)
 {
     T retval(0);
-    for(std::size_t i=0; i<N; ++i)
+    for(std::size_t i=0; i<v.size(); ++i)
     {
         retval += v[i] * v[i];
     }
@@ -35,8 +35,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_1arg, T, test_targets)
 
         const auto ref = length_ref(v);
         const auto val = mave::length(v);
-        BOOST_TEST(ref == val, boost::test_tools::tolerance(
-                    mave::test::tolerance<typename T::value_type>()));
+        BOOST_TEST(ref == val, mave::test::tolerance<typename T::value_type>());
     }
 }
 
@@ -54,10 +53,10 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_2arg, T, test_targets)
         const auto ref2 = length_ref(v2);
 
         const auto val = mave::length(v1, v2);
-        BOOST_TEST(ref1 == std::get<0>(val), boost::test_tools::tolerance(
-                   mave::test::tolerance<typename T::value_type>()));
-        BOOST_TEST(ref2 == std::get<1>(val), boost::test_tools::tolerance(
-                   mave::test::tolerance<typename T::value_type>()));
+        BOOST_TEST(ref1 == std::get<0>(val),
+                   mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(ref2 == std::get<1>(val),
+                   mave::test::tolerance<typename T::value_type>());
     }
 }
 
@@ -77,12 +76,12 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_3arg, T, test_targets)
         const auto ref3 = length_ref(v3);
 
         const auto val = mave::length(v1, v2, v3);
-        BOOST_TEST(ref1 == std::get<0>(val), boost::test_tools::tolerance(
-                   mave::test::tolerance<typename T::value_type>()));
-        BOOST_TEST(ref2 == std::get<1>(val), boost::test_tools::tolerance(
-                   mave::test::tolerance<typename T::value_type>()));
-        BOOST_TEST(ref3 == std::get<2>(val), boost::test_tools::tolerance(
-                   mave::test::tolerance<typename T::value_type>()));
+        BOOST_TEST(ref1 == std::get<0>(val),
+                   mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(ref2 == std::get<1>(val),
+                   mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(ref3 == std::get<2>(val),
+                   mave::test::tolerance<typename T::value_type>());
     }
 }
 
@@ -104,13 +103,13 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_4arg, T, test_targets)
         const auto ref4 = length_ref(v4);
 
         const auto val = mave::length(v1, v2, v3, v4);
-        BOOST_TEST(ref1 == std::get<0>(val), boost::test_tools::tolerance(
-                   mave::test::tolerance<typename T::value_type>()));
-        BOOST_TEST(ref2 == std::get<1>(val), boost::test_tools::tolerance(
-                   mave::test::tolerance<typename T::value_type>()));
-        BOOST_TEST(ref3 == std::get<2>(val), boost::test_tools::tolerance(
-                   mave::test::tolerance<typename T::value_type>()));
-        BOOST_TEST(ref4 == std::get<3>(val), boost::test_tools::tolerance(
-                   mave::test::tolerance<typename T::value_type>()));
+        BOOST_TEST(ref1 == std::get<0>(val),
+                   mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(ref2 == std::get<1>(val),
+                   mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(ref3 == std::get<2>(val),
+                   mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(ref4 == std::get<3>(val),
+                   mave::test::tolerance<typename T::value_type>());
     }
 }

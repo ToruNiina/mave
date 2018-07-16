@@ -9,13 +9,18 @@ namespace test
 {
 
 template<typename T>
-T tolerance();
+T tolerance_val();
 
 template<>
-double tolerance<double>(){return 1e-12;}
-
+double tolerance_val<double>(){return 1e-12;}
 template<>
-float tolerance<float>(){return 1e-5f;}
+float tolerance_val<float>(){return 1e-5f;}
+
+template<typename T>
+auto tolerance() -> decltype(boost::test_tools::tolerance(std::declval<T>()))
+{
+    return boost::test_tools::tolerance(tolerance_val<T>());
+}
 
 } // test
 } // mave
