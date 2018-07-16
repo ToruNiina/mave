@@ -445,8 +445,9 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2
     return std::make_pair(std::make_pair(rv1, l1), std::make_pair(rv2, l2));
 }
 template<>
-inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
-                  matrix<double, 3, 1>>
+inline std::tuple<std::pair<matrix<double, 3, 1>, double>,
+                  std::pair<matrix<double, 3, 1>, double>,
+                  std::pair<matrix<double, 3, 1>, double>>
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3) noexcept
 {
@@ -475,8 +476,10 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
                            std::make_pair(rv3, l3));
 }
 template<>
-inline std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
-                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+inline std::tuple<std::pair<matrix<double, 3, 1>, double>,
+                  std::pair<matrix<double, 3, 1>, double>,
+                  std::pair<matrix<double, 3, 1>, double>,
+                  std::pair<matrix<double, 3, 1>, double>>
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4
            ) noexcept
@@ -505,8 +508,8 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const matrix<double, 3, 1> rv3 = _mm256_div_pd(arg3, _mm256_set1_pd(ls[2]));
     const matrix<double, 3, 1> rv4 = _mm256_div_pd(arg4, _mm256_set1_pd(ls[3]));
 
-    return std::make_pair(std::make_pair(rv1, ls[0]), std::make_pair(rv2, ls[1]),
-                          std::make_pair(rv3, ls[2]), std::make_pair(rv4, ls[3]));
+    return std::make_tuple(std::make_pair(rv1, ls[0]), std::make_pair(rv2, ls[1]),
+                           std::make_pair(rv3, ls[2]), std::make_pair(rv4, ls[3]));
 }
 // ---------------------------------------------------------------------------
 // math functions
