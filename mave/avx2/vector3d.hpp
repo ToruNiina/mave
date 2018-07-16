@@ -182,7 +182,7 @@ inline std::pair<double, double> length_sq(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
     // to assure the 4th value is 0, mask it
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -200,7 +200,7 @@ inline std::tuple<double, double, double> length_sq(
     const matrix<double, 3, 1>& v3) noexcept
 {
     // to assure the 4th value is 0, mask it
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -238,7 +238,7 @@ inline std::tuple<double, double, double, double> length_sq(
     const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
 {
     // to assure the 4th value is 0, mask it
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -271,7 +271,7 @@ template<>
 inline std::pair<double, double> length(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -292,7 +292,7 @@ inline std::tuple<double, double, double> length(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const matrix<double, 3, 1>& v3) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -316,7 +316,7 @@ inline std::tuple<double, double, double, double> length(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -348,7 +348,7 @@ template<>
 inline std::pair<double, double>
 rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -367,7 +367,7 @@ inline std::tuple<double, double, double>
 rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
         const matrix<double, 3, 1>& v3) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -390,7 +390,7 @@ inline std::tuple<double, double, double, double>
 rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
         const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -427,7 +427,7 @@ inline std::pair<std::pair<matrix<double, 3, 1>, double>,
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2
            ) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -451,7 +451,7 @@ inline std::tuple<std::pair<matrix<double, 3, 1>, double>,
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -484,7 +484,7 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4
            ) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
@@ -605,7 +605,7 @@ template<>
 inline matrix<double, 3, 1> cross_product(
     const matrix<double, 3, 1>& x, const matrix<double, 3, 1>& y) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(x.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(y.data(), mask);
@@ -624,7 +624,7 @@ inline double scalar_triple_product(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const matrix<double, 3, 1>& v3) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, 1, 1, 1);
+    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
 
     const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);

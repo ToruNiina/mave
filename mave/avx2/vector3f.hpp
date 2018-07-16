@@ -180,7 +180,7 @@ inline std::pair<float, float> length_sq(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
     // to assure the 4th value is 0, mask it
-    const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
+    const __m128i mask = _mm_set_epi32(0, -1, -1, -1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
 
@@ -209,7 +209,7 @@ inline std::tuple<float, float, float> length_sq(
     const matrix<float, 3, 1>& v3) noexcept
 {
     // to assure the 4th value is 0, mask it
-    const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
+    const __m128i mask = _mm_set_epi32(0, -1, -1, -1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
     const __m128  arg3 = _mm_maskload_ps(v3.data(), mask);
@@ -239,7 +239,7 @@ inline std::tuple<float, float, float, float> length_sq(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4) noexcept
 {
-    const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
+    const __m128i mask = _mm_set_epi32(0, -1, -1, -1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
     const __m128  arg3 = _mm_maskload_ps(v3.data(), mask);
@@ -277,7 +277,7 @@ template<>
 inline std::pair<float, float> length(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
-    const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
+    const __m128i mask = _mm_set_epi32(0, -1, -1, -1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
 
@@ -295,7 +295,7 @@ inline std::tuple<float, float, float> length(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3) noexcept
 {
-    const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
+    const __m128i mask = _mm_set_epi32(0, -1, -1, -1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
     const __m128  arg3 = _mm_maskload_ps(v3.data(), mask);
@@ -316,7 +316,7 @@ inline std::tuple<float, float, float, float> length(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4) noexcept
 {
-    const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
+    const __m128i mask = _mm_set_epi32(0, -1, -1, -1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
     const __m128  arg3 = _mm_maskload_ps(v3.data(), mask);
@@ -354,7 +354,7 @@ template<>
 inline std::pair<float, float> rlength(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
-    const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
+    const __m128i mask = _mm_set_epi32(0, -1, -1, -1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
 
@@ -395,7 +395,7 @@ inline std::tuple<float, float, float, float> rlength(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4) noexcept
 {
-    const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
+    const __m128i mask = _mm_set_epi32(0, -1, -1, -1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
     const __m128  arg3 = _mm_maskload_ps(v3.data(), mask);
@@ -441,7 +441,7 @@ inline std::pair<std::pair<matrix<float, 3, 1>, float>,
 regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2
            ) noexcept
 {
-    const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
+    const __m128i mask = _mm_set_epi32(0, -1, -1, -1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
 
