@@ -226,8 +226,9 @@ inline std::tuple<double, double, double> length_sq(
     //  |  |  |  .----------'
     // |a2|cc|b2|c0|
 
+    // 216 == 0b11 01 10 00 --> 3 1 2 0
     const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 0x03010200), mul3));
+        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 216u), mul3));
 
     return std::make_tuple(hadd[0], hadd[2], hadd[1] + hadd[3]);
 }
@@ -253,9 +254,10 @@ inline std::tuple<double, double, double, double> length_sq(
     const __m256d hadd13 = _mm256_hadd_pd(mul1, mul3);
     const __m256d hadd24 = _mm256_hadd_pd(mul2, mul4);
 
+    // 216 == 0b11 01 10 00 --> 3 1 2 0
     const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(hadd13, 0x03010200),
-        _mm256_permute4x64_pd(hadd24, 0x03010200)));
+        _mm256_permute4x64_pd(hadd13, 216u),
+        _mm256_permute4x64_pd(hadd24, 216u)));
     return std::make_tuple(hadd[0], hadd[1], hadd[2], hadd[3]);
 }
 
@@ -281,8 +283,9 @@ inline std::pair<double, double> length(
 
     const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
     const __m128d lensq = _mm_set_pd(hadd[1] + hadd[3], hadd[0] + hadd[2]);
+
     alignas(16) double len[2];
-    _mm_store_pd(len, _mm_sqrt_pd(lensq));
+    _mm_store_pd(&(len[0]), _mm_sqrt_pd(lensq));
 
     return std::make_pair(len[0], len[1]);
 }
@@ -302,8 +305,9 @@ inline std::tuple<double, double, double> length(
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
     const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
 
+    // 216 == 0b11 01 10 00 --> 3 1 2 0
     const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 0x03010200), mul3));
+        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 216u), mul3));
 
     const matrix<double, 3, 1> retval(_mm256_sqrt_pd(
         _mm256_set_pd(0.0, hadd[1] + hadd[3], hadd[2], hadd[0])));
@@ -331,10 +335,11 @@ inline std::tuple<double, double, double, double> length(
     const __m256d hadd13 = _mm256_hadd_pd(mul1, mul3);
     const __m256d hadd24 = _mm256_hadd_pd(mul2, mul4);
 
+    // 216u == 0b11 01 10 00 --> 3 1 2 0
     const matrix<double, 3, 1> retval = _mm256_sqrt_pd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(hadd13, 0x03010200),
-        _mm256_permute4x64_pd(hadd13, 0x03010200)));
-    return std::make_tuple(retval[0], retval[2], retval[1], retval[3]);
+        _mm256_permute4x64_pd(hadd13, 216u),
+        _mm256_permute4x64_pd(hadd24, 216u)));
+    return std::make_tuple(retval[0], retval[1], retval[2], retval[3]);
 }
 
 // rlength -------------------------------------------------------------------
@@ -377,8 +382,9 @@ rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
     const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
 
+    // 216u == 0b11 01 10 00 --> 3 1 2 0
     const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 0x03010200), mul3));
+        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 216u), mul3));
 
     const matrix<double, 3, 1> retval(_mm256_div_pd(
         _mm256_set1_pd(1.0), _mm256_sqrt_pd(
@@ -405,10 +411,11 @@ rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const __m256d hadd13 = _mm256_hadd_pd(mul1, mul3);
     const __m256d hadd24 = _mm256_hadd_pd(mul2, mul4);
 
+    // 216u == 0b11 01 10 00 --> 3 1 2 0
     const matrix<double, 3, 1> retval(_mm256_div_pd(_mm256_set1_pd(1.0),
         _mm256_sqrt_pd(_mm256_hadd_pd(
-            _mm256_permute4x64_pd(hadd13, 0x03010200),
-            _mm256_permute4x64_pd(hadd24, 0x03010200)))));
+            _mm256_permute4x64_pd(hadd13, 216u),
+            _mm256_permute4x64_pd(hadd24, 216u)))));
     return std::make_tuple(retval[0], retval[1], retval[2], retval[3]);
 }
 
@@ -461,8 +468,9 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
     const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
 
+    // 216u == 0b11 01 10 00 --> 3 1 2 0
     const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 0x03010200), mul3));
+        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 216u), mul3));
 
     const double l1 = std::sqrt(hadd[0]);
     const double l2 = std::sqrt(hadd[2]);
@@ -499,9 +507,10 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const __m256d hadd13 = _mm256_hadd_pd(mul1, mul3);
     const __m256d hadd24 = _mm256_hadd_pd(mul2, mul4);
 
+    // 216u == 0b11 01 10 00 --> 3 1 2 0
     const matrix<double, 3, 1> ls = _mm256_sqrt_pd(_mm256_hadd_pd(
-            _mm256_permute4x64_pd(hadd13, 0x03010200),
-            _mm256_permute4x64_pd(hadd24, 0x03010200)));
+            _mm256_permute4x64_pd(hadd13, 216u),
+            _mm256_permute4x64_pd(hadd24, 216u)));
 
     const matrix<double, 3, 1> rv1 = _mm256_div_pd(arg1, _mm256_set1_pd(ls[0]));
     const matrix<double, 3, 1> rv2 = _mm256_div_pd(arg2, _mm256_set1_pd(ls[1]));
@@ -610,13 +619,14 @@ inline matrix<double, 3, 1> cross_product(
     const __m256d arg1 = _mm256_maskload_pd(x.data(), mask);
     const __m256d arg2 = _mm256_maskload_pd(y.data(), mask);
 
-    const __m256d y_ = _mm256_permute4x64_pd(arg1, 0x03000201);
-    const __m256d x_ = _mm256_permute4x64_pd(arg2, 0x03000201);
+    // 3 0 2 1 --> 0b 11 00 10 01 == 201
+    const __m256d y_ = _mm256_permute4x64_pd(arg1, 201u);
+    const __m256d x_ = _mm256_permute4x64_pd(arg2, 201u);
 
     const __m256d z = _mm256_sub_pd(
             _mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
 
-    return _mm256_permute4x64_pd(z, 0x03000201);
+    return _mm256_permute4x64_pd(z, 201u);
 }
 
 template<>
@@ -630,8 +640,9 @@ inline double scalar_triple_product(
     const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
     const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
 
-    const __m256d y_ = _mm256_permute4x64_pd(arg1, 0x03000201);
-    const __m256d x_ = _mm256_permute4x64_pd(arg2, 0x03000201);
+    // 3 0 2 1 --> 0b 11 00 10 01 == 201
+    const __m256d y_ = _mm256_permute4x64_pd(arg1, 201u);
+    const __m256d x_ = _mm256_permute4x64_pd(arg2, 201u);
 
     const matrix<double, 3, 1> z = _mm256_sub_pd(
             _mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
