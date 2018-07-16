@@ -58,29 +58,29 @@ template<>
 inline vector<float, 3> fmadd(const float a,
     const vector<float, 3>& b, const vector<float, 3>& c) noexcept
 {
-    return _mm_fmadd_ps(_mm_set1_pd(a), _mm_load_pd(b.data()),
-                        _mm_load_pd(c.data()));
+    return _mm_fmadd_ps(_mm_set1_ps(a), _mm_load_ps(b.data()),
+                        _mm_load_ps(c.data()));
 }
 template<>
 inline vector<float, 3> fmsub(const float a,
     const vector<float, 3>& b, const vector<float, 3>& c) noexcept
 {
-    return _mm_fmsub_ps(_mm_set1_pd(a), _mm_load_pd(b.data()),
-                        _mm_load_pd(c.data()));
+    return _mm_fmsub_ps(_mm_set1_ps(a), _mm_load_ps(b.data()),
+                        _mm_load_ps(c.data()));
 }
 template<>
 inline vector<float, 3> fnmadd(const float a,
     const vector<float, 3>& b, const vector<float, 3>& c) noexcept
 {
-    return _mm_fnmadd_ps(_mm_set1_pd(a), _mm_load_pd(b.data()),
-                         _mm_load_pd(c.data()));
+    return _mm_fnmadd_ps(_mm_set1_ps(a), _mm_load_ps(b.data()),
+                         _mm_load_ps(c.data()));
 }
 template<>
 inline vector<float, 3> fnmsub(const float a,
     const vector<float, 3>& b, const vector<float, 3>& c) noexcept
 {
-    return _mm_fnmsub_ps(_mm_set1_pd(a), _mm_load_pd(b.data()),
-                         _mm_load_pd(c.data()));
+    return _mm_fnmsub_ps(_mm_set1_ps(a), _mm_load_ps(b.data()),
+                         _mm_load_ps(c.data()));
 }
 
 } // mave
