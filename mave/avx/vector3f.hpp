@@ -239,30 +239,30 @@ inline std::tuple<float, float, float, float> length_sq(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4) noexcept
 {
-    // to assure the 4th value is 0, mask it
     const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
     const __m128  arg3 = _mm_maskload_ps(v3.data(), mask);
+    const __m128  arg4 = _mm_maskload_ps(v4.data(), mask);
 
     const __m256 v12   = _mm256_set_m128(arg2, arg1);
-    const __m256 v33   = _mm256_set_m128(arg3, arg3);
+    const __m256 v34   = _mm256_set_m128(arg4, arg3);
     const __m256 mul12 = _mm256_mul_ps(v12, v12);
-    const __m256 mul33 = _mm256_mul_ps(v33, v33);
+    const __m256 mul34 = _mm256_mul_ps(v34, v34);
 
-    // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|
-    //  +--'  |  |  +--'  |  |    +--'  +--'
-    //  |  .--+--'  |  .--+--'    |     |
-    //  |  |  .--.--|--|----------+-----'
-    // |aa|a0|cc|c0|bb|b0|xx|xx|
+    // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|d1|d2|d3|00|
+    //  +--'  |  |  +--'  |  |    +--'  +--'  |  |  |  |
+    //  |  .--+--'  |  .--+--'    |     |     |  |  |  |
+    //  |  |  .--.--|--|--.--.----+-----'-----+--'--+--'
+    // |aa|a0|cc|c0|bb|b0|dd|d0|
     //  +--'  |  |  +--'  |  |
     //  |  .--+--'  |  .--+--'
-    // |as|cs|xx|xx|bs|xx|xx|xx| result
+    // |as|cs|as|cs|bs|ds|bs|ds| result
 
     alignas(32) float result[8];
-    const __m256 hadd1 = _mm256_hadd_ps(mul12, mul33);
+    const __m256 hadd1 = _mm256_hadd_ps(mul12, mul34);
     _mm256_store_ps(result, _mm256_hadd_ps(hadd1, hadd1));
-    return std::make_tuple(result[0], result[4], results[1]);
+    return std::make_tuple(result[0], result[4], results[1], retult[5]);
 }
 
 // length --------------------------------------------------------------------
@@ -320,16 +320,26 @@ inline std::tuple<float, float, float, float> length(
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
     const __m128  arg3 = _mm_maskload_ps(v3.data(), mask);
+    const __m128  arg4 = _mm_maskload_ps(v4.data(), mask);
 
     const __m256 v12   = _mm256_set_m128(arg2, arg1);
-    const __m256 v33   = _mm256_set_m128(arg3, arg3);
+    const __m256 v34   = _mm256_set_m128(arg4, arg3);
     const __m256 mul12 = _mm256_mul_ps(v12, v12);
-    const __m256 mul33 = _mm256_mul_ps(v33, v33);
+    const __m256 mul34 = _mm256_mul_ps(v34, v34);
+
+    // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|d1|d2|d3|00|
+    //  +--'  |  |  +--'  |  |    +--'  +--'  |  |  |  |
+    //  |  .--+--'  |  .--+--'    |     |     |  |  |  |
+    //  |  |  .--.--|--|--.--.----+-----'-----+--'--+--'
+    // |aa|a0|cc|c0|bb|b0|dd|d0|
+    //  +--'  |  |  +--'  |  |
+    //  |  .--+--'  |  .--+--'
+    // |as|cs|as|cs|bs|ds|bs|ds| result
 
     alignas(32) float result[8];
-    const __m256 hadd1 = _mm256_hadd_ps(mul12, mul33);
+    const __m256 hadd1 = _mm256_hadd_ps(mul12, mul34);
     _mm256_store_ps(result, _mm256_sqrt_ps(_mm256_hadd_ps(hadd1, hadd1)));
-    return std::make_tuple(result[0], result[4], results[1]);
+    return std::make_tuple(result[0], result[4], results[1], retult[5]);
 }
 
 // rlength -------------------------------------------------------------------
@@ -389,23 +399,25 @@ inline std::tuple<float, float, float, float> rlength(
     const __m128  arg1 = _mm_maskload_ps(v1.data(), mask);
     const __m128  arg2 = _mm_maskload_ps(v2.data(), mask);
     const __m128  arg3 = _mm_maskload_ps(v3.data(), mask);
+    const __m128  arg4 = _mm_maskload_ps(v4.data(), mask);
 
     const __m256 v12   = _mm256_set_m128(arg2, arg1);
-    const __m256 v33   = _mm256_set_m128(arg3, arg3);
+    const __m256 v34   = _mm256_set_m128(arg4, arg3);
     const __m256 mul12 = _mm256_mul_ps(v12, v12);
-    const __m256 mul33 = _mm256_mul_ps(v33, v33);
+    const __m256 mul34 = _mm256_mul_ps(v34, v34);
 
     alignas(32) float result[8];
-    const __m256 hadd1 = _mm256_hadd_ps(mul12, mul33);
+    const __m256 hadd1 = _mm256_hadd_ps(mul12, mul34);
     _mm256_store_ps(result, _mm256_div_ps(_mm256_set1_ps(1.0f),
                     _mm256_sqrt_ps(_mm256_hadd_ps(hadd1, hadd1))));
-    return std::make_tuple(result[0], result[4], results[1]);
+    return std::make_tuple(result[0], result[4], results[1], result[5]);
 }
 
 // regularize ----------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 1> regularize(const matrix<float, 3, 1>& v) noexcept
+inline std::pair<matrix<float, 3, 1>, float>
+regularize(const matrix<float, 3, 1>& v) noexcept
 {
     const __m128 arg = _mm_load_ps(v.data());
     const __m128 mul = _mm_mul_ps(arg, arg);
@@ -420,10 +432,12 @@ inline matrix<float, 3, 1> regularize(const matrix<float, 3, 1>& v) noexcept
     //  |  .--+--'
     //  |  |
     // |as|as|as|as|
-    return _mm_div_ps(arg, len);
+    return std::make_pair(matrix<float, 3, 1,>(_mm_div_ps(arg, len)),
+                          _mm256_cvtss_f32(len));
 }
 template<>
-inline std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
+inline std::pair<std::pair<matrix<float, 3, 1>, float>,
+                 std::pair<matrix<float, 3, 1>, float>>
 regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2
            ) noexcept
 {
@@ -445,15 +459,23 @@ regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2
     // |as|as|as|as|bs|bs|bs|bs|
 
     const __m256 hadd1 = _mm256_hadd_ps(mul, mul);
-    alignas(32) float regul[8] =
-        _mm256_div_ps(v12, _mm256_sqrt_ps(_mm256_hadd_ps(hadd1, hadd1)));
+    const __m256 len   = _mm256_sqrt_ps(_mm256_hadd_ps(hadd1, hadd1));
 
-    return std::make_pair(matrix<float, 3, 1>(regul[0], regul[1], regul[2]),
-                          matrix<float, 3, 1>(regul[4], regul[5], regul[6]));
+    alignas(32) float regul[8];
+
+    _mm256_store_ps(regul, _mm256_div_ps(v12, len));
+    const matrix<float, 3, 1> rv1(regul[0], regul[1], regul[2]);
+    const matrix<float, 3, 1> rv2(regul[4], regul[5], regul[6]);
+
+    _mm256_store_ps(regul, len);
+
+    return std::make_pair(std::make_pair(rv1, regul[0]),
+                          std::make_pair(rv2, regul[4]));
 }
 template<>
-inline std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
-                  matrix<float, 3, 1>>
+inline std::tuple<std::pair<matrix<float, 3, 1>, float>,
+                  std::pair<matrix<float, 3, 1>, float>,
+                  std::pair<matrix<float, 3, 1>, float>>
 regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
            const matrix<float, 3, 1>& v3) noexcept
 {
@@ -461,8 +483,10 @@ regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     return std::make_tuple(std::get<0>(v12), std::get<1>(v12), regularize(v3));
 }
 template<>
-inline std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
-                  matrix<float, 3, 1>, matrix<float, 3, 1>>
+inline std::tuple<std::pair<matrix<float, 3, 1>, float>,
+                  std::pair<matrix<float, 3, 1>, float>,
+                  std::pair<matrix<float, 3, 1>, float>,
+                  std::pair<matrix<float, 3, 1>, float>>
 regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
            const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4
            ) noexcept
