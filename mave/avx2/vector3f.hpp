@@ -1,12 +1,11 @@
-#ifndef MAVE_AVX_VECTOR3_FLOAT_HPP
-#define MAVE_AVX_VECTOR3_FLOAT_HPP
+#ifndef MAVE_AVX2_VECTOR3_FLOAT_HPP
+#define MAVE_AVX2_VECTOR3_FLOAT_HPP
 
-#ifndef __AVX__
-#error "mave/avx/vector3f.hpp requires avx support but __AVX__ is not defined."
-// it also uses SSE operations
+#ifndef __AVX2__
+#error "mave/avx2/vector3f.hpp requires avx support but __AVX2__ is not defined."
 #endif
 
-#include <immintrin.h>
+#include <x86intrin.h>
 #include <type_traits>
 #include <array>
 #include <cmath>
