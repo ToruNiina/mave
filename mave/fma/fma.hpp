@@ -12,10 +12,6 @@
 #error "do not use mave/fma/fma.hpp alone. please include mave/vector.hpp."
 #endif
 
-
-#include <mave/avx2/vector3d.hpp>
-#include <mave/avx2/vector3f.hpp>
-
 #include <x86intrin.h> // for *nix
 #include <type_traits>
 #include <array>
