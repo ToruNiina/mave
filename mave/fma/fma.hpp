@@ -1,5 +1,5 @@
-#ifndef MAVE_AVX_VECTOR3_DOUBLE_HPP
-#define MAVE_AVX_VECTOR3_DOUBLE_HPP
+#ifndef MAVE_FMA_FMA_HPP
+#define MAVE_FMA_FMA_HPP
 
 #ifndef __FMA__
 #error "mave/fma/fma.hpp requires fma support but __FMA__ is not defined."
@@ -15,7 +15,6 @@
 
 #include <mave/avx2/vector3d.hpp>
 #include <mave/avx2/vector3f.hpp>
-#include <x86intrin.h>
 
 #include <x86intrin.h> // for *nix
 #include <type_traits>
@@ -89,4 +88,4 @@ inline vector<float, 3> fnmsub(const float a,
 }
 
 } // mave
-#endif // MAVE_MATH_MATRIX_HPP
+#endif // MAVE_FMA_FMA_HPP
