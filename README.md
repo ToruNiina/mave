@@ -44,22 +44,21 @@ returns length(s) squared
 ```cpp
 template<typename T>
 T
-length_sq(const vector<T, 3>& v) noexcept
+length_sq(const vector<T, 3>& v) noexcept;
 
 template<typename T>
 std::pair<T, T>
-length_sq(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+length_sq(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept;
 
 template<typename T>
 std::tuple<T, T, T>
 length_sq(const vector<T, 3>& v1, const vector<T, 3>& v2,
-          const vector<T, 3>& v3) noexcept
+          const vector<T, 3>& v3) noexcept;
 
 template<typename T>
 std::tuple<T, T, T, T>
 length_sq(const vector<T, 3>& v1, const vector<T, 3>& v2,
-          const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
-
+          const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept;
 ```
 
 #### `length`
@@ -69,21 +68,21 @@ returns length(s)
 ```cpp
 template<typename T>
 T
-length(const vector<T, 3>& v) noexcept
+length(const vector<T, 3>& v) noexcept;
 
 template<typename T>
 std::pair<T, T>
-length(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+length(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept;
 
 template<typename T>
 std::tuple<T, T, T>
 length(const vector<T, 3>& v1, const vector<T, 3>& v2,
-          const vector<T, 3>& v3) noexcept
+       const vector<T, 3>& v3) noexcept;
 
 template<typename T>
 std::tuple<T, T, T, T>
 length(const vector<T, 3>& v1, const vector<T, 3>& v2,
-          const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
+       const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept;
 
 ```
 
@@ -94,22 +93,21 @@ returns reciprocal length(s)
 ```cpp
 template<typename T>
 T
-rlength(const vector<T, 3>& v) noexcept
+rlength(const vector<T, 3>& v) noexcept;
 
 template<typename T>
 std::pair<T, T>
-rlength(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+rlength(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept;
 
 template<typename T>
 std::tuple<T, T, T>
 rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
-          const vector<T, 3>& v3) noexcept
+        const vector<T, 3>& v3) noexcept;
 
 template<typename T>
 std::tuple<T, T, T, T>
 rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
-          const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
-
+        const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept;
 ```
 
 #### `regularize`
@@ -119,23 +117,23 @@ returns regularized vector and original length
 ```cpp
 template<typename T>
 std::pair<vector<T, 3>, T>
-regularize(const vector<T, 3>& v) noexcept
+regularize(const vector<T, 3>& v) noexcept;
 
 template<typename T>
 std::pair<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>>
-regularize(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+regularize(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept;
 
 template<typename T>
 std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,
            std::pair<vector<T, 3>, T>>
 regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
-           const vector<T, 3>& v3) noexcept
+           const vector<T, 3>& v3) noexcept;
 
 template<typename T>
 std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,
            std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>>
 regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
-           const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
+           const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept;
 ```
 
 #### `min` and `max`
@@ -144,9 +142,9 @@ applies min/max for each elements
 
 ```cpp
 template<typename T>
-vector<T, 3> min(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+vector<T, 3> min(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept;
 template<typename T>
-vector<T, 3> max(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+vector<T, 3> max(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept;
 ```
 
 #### `floor`
@@ -155,18 +153,21 @@ applies floor for each elements
 
 ```cpp
 template<typename T>
-vector<T, 3> floor(const vector<T, 3>& v) noexcept
+vector<T, 3> floor(const vector<T, 3>& v) noexcept;
+
 template<typename T>
 std::pair<vector<T, 3>, vector<T, 3>>
-floor(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+floor(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept;
+
 template<typename T>
 std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>>
 floor(const vector<T, 3>& v1, const vector<T, 3>& v2,
-      const vector<T, 3>& v3) noexcept
+      const vector<T, 3>& v3) noexcept;
+
 template<typename T>
 std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>, vector<T, 3>>
 floor(const vector<T, 3>& v1, const vector<T, 3>& v2,
-      const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
+      const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept;
 ```
 
 #### `ceil`
@@ -175,18 +176,21 @@ applies ceil for each elements
 
 ```cpp
 template<typename T>
-vector<T, 3> ceil(const vector<T, 3>& v) noexcept
+vector<T, 3> ceil(const vector<T, 3>& v) noexcept;
+
 template<typename T>
 std::pair<vector<T, 3>, vector<T, 3>>
-ceil(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
+ceil(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept;
+
 template<typename T>
 std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>>
 ceil(const vector<T, 3>& v1, const vector<T, 3>& v2,
-     const vector<T, 3>& v3) noexcept
+     const vector<T, 3>& v3) noexcept;
+
 template<typename T>
 std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>, vector<T, 3>>
 ceil(const vector<T, 3>& v1, const vector<T, 3>& v2,
-     const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
+     const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept;
 ```
 
 #### `fma`
@@ -196,18 +200,18 @@ fused multiply add
 ```cpp
 template<typename T>
 vector<T, 3> fmadd(const T a,
-                   const vector<T, 3>& b, const vector<T, 3>& c) noexcept
+                   const vector<T, 3>& b, const vector<T, 3>& c) noexcept;
 
 template<typename T>
 vector<T, 3> fmsub(const T a,
-                   const vector<T, 3>& b, const vector<T, 3>& c) noexcept
+                   const vector<T, 3>& b, const vector<T, 3>& c) noexcept;
 
 template<typename T>
 vector<T, 3> fnmadd(const T a,
-                    const vector<T, 3>& b, const vector<T, 3>& c) noexcept
+                    const vector<T, 3>& b, const vector<T, 3>& c) noexcept;
 template<typename T>
 vector<T, 3> fnmsub(const T a,
-                    const vector<T, 3>& b, const vector<T, 3>& c) noexcept
+                    const vector<T, 3>& b, const vector<T, 3>& c) noexcept;
 ```
 
 #### vector operations
@@ -215,15 +219,15 @@ vector<T, 3> fnmsub(const T a,
 
 ```cpp
 template<typename T>
-T dot_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept
+T dot_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept;
 
 template<typename T>
 vector<T, 3>
-cross_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept
+cross_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept;
 
 template<typename T>
 T scalar_triple_product(const vector<T, 3>& v1, const vector<T, 3>& v2,
-                        const vector<T, 3>& v3) noexcept
+                        const vector<T, 3>& v3) noexcept;
 ```
 
 ## Licensing terms
