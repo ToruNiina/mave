@@ -113,34 +113,48 @@ rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
 // regularize ----------------------------------------------------------------
 
 template<typename T>
-inline vector<T, 3> regularize(const vector<T, 3>& v) noexcept
+inline std::pair<vector<T, 3>, T>
+regularize(const vector<T, 3>& v) noexcept
 {
-    return v * (1.0 / length(v));
+    const auto l = length(v);
+    return std::make_pair(v * (1.0 / l), l);
 }
 
 template<typename T>
-inline std::pair<vector<T, 3>, vector<T, 3>>
+inline std::pair<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>>
 regularize(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 {
-    return std::make_pair(v1 * (1.0 / length(v1), v2 * (1.0 / length(v2))));
+    const auto l = length(v1, v2);
+    return std::make_pair(
+            std::make_pair(v1 * (1.0 / std::get<0>(l)), std::get<0>(l)),
+            std::make_pair(v2 * (1.0 / std::get<1>(l)), std::get<1>(l)));
 }
 
 template<typename T>
-inline std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>>
+inline std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,
+                  std::pair<vector<T, 3>, T>>
 regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
            const vector<T, 3>& v3) noexcept
 {
-    return std::make_tuple(v1 * (1.0 / length(v1)), v2 * (1.0 / length(v2)),
-                           v3 * (1.0 / length(v3)));
+    const auto l = length(v1, v2, v3);
+    return std::make_tuple(
+            std::make_pair(v1 * (1.0 / std::get<0>(l)), std::get<0>(l)),
+            std::make_pair(v2 * (1.0 / std::get<1>(l)), std::get<1>(l)),
+            std::make_pair(v3 * (1.0 / std::get<2>(l)), std::get<2>(l)));
 }
 
 template<typename T>
-inline std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>, vector<T, 3>>
+inline std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,
+                  std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>>
 regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
            const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
 {
-    return std::make_tuple(v1 * (1.0 / length(v1)), v2 * (1.0 / length(v2)),
-                           v3 * (1.0 / length(v3)), v4 * (1.0 / length(v4)));
+    const auto l = length(v1, v2, v3, v4);
+    return std::make_tuple(
+            std::make_pair(v1 * (1.0 / std::get<0>(l)), std::get<0>(l)),
+            std::make_pair(v2 * (1.0 / std::get<1>(l)), std::get<1>(l)),
+            std::make_pair(v3 * (1.0 / std::get<2>(l)), std::get<2>(l)),
+            std::make_pair(v4 * (1.0 / std::get<3>(l)), std::get<3>(l)));
 }
 
 // ---------------------------------------------------------------------------
