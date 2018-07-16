@@ -5,12 +5,12 @@ SIMD-oriented small matrix and vector library
 
 It focuses on 3D vector operations (e.g. physical simulation, graphics, etc).
 
-# installation
+## installation
 
 This library is header-only.
 The only thing that you need to do is add this library to your include path.
 
-# building test codes
+## building test codes
 
 mave recommend you to build test codes and check it runs.
 Because mave uses many architecture-dependent instructions, you need to verify
@@ -33,11 +33,11 @@ need to pass it to cmake.
 $ cmake .. -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8
 ```
 
-# reference
+## reference
 
-## `vector<T, 3>`
+### `vector<T, 3>`
 
-### `length_sq`
+#### `length_sq`
 
 returns length(s) squared
 
@@ -62,7 +62,7 @@ length_sq(const vector<T, 3>& v1, const vector<T, 3>& v2,
 
 ```
 
-### `length`
+#### `length`
 
 returns length(s)
 
@@ -87,7 +87,7 @@ length(const vector<T, 3>& v1, const vector<T, 3>& v2,
 
 ```
 
-### `rlength`
+#### `rlength`
 
 returns reciprocal length(s)
 
@@ -112,7 +112,7 @@ rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
 
 ```
 
-### `regularize`
+#### `regularize`
 
 returns regularized vector and original length
 
@@ -138,7 +138,7 @@ regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
            const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
 ```
 
-### `min` and `max`
+#### `min` and `max`
 
 applies min/max for each elements
 
@@ -149,7 +149,7 @@ template<typename T>
 vector<T, 3> max(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 ```
 
-### `floor`
+#### `floor`
 
 applies floor for each elements
 
@@ -169,7 +169,7 @@ floor(const vector<T, 3>& v1, const vector<T, 3>& v2,
       const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
 ```
 
-### `ceil`
+#### `ceil`
 
 applies ceil for each elements
 
@@ -189,7 +189,7 @@ ceil(const vector<T, 3>& v1, const vector<T, 3>& v2,
      const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
 ```
 
-### `fma`
+#### `fma`
 
 fused multiply add
 
@@ -210,7 +210,7 @@ vector<T, 3> fnmsub(const T a,
                     const vector<T, 3>& b, const vector<T, 3>& c) noexcept
 ```
 
-### vector operations
+#### vector operations
 
 
 ```cpp
@@ -226,7 +226,7 @@ T scalar_triple_product(const vector<T, 3>& v1, const vector<T, 3>& v2,
                         const vector<T, 3>& v3) noexcept
 ```
 
-# Licensing terms
+## Licensing terms
 
 This product is licensed under the terms of the [MIT License](LICENSE).
 
