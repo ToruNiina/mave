@@ -2,6 +2,7 @@ set(TEST_NAMES
     test_length_sq
     test_length
     test_rlength
+    test_regularize
     )
 
 add_definitions("-std=c++11 -O3 -march=native -mtune=native")
