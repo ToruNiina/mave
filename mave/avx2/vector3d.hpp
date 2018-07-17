@@ -623,8 +623,12 @@ inline matrix<double, 3, 1> cross_product(
     const __m256d y_ = _mm256_permute4x64_pd(arg1, 201u);
     const __m256d x_ = _mm256_permute4x64_pd(arg2, 201u);
 
-    const __m256d z = _mm256_sub_pd(
-            _mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
+    const __m256d z =
+#ifdef __FMA__
+        _mm256_fmsub_pd(arg1, y_, _mm256_mul_pd(arg2, x_));
+#else
+        _mm256_sub_pd(_mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
+#endif
 
     return _mm256_permute4x64_pd(z, 201u);
 }
@@ -644,8 +648,12 @@ inline double scalar_triple_product(
     const __m256d y_ = _mm256_permute4x64_pd(arg1, 201u);
     const __m256d x_ = _mm256_permute4x64_pd(arg2, 201u);
 
-    const matrix<double, 3, 1> z = _mm256_sub_pd(
-            _mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
+    const matrix<double, 3, 1> z =
+#ifdef __FMA__
+        _mm256_fmsub_pd(arg1, y_, _mm256_mul_pd(arg2, x_));
+#else
+        _mm256_sub_pd(_mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
+#endif
     return z[0] + z[1] + z[2];
 }
 
