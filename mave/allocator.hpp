@@ -45,7 +45,8 @@ class aligned_allocator
         using other = aligned_allocator<U, std::alignment_of<U>::value>;
     };
 
-    static constexpr std::size_t alignment = Alignment;
+    static constexpr std::size_t alignment = // for posix_memalign
+        (Alignment > sizeof(void*)) ? Alignment : sizeof(void*);
 
   public:
 
