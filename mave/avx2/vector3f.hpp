@@ -436,7 +436,7 @@ regularize(const matrix<float, 3, 1>& v) noexcept
     const __m128 arg = _mm_load_ps(v.data());
     const __m128 mul = _mm_mul_ps(arg, arg);
     const __m128 had = _mm_hadd_ps(mul, mul);
-    const __m128 len = _mm_hadd_ps(had, had);
+    const __m128 len = _mm_sqrt_ps(_mm_hadd_ps(had, had));
     // |a1|a2|a3|00| mul
     //  +--'  |  |
     //  |  .--+--'
