@@ -153,5 +153,133 @@ operator*(const matrix<T1, A, B>& lhs, const matrix<T2, B, C>& rhs) noexcept
     return retval;
 }
 
+// ---------------------------------------------------------------------------
+// math functions
+// ---------------------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+max(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
+{
+    matrix<T, R, C> retval;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        retval[i] = std::max(v1[i], v2[i]);
+    }
+    return retval;
+}
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+min(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
+{
+    matrix<T, R, C> retval;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        retval[i] = std::min(v1[i], v2[i]);
+    }
+    return retval;
+}
+
+// floor ---------------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+floor(const matrix<T, R, C>& v) noexcept
+{
+    matrix<T, R, C> retval;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        retval[i] = std::floor(v[i]);
+    }
+    return retval;
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::pair<matrix<T, R, C>, matrix<T, R, C>>
+floor(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
+{
+    return std::make_pair(floor(v1), floor(v2));
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+floor(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2,
+      const matrix<T, R, C>& v3) noexcept
+{
+    return std::make_tuple(floor(v1), floor(v2), floor(v3));
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>,
+                  matrix<T, R, C>, matrix<T, R, C>>
+floor(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2,
+      const matrix<T, R, C>& v3, const matrix<T, R, C>& v4) noexcept
+{
+    return std::make_tuple(floor(v1), floor(v2), floor(v3), floor(v4));
+}
+
+// ceil ----------------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+ceil(const matrix<T, R, C>& v) noexcept
+{
+    matrix<T, R, C> retval;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        retval[i] = std::ceil(v[i]);
+    }
+    return retval;
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::pair<matrix<T, R, C>, matrix<T, R, C>>
+ceil(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
+{
+    return std::make_pair(ceil(v1), ceil(v2));
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+ceil(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2,
+      const matrix<T, R, C>& v3) noexcept
+{
+    return std::make_tuple(ceil(v1), ceil(v2), ceil(v3));
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>,
+                  matrix<T, R, C>, matrix<T, R, C>>
+ceil(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2,
+      const matrix<T, R, C>& v3, const matrix<T, R, C>& v4) noexcept
+{
+    return std::make_tuple(ceil(v1), ceil(v2), ceil(v3), ceil(v4));
+}
+
+// ---------------------------------------------------------------------------
+// Fused Multiply Add
+// ---------------------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C> fmadd(
+    const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
+{
+    return a * b + c;
+}
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C> fmsub(
+    const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
+{
+    return a * b - c;
+}
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C> fnmadd(
+    const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
+{
+    return -a * b + c;
+}
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C> fnmsub(
+    const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
+{
+    return -a * b - c;
+}
+
 } // mave
 #endif
