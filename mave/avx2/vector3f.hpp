@@ -64,7 +64,7 @@ struct alignas(16) matrix<float, 3, 1>
         return *this;
     }
 
-    matrix() = default;
+    matrix(): vs_{{0.0f, 0.0f, 0.0f, 0.0f}}{}
     ~matrix() = default;
     matrix(const matrix&) = default;
     matrix(matrix&&)      = default;

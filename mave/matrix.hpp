@@ -31,7 +31,7 @@ struct matrix
         std::nullptr_t>::type = nullptr>
     matrix(Ts&& ... args) noexcept : vs_{{static_cast<T>(args)...}}{}
 
-    matrix() = default;
+    matrix(){vs_.fill(value_type(0.0));}
     ~matrix() = default;
     matrix(const matrix&) = default;
     matrix(matrix&&)      = default;

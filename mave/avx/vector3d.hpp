@@ -67,7 +67,7 @@ struct alignas(32) matrix<double, 3, 1>
         return *this;
     }
 
-    matrix() = default;
+    matrix(): vs_{{0.0, 0.0, 0.0, 0.0}} {}
     ~matrix() = default;
     matrix(const matrix&) = default;
     matrix(matrix&&)      = default;
