@@ -15,8 +15,8 @@ namespace mave
 
 inline void* aligned_alloc(std::size_t alignment, std::size_t size)
 {
-    void *ptr;
-    posix_memalign(&ptr, alignment, size);
+    void *ptr = nullptr;
+    if(posix_memalign(&ptr, alignment, size) != 0){return nullptr;}
     return ptr;
 }
 
