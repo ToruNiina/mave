@@ -2,6 +2,7 @@
 #define MAVE_MATRIX_HPP
 #include "type_traits.hpp"
 #include <array>
+#include <tuple>
 #include <cmath>
 
 namespace mave
