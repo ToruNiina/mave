@@ -5,6 +5,11 @@
 #error "mave/avx2/vector3f.hpp requires avx support but __AVX2__ is not defined."
 #endif
 
+#ifdef MAVE_VECTOR3_FLOAT
+#error "specialization of vector for 3x float is already defined"
+#endif
+#define MAVE_VECTOR3_FLOAT "avx2"
+
 #include <x86intrin.h>
 #include <type_traits>
 #include <array>
