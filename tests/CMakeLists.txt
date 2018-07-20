@@ -3,6 +3,8 @@ set(TEST_NAMES
     test_length
     test_rlength
     test_regularize
+    test_add
+    test_sub
     )
 
 add_definitions("-std=c++11 -O3 -march=native -mtune=native")
