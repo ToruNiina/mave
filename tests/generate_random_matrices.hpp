@@ -40,11 +40,6 @@ generate_random_matrices(std::size_t N, RNG&& rng)
     return vec;
 }
 
-template<typename T>
-struct is_matrix : std::false_type {};
-template<typename T, std::size_t R, std::size_t C>
-struct is_matrix<::mave::matrix<T, R, C>> : std::true_type {};
-
 template<typename T, typename RNG>
 typename std::enable_if<is_matrix<T>::value,
     std::vector<T, mave::aligned_allocator<T>>>::type

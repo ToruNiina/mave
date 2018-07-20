@@ -5,6 +5,16 @@
 namespace mave
 {
 
+template<typename T, std::size_t R, std::size_t C>
+struct matrix;
+
+template<typename T>
+struct is_matrix : std::false_type {};
+template<typename T, std::size_t R, std::size_t C>
+struct is_matrix<matrix<T, R, C>> : std::true_type {};
+
+// c++17 features ------------------------------------------------------------
+
 template<typename ...>
 struct conjunction : std::true_type{};
 template<typename T>
