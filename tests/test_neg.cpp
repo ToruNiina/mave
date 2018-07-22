@@ -2,8 +2,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include <boost/mpl/list.hpp>
 
-#include <mave/vector.hpp>
-#include <mave/allocator.hpp>
+#include <mave/mave.hpp>
 #include <tests/generate_random_matrices.hpp>
 #include <tests/tolerance.hpp>
 
