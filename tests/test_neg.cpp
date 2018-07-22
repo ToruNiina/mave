@@ -13,7 +13,7 @@ typedef boost::mpl::list<
 
 constexpr std::size_t N = 120000;
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(addition, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(negation, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors1 = mave::test::generate_random<T>(N, mt);
