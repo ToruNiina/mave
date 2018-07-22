@@ -8,10 +8,11 @@
 #include <tests/tolerance.hpp>
 
 typedef boost::mpl::list<
-    mave::vector<double, 3>, mave::vector<float, 3>
+    mave::vector<double, 3>,    mave::vector<float, 3>,
+    mave::matrix<double, 3, 3>, mave::matrix<float, 3, 3>
     > test_targets;
 
-constexpr std::size_t N = 120000;
+constexpr std::size_t N = 12000;
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(max, T, test_targets)
 {
@@ -25,8 +26,10 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(max, T, test_targets)
         const auto& v2 = vectors2.at(i);
 
         const auto v3 = mave::max(v1, v2);
-        BOOST_TEST(v3[0] == std::max(v1[0], v2[0]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[1] == std::max(v1[1], v2[1]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[2] == std::max(v1[2], v2[2]), mave::test::tolerance<typename T::value_type>());
+        for(std::size_t j=0; j<v3.size(); ++j)
+        {
+            BOOST_TEST(v3[j] == std::max(v1[j], v2[j]),
+                       mave::test::tolerance<typename T::value_type>());
+        }
     }
 }

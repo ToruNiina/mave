@@ -11,7 +11,7 @@ typedef boost::mpl::list<
     mave::vector<double, 3>, mave::vector<float, 3>
     > test_targets;
 
-constexpr std::size_t N = 120000;
+constexpr std::size_t N = 12000;
 
 template<typename T, std::size_t N>
 T rlength_ref(const mave::vector<T, N>& v)
