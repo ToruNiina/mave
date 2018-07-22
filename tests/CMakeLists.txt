@@ -8,6 +8,7 @@ set(TEST_NAMES
     test_mul
     test_div
     test_fma
+    test_neg
     )
 
 add_definitions("-std=c++11 -O3 -march=native -mtune=native")
