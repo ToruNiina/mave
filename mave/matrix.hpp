@@ -260,26 +260,46 @@ template<typename T, std::size_t R, std::size_t C>
 inline matrix<T, R, C> fmadd(
     const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
 {
-    return a * b + c;
+    matrix<T, R, C> retval;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        retval[i] = std::fma(a, b[i], c[i]);
+    }
+    return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
 inline matrix<T, R, C> fmsub(
     const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
 {
-    return a * b - c;
+    matrix<T, R, C> retval;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        retval[i] = std::fma(a, b[i], -c[i]);
+    }
+    return retval;
 }
 
 template<typename T, std::size_t R, std::size_t C>
 inline matrix<T, R, C> fnmadd(
     const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
 {
-    return -a * b + c;
+    matrix<T, R, C> retval;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        retval[i] = std::fma(-a, b[i], c[i]);
+    }
+    return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
 inline matrix<T, R, C> fnmsub(
     const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
 {
-    return -a * b - c;
+    matrix<T, R, C> retval;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        retval[i] = std::fma(-a, b[i], -c[i]);
+    }
+    return retval;
 }
 
 } // mave
