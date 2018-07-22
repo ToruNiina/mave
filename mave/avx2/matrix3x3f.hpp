@@ -21,17 +21,18 @@
 #include <cmath>
 
 // for readability...
-#define _mm128_load_ps  _mm_load_ps
-#define _mm128_store_ps _mm_store_ps
-#define _mm128_set1_ps  _mm_set1_ps
-#define _mm128_add_ps   _mm_add_ps
-#define _mm128_sub_ps   _mm_sub_ps
-#define _mm128_mul_ps   _mm_mul_ps
-#define _mm128_div_ps   _mm_div_ps
-#define _mm128_max_ps   _mm_max_ps
-#define _mm128_min_ps   _mm_min_ps
-#define _mm128_floor_ps _mm_floor_ps
-#define _mm128_ceil_ps  _mm_ceil_ps
+#define _mm128_load_ps    _mm_load_ps
+#define _mm128_store_ps   _mm_store_ps
+#define _mm128_set1_ps    _mm_set1_ps
+#define _mm128_setzero_ps _mm_setzero_ps
+#define _mm128_add_ps     _mm_add_ps
+#define _mm128_sub_ps     _mm_sub_ps
+#define _mm128_mul_ps     _mm_mul_ps
+#define _mm128_div_ps     _mm_div_ps
+#define _mm128_max_ps     _mm_max_ps
+#define _mm128_min_ps     _mm_min_ps
+#define _mm128_floor_ps   _mm_floor_ps
+#define _mm128_ceil_ps    _mm_ceil_ps
 
 namespace mave
 {
@@ -137,68 +138,68 @@ struct alignas(32) matrix<float, 3, 3>
 };
 
 template<>
-inline matrix<double, 3, 3> operator-(const matrix<double, 3, 3>& m) noexcept
+inline matrix<float, 3, 3> operator-(const matrix<float, 3, 3>& m) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_m = m.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m = m.data();
     _mm256_store_ps(ptr_r,   _mm256_sub_ps(_mm256_setzero_ps(), _mm256_load_ps(ptr_m  )));
     _mm128_store_ps(ptr_r+8, _mm128_sub_ps(_mm128_setzero_ps(), _mm128_load_ps(ptr_m+8)));
     return retval;
 }
 template<>
-inline matrix<double, 3, 3> operator+(
-    const matrix<double, 3, 3>& m1, const matrix<double, 3, 3>& m2) noexcept
+inline matrix<float, 3, 3> operator+(
+    const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_1 = m1.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_2 = m2.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_1 = m1.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_2 = m2.data();
     _mm256_store_ps(ptr_r,   _mm256_add_ps(_mm256_load_ps(ptr_1  ), _mm256_load_ps(ptr_2  )));
     _mm128_store_ps(ptr_r+8, _mm128_add_ps(_mm128_load_ps(ptr_1+8), _mm128_load_ps(ptr_2+8)));
     return retval;
 }
 template<>
-inline matrix<double, 3, 3> operator-(
-    const matrix<double, 3, 3>& m1, const matrix<double, 3, 3>& m2) noexcept
+inline matrix<float, 3, 3> operator-(
+    const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_1 = m1.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_2 = m2.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_1 = m1.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_2 = m2.data();
     _mm256_store_ps(ptr_r,   _mm256_sub_ps(_mm256_load_ps(ptr_1  ), _mm256_load_ps(ptr_2  )));
     _mm128_store_ps(ptr_r+8, _mm128_sub_ps(_mm128_load_ps(ptr_1+8), _mm128_load_ps(ptr_2+8)));
     return retval;
 }
 template<>
-inline matrix<double, 3, 3> operator*(
-    const double s1, const matrix<double, 3, 3>& m2) noexcept
+inline matrix<float, 3, 3> operator*(
+    const float s1, const matrix<float, 3, 3>& m2) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_2 = m2.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_2 = m2.data();
     _mm256_store_ps(ptr_r,   _mm256_mul_ps(_mm256_set1_ps(s1), _mm256_load_ps(ptr_2  )));
     _mm128_store_ps(ptr_r+8, _mm128_mul_ps(_mm128_set1_ps(s1), _mm128_load_ps(ptr_2+8)));
     return retval;
 }
 template<>
-inline matrix<double, 3, 3> operator*(
-    const matrix<double, 3, 3>& m1, const double s2) noexcept
+inline matrix<float, 3, 3> operator*(
+    const matrix<float, 3, 3>& m1, const float s2) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_1 = m1.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_1 = m1.data();
     _mm256_store_ps(ptr_r,   _mm256_mul_ps(_mm256_load_ps(ptr_1  ), _mm256_set1_ps(s2)));
     _mm128_store_ps(ptr_r+8, _mm128_mul_ps(_mm128_load_ps(ptr_1+8), _mm128_set1_ps(s2)));
     return retval;
 }
 template<>
-inline matrix<double, 3, 3> operator/(
-    const matrix<double, 3, 3>& m1, const double s2) noexcept
+inline matrix<float, 3, 3> operator/(
+    const matrix<float, 3, 3>& m1, const float s2) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_1 = m1.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_1 = m1.data();
     _mm256_store_ps(ptr_r,   _mm256_div_ps(_mm256_load_ps(ptr_1  ), _mm256_set1_ps(s2)));
     _mm128_store_ps(ptr_r+8, _mm128_div_ps(_mm128_load_ps(ptr_1+8), _mm128_set1_ps(s2)));
     return retval;
@@ -209,26 +210,26 @@ inline matrix<double, 3, 3> operator/(
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<double, 3, 3> max(
-    const matrix<double, 3, 3>& m1, const matrix<double, 3, 3>& m2) noexcept
+inline matrix<float, 3, 3> max(
+    const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_1 = m1.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_2 = m2.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_1 = m1.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_2 = m2.data();
     _mm256_store_ps(ptr_r,   _mm256_max_ps(_mm256_load_ps(ptr_1  ), _mm256_load_ps(ptr_2  )));
     _mm128_store_ps(ptr_r+8, _mm128_max_ps(_mm128_load_ps(ptr_1+8), _mm128_load_ps(ptr_2+8)));
     return retval;
 }
 
 template<>
-inline matrix<double, 3, 3> min(
-    const matrix<double, 3, 3>& m1, const matrix<double, 3, 3>& m2) noexcept
+inline matrix<float, 3, 3> min(
+    const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_1 = m1.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_2 = m2.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_1 = m1.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_2 = m2.data();
     _mm256_store_ps(ptr_r,   _mm256_min_ps(_mm256_load_ps(ptr_1  ), _mm256_load_ps(ptr_2  )));
     _mm128_store_ps(ptr_r+8, _mm128_min_ps(_mm128_load_ps(ptr_1+8), _mm128_load_ps(ptr_2+8)));
     return retval;
@@ -237,11 +238,11 @@ inline matrix<double, 3, 3> min(
 // floor ---------------------------------------------------------------------
 
 template<>
-inline matrix<double, 3, 3> floor(const matrix<double, 3, 3>& m) noexcept
+inline matrix<float, 3, 3> floor(const matrix<float, 3, 3>& m) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_1 = m.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_1 = m.data();
     _mm256_store_ps(ptr_r,   _mm256_floor_ps(_mm256_load_ps(ptr_1  )));
     _mm128_store_ps(ptr_r+8, _mm128_floor_ps(_mm128_load_ps(ptr_1+8)));
     return retval;
@@ -250,11 +251,11 @@ inline matrix<double, 3, 3> floor(const matrix<double, 3, 3>& m) noexcept
 // ceil ----------------------------------------------------------------------
 
 template<>
-inline matrix<double, 3, 3> ceil(const matrix<double, 3, 3>& m) noexcept
+inline matrix<float, 3, 3> ceil(const matrix<float, 3, 3>& m) noexcept
 {
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_1 = m.data();
+    matrix<float, 3, 3> retval;
+    typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_1 = m.data();
     _mm256_store_ps(ptr_r,   _mm256_ceil_ps(_mm256_load_ps(ptr_1  )));
     _mm128_store_ps(ptr_r+8, _mm128_ceil_ps(_mm128_load_ps(ptr_1+8)));
     return retval;
@@ -276,4 +277,4 @@ inline matrix<double, 3, 3> ceil(const matrix<double, 3, 3>& m) noexcept
 #undef _mm128_floor_ps
 #undef _mm128_ceil_ps
 
-#endif // MAVE_AVX2_MATRIX_3x3_DOUBLE_HPP
+#endif // MAVE_AVX2_MATRIX_3x3_FLOAT_HPP
