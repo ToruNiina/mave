@@ -9,6 +9,10 @@ set(TEST_NAMES
     test_div
     test_fma
     test_neg
+    test_ceil
+    test_floor
+    test_max
+    test_min
     )
 
 add_definitions("-std=c++11 -O3 -march=native -mtune=native")
