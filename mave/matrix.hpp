@@ -95,6 +95,15 @@ constexpr std::size_t matrix<T, R, C>::column_size;
 template<typename T, std::size_t R, std::size_t C>
 constexpr std::size_t matrix<T, R, C>::total_size;
 
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+operator-(const matrix<T, R, C>& lhs) noexcept
+{
+    matrix<T, R, C> retval;
+    for(std::size_t i=0; i<R*C; ++i) {retval[i] = -lhs[i];}
+    return retval;
+}
+
 template<typename T1, typename T2, std::size_t R, std::size_t C>
 inline matrix<decltype(std::declval<T1>() + std::declval<T2>()), R, C>
 operator+(const matrix<T1, R, C>& lhs, const matrix<T2, R, C>& rhs) noexcept

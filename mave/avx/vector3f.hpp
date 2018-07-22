@@ -135,6 +135,12 @@ struct alignas(16) matrix<float, 3, 1>
 };
 
 template<>
+inline matrix<float, 3, 1> operator-(const matrix<float, 3, 1>& lhs) noexcept
+{
+    return _mm_sub_ps(_mm_setzero_ps(), _mm_load_ps(lhs.data()));
+}
+
+template<>
 inline matrix<float, 3, 1> operator+(
     const matrix<float, 3, 1>& lhs, const matrix<float, 3, 1>& rhs) noexcept
 {

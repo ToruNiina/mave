@@ -139,6 +139,11 @@ struct alignas(32) matrix<double, 3, 1>
 };
 
 template<>
+inline matrix<double, 3, 1> operator-(const matrix<double, 3, 1>& v) noexcept
+{
+    return _mm256_sub_pd(_mm256_setzero_pd(), _mm256_load_pd(v.data()));
+}
+template<>
 inline matrix<double, 3, 1> operator+(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
