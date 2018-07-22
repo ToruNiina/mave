@@ -193,8 +193,8 @@ inline T scalar_triple_product(
 #  include "avx/vector3d.hpp"
 #  include "avx/vector3f.hpp"
 #else
-#  define MAVE_VECTOR3_DOUBLE "none"
-#  define MAVE_VECTOR3_FLOAT  "none"
+#  define MAVE_VECTOR3_DOUBLE_IMPLEMENTATION "none"
+#  define MAVE_VECTOR3_FLOAT_IMPLEMENTATION  "none"
 #endif //__AVX__
 
 #if __FMA__
@@ -205,8 +205,8 @@ namespace mave
 {
 inline constexpr const char* supported_instructions()
 {
-    return   "vector<double, 3>: " MAVE_VECTOR3_DOUBLE
-           "\nvector<float,  3>: " MAVE_VECTOR3_FLOAT;
+    return   "vector<double, 3>: " MAVE_VECTOR3_DOUBLE_IMPLEMENTATION
+           "\nvector<float,  3>: " MAVE_VECTOR3_FLOAT_IMPLEMENTATION;
 }
 } // mave
 #endif // MAVE_MATH_VECTOR_HPP

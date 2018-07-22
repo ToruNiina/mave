@@ -9,11 +9,11 @@
 #error "do not use mave/avx/vector3d.hpp alone. please include mave/vector.hpp."
 #endif
 
-#ifdef MAVE_VECTOR3_DOUBLE
+#ifdef MAVE_VECTOR3_DOUBLE_IMPLEMENTATION
 #error "specialization of vector for 3x double is already defined"
 #endif
 
-#define MAVE_VECTOR3_DOUBLE "avx2"
+#define MAVE_VECTOR3_DOUBLE_IMPLEMENTATION "avx2"
 
 #include <x86intrin.h> // for *nix
 #include <type_traits>

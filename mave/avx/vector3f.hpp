@@ -3,8 +3,12 @@
 
 #ifndef __AVX__
 #error "mave/avx/vector3f.hpp requires avx support but __AVX__ is not defined."
-// it also uses SSE operations
 #endif
+
+#ifdef MAVE_VECTOR3_FLOAT_IMPLEMENTATION
+#error "specialization of vector for 3x float is already defined"
+#endif
+#define MAVE_VECTOR3_FLOAT_IMPLEMENTATION "avx"
 
 #include <immintrin.h>
 #include <type_traits>
