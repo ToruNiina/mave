@@ -206,6 +206,35 @@ inline matrix<float, 3, 3> operator/(
 }
 
 // ---------------------------------------------------------------------------
+// matrix3x3-matrix3x3 multiplication
+// ---------------------------------------------------------------------------
+
+template<>
+inline matrix<float, 3, 3> operator*(
+    const matrix<float, 3, 3>& m1, const matrix<dobule, 3, 3>& m2) noexcept
+{
+    // TODO: tune with __m256 and haddps
+    const __m128 m1_0 = _mm_load_ps(m1.data()  );
+    const __m128 m1_1 = _mm_load_ps(m1.data()+4);
+    const __m128 m1_2 = _mm_load_ps(m1.data()+8);
+
+    const __m128 m2_0 = _mm_set_ps(0.0f, m2(2,0), m2(1,0), m2(0,0));
+    const __m128 m2_1 = _mm_set_ps(0.0f, m2(2,1), m2(1,1), m2(0,1));
+    const __m128 m2_2 = _mm_set_ps(0.0f, m2(2,2), m2(1,2), m2(0,2));
+
+    const auto dot = [](const __m128 l, const __m128 r) noexcept -> float {
+        alignas(16) float pack[4];
+        _mm_store_pd(pack, _mm_mul_pd(l, r));
+        return pack[0] + pack[1] + pack[2];
+    };
+
+    return matrix<float, 3, 3>(
+        dot(m1_0, m2_0), dot(m1_0, m2_1), dot(m1_0, m2_2),
+        dot(m1_1, m2_0), dot(m1_1, m2_1), dot(m1_1, m2_2),
+        dot(m1_2, m2_0), dot(m1_2, m2_1), dot(m1_2, m2_2));
+}
+
+// ---------------------------------------------------------------------------
 // math functions
 // ---------------------------------------------------------------------------
 
