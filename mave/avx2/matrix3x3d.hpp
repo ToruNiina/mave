@@ -213,7 +213,7 @@ inline matrix<double, 3, 3> operator/(
 
 template<>
 inline matrix<double, 3, 3> operator*(
-    const matrix<double, 3, 3>& m1, const matrix<dobule, 3, 3>& m2) noexcept
+    const matrix<double, 3, 3>& m1, const matrix<double, 3, 3>& m2) noexcept
 {
     const __m256d m1_0 = _mm256_load_pd(m1.data()  );
     const __m256d m1_1 = _mm256_load_pd(m1.data()+4);

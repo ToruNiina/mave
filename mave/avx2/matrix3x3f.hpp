@@ -211,7 +211,7 @@ inline matrix<float, 3, 3> operator/(
 
 template<>
 inline matrix<float, 3, 3> operator*(
-    const matrix<float, 3, 3>& m1, const matrix<dobule, 3, 3>& m2) noexcept
+    const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     // TODO: tune with __m256 and haddps
     const __m128 m1_0 = _mm_load_ps(m1.data()  );
