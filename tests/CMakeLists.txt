@@ -13,6 +13,7 @@ set(TEST_NAMES
     test_floor
     test_max
     test_min
+    test_mat_vec_mul
     )
 
 add_definitions("-std=c++11 -O3 -march=native -mtune=native")
