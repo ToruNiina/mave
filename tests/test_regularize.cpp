@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_2arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_3arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_3arg, T, test_targets)
 {
     using real = typename T::value_type;
     std::mt19937 mt(123456789);
@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_3arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(length_4arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_4arg, T, test_targets)
 {
     using real = typename T::value_type;
     std::mt19937 mt(123456789);
