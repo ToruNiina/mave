@@ -52,7 +52,7 @@ inline matrix<float, 3, 1> operator*(
     retval[0] = pack[0] + pack[1] + pack[2];
     retval[1] = pack[4] + pack[5] + pack[6];
 
-    _mm_store_ps(pack, _mm_mul_ps(_mm_load_ps(m.data()+8), v256));
+    _mm_store_ps(pack, _mm_mul_ps(_mm_load_ps(m.data()+8), v128));
     retval[2] = pack[0] + pack[1] + pack[2];
     return retval;
 }

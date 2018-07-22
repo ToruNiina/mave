@@ -224,7 +224,7 @@ inline matrix<float, 3, 3> operator*(
 
     const auto dot = [](const __m128 l, const __m128 r) noexcept -> float {
         alignas(16) float pack[4];
-        _mm_store_pd(pack, _mm_mul_pd(l, r));
+        _mm_store_ps(pack, _mm_mul_ps(l, r));
         return pack[0] + pack[1] + pack[2];
     };
 
