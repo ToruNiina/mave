@@ -189,6 +189,7 @@ inline T scalar_triple_product(
 #if defined(__AVX2__)
 #  include "avx2/vector3d.hpp"
 #  include "avx2/vector3f.hpp"
+#  include "avx2/matrix3x3d.hpp"
 #elif defined(__AVX__)
 #  include "avx/vector3d.hpp"
 #  include "avx/vector3f.hpp"
