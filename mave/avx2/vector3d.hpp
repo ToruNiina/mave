@@ -183,26 +183,30 @@ inline matrix<double, 3, 1> operator/(
 template<>
 inline double length_sq(const matrix<double, 3, 1>& v) noexcept
 {
-    const matrix<double, 3, 1> sq(_mm256_mul_pd(
-        _mm256_load_pd(v.data()), _mm256_load_pd(v.data())));
-    return sq[0] + sq[1] + sq[2];
+    const __m256d arg = _mm256_load_pd(v.data());
+    alignas(32) double pack[4];
+    _mm256_store_pd(pack, _mm256_mul_pd(arg, arg));
+    return pack[0] + pack[1] + pack[2];
 }
 
 template<>
 inline std::pair<double, double> length_sq(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    // to assure the 4th value is 0, mask it
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
+    alignas(32) double pack[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
 
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
-    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    _mm256_store_pd(pack, _mm256_hadd_pd(
+        _mm256_mul_pd(arg1, arg1), _mm256_mul_pd(arg2, arg2)));
 
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
-    return std::make_pair(hadd[0] + hadd[2], hadd[1] + hadd[3]);
+    return std::make_pair(pack[0] + pack[2], pack[1] + pack[3]);
 }
 
 template<>
@@ -210,38 +214,30 @@ inline std::tuple<double, double, double> length_sq(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const matrix<double, 3, 1>& v3) noexcept
 {
-    // to assure the 4th value is 0, mask it
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
+    alignas(32) double pack[4];
+    std::tuple<double, double, double> retval;
 
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
-    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
+    const __m256d arg3 = _mm256_load_pd(v3.data());
 
     const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
-    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
 
-    // |ax|ay|az|00| |bx|by|bz|00|
-    //  |  |  |  |    |  |  |  |
-    //  +--'  +--'    +--'  +--'
-    //  |  .--|-------'     |
-    //  |  |  |  .----------'
-    // |aa|bb|a0|b0|
-    //  |   \ /  |
-    //  |    X   |
-    //  |   / \  |
-    // |aa|a0|bb|b0| |c1|c2|c3|00|
-    //  |  |  |  |    |  |  |  |
-    //  +--'  +--'    +--'  +--'
-    //  |  .--|-------'     |
-    //  |  |  |  .----------'
-    // |a2|cc|b2|c0|
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    // 216 == 0b11 01 10 00 --> 3 1 2 0
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 216u), mul3));
+    _mm256_store_pd(pack, _mm256_hadd_pd(mul1, mul2));
+    std::get<0>(retval) = pack[0] + pack[2];
+    std::get<1>(retval) = pack[1] + pack[3];
 
-    return std::make_tuple(hadd[0], hadd[2], hadd[1] + hadd[3]);
+    _mm256_store_pd(pack, _mm256_mul_pd(arg3, arg3));
+    std::get<2>(retval) = pack[0] + pack[1] + pack[2];
+
+    return retval;
 }
 
 template<>
@@ -249,27 +245,33 @@ inline std::tuple<double, double, double, double> length_sq(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
 {
-    // to assure the 4th value is 0, mask it
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
-
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
-    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
-    const __m256d arg4 = _mm256_maskload_pd(v4.data(), mask);
+    alignas(32) double pack[4];
+    std::tuple<double, double, double, double> retval;
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
+    const __m256d arg3 = _mm256_load_pd(v3.data());
+    const __m256d arg4 = _mm256_load_pd(v4.data());
 
     const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
     const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
     const __m256d mul4 = _mm256_mul_pd(arg4, arg4);
 
-    const __m256d hadd13 = _mm256_hadd_pd(mul1, mul3);
-    const __m256d hadd24 = _mm256_hadd_pd(mul2, mul4);
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    // 216 == 0b11 01 10 00 --> 3 1 2 0
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(hadd13, 216u),
-        _mm256_permute4x64_pd(hadd24, 216u)));
-    return std::make_tuple(hadd[0], hadd[1], hadd[2], hadd[3]);
+    _mm256_store_pd(pack, _mm256_hadd_pd(mul1, mul2));
+    std::get<0>(retval) = pack[0] + pack[2];
+    std::get<1>(retval) = pack[1] + pack[3];
+
+    _mm256_store_pd(pack, _mm256_hadd_pd(mul3, mul4));
+    std::get<2>(retval) = pack[0] + pack[2];
+    std::get<3>(retval) = pack[1] + pack[3];
+
+    return retval;
 }
 
 // length --------------------------------------------------------------------
@@ -284,21 +286,21 @@ template<>
 inline std::pair<double, double> length(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
+    alignas(32) double pack[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
 
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
-    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
-
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
-    const __m128d lensq = _mm_set_pd(hadd[1] + hadd[3], hadd[0] + hadd[2]);
-
-    alignas(16) double len[2];
-    _mm_store_pd(&(len[0]), _mm_sqrt_pd(lensq));
-
-    return std::make_pair(len[0], len[1]);
+    _mm256_store_pd(pack, _mm256_hadd_pd(
+        _mm256_mul_pd(arg1, arg1), _mm256_mul_pd(arg2, arg2)));
+    _mm_store_pd(pack, _mm_sqrt_pd(
+                _mm_set_pd(pack[1] + pack[3], pack[0] + pack[2])));
+    return std::make_pair(pack[0], pack[1]);
 }
 
 template<>
@@ -306,24 +308,31 @@ inline std::tuple<double, double, double> length(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const matrix<double, 3, 1>& v3) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
-
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
-    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+    alignas(32) double pack1[4];
+    alignas(32) double pack2[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
+    const __m256d arg3 = _mm256_load_pd(v3.data());
 
     const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
-    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
 
-    // 216 == 0b11 01 10 00 --> 3 1 2 0
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 216u), mul3));
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    const matrix<double, 3, 1> retval(_mm256_sqrt_pd(
-        _mm256_set_pd(0.0, hadd[1] + hadd[3], hadd[2], hadd[0])));
+    _mm256_store_pd(pack1, _mm256_hadd_pd(mul1, mul2));
+    pack2[0] = pack1[0] + pack1[2];
+    pack2[1] = pack1[1] + pack1[3];
 
-    return std::make_tuple(retval[0], retval[1], retval[2]);
+    _mm256_store_pd(pack1, _mm256_mul_pd(arg3, arg3));
+    pack2[2] = pack1[0] + pack1[1] + pack1[2];
+
+    _mm256_store_pd(pack1, _mm256_sqrt_pd(_mm256_load_pd(pack2)));
+
+    return std::make_tuple(pack1[0], pack1[1], pack1[2]);
 }
 
 template<>
@@ -331,26 +340,35 @@ inline std::tuple<double, double, double, double> length(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
-
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
-    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
-    const __m256d arg4 = _mm256_maskload_pd(v4.data(), mask);
+    alignas(32) double pack1[4];
+    alignas(32) double pack2[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
+    const __m256d arg3 = _mm256_load_pd(v3.data());
+    const __m256d arg4 = _mm256_load_pd(v4.data());
 
     const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
     const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
     const __m256d mul4 = _mm256_mul_pd(arg4, arg4);
 
-    const __m256d hadd13 = _mm256_hadd_pd(mul1, mul3);
-    const __m256d hadd24 = _mm256_hadd_pd(mul2, mul4);
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    // 216u == 0b11 01 10 00 --> 3 1 2 0
-    const matrix<double, 3, 1> retval = _mm256_sqrt_pd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(hadd13, 216u),
-        _mm256_permute4x64_pd(hadd24, 216u)));
-    return std::make_tuple(retval[0], retval[1], retval[2], retval[3]);
+    _mm256_store_pd(pack1, _mm256_hadd_pd(mul1, mul2));
+    pack2[0] = pack1[0] + pack1[2];
+    pack2[1] = pack1[1] + pack1[3];
+
+    _mm256_store_pd(pack1, _mm256_hadd_pd(mul3, mul4));
+    pack2[2] = pack1[0] + pack1[2];
+    pack2[3] = pack1[1] + pack1[3];
+
+    _mm256_store_pd(pack1, _mm256_sqrt_pd(_mm256_load_pd(pack2)));
+
+    return std::make_tuple(pack1[0], pack1[1], pack1[2], pack1[3]);
 }
 
 // rlength -------------------------------------------------------------------
@@ -364,70 +382,90 @@ template<>
 inline std::pair<double, double>
 rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
+    alignas(32) double pack[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
 
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
-    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    _mm256_store_pd(pack, _mm256_hadd_pd(
+        _mm256_mul_pd(arg1, arg1), _mm256_mul_pd(arg2, arg2)));
+    _mm_store_pd(pack, _mm_div_pd(_mm_set1_pd(1.0), _mm_sqrt_pd(
+                _mm_set_pd(pack[1] + pack[3], pack[0] + pack[2]))));
 
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
-    const __m128d lensq = _mm_set_pd(hadd[1] + hadd[3], hadd[0] + hadd[2]);
-    alignas(16) double len[2];
-    _mm_store_pd(len, _mm_div_pd(_mm_set1_pd(1.0), _mm_sqrt_pd(lensq)));
-    return std::make_pair(len[0], len[1]);
+    return std::make_pair(pack[0], pack[1]);
 }
 template<>
 inline std::tuple<double, double, double>
 rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
         const matrix<double, 3, 1>& v3) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
-
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
-    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+    alignas(32) double pack1[4];
+    alignas(32) double pack2[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
+    const __m256d arg3 = _mm256_load_pd(v3.data());
 
     const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
-    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
 
-    // 216u == 0b11 01 10 00 --> 3 1 2 0
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 216u), mul3));
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    const matrix<double, 3, 1> retval(_mm256_div_pd(
-        _mm256_set1_pd(1.0), _mm256_sqrt_pd(
-            _mm256_set_pd(0.0, hadd[1] + hadd[3], hadd[2], hadd[0]))));
-    return std::make_tuple(retval[0], retval[1], retval[2]);
+    _mm256_store_pd(pack1, _mm256_hadd_pd(mul1, mul2));
+    pack2[0] = pack1[0] + pack1[2];
+    pack2[1] = pack1[1] + pack1[3];
+
+    _mm256_store_pd(pack1, _mm256_mul_pd(arg3, arg3));
+    pack2[2] = pack1[0] + pack1[1] + pack1[2];
+
+    _mm256_store_pd(pack1, _mm256_div_pd(_mm256_set1_pd(1.0), _mm256_sqrt_pd(
+                    _mm256_load_pd(pack2))));
+
+    return std::make_tuple(pack1[0], pack1[1], pack1[2]);
 }
 template<>
 inline std::tuple<double, double, double, double>
 rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
         const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
-
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
-    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
-    const __m256d arg4 = _mm256_maskload_pd(v4.data(), mask);
+    alignas(32) double pack1[4];
+    alignas(32) double pack2[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
+    const __m256d arg3 = _mm256_load_pd(v3.data());
+    const __m256d arg4 = _mm256_load_pd(v4.data());
 
     const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
     const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
     const __m256d mul4 = _mm256_mul_pd(arg4, arg4);
 
-    const __m256d hadd13 = _mm256_hadd_pd(mul1, mul3);
-    const __m256d hadd24 = _mm256_hadd_pd(mul2, mul4);
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    // 216u == 0b11 01 10 00 --> 3 1 2 0
-    const matrix<double, 3, 1> retval(_mm256_div_pd(_mm256_set1_pd(1.0),
-        _mm256_sqrt_pd(_mm256_hadd_pd(
-            _mm256_permute4x64_pd(hadd13, 216u),
-            _mm256_permute4x64_pd(hadd24, 216u)))));
-    return std::make_tuple(retval[0], retval[1], retval[2], retval[3]);
+    _mm256_store_pd(pack1, _mm256_hadd_pd(mul1, mul2));
+    pack2[0] = pack1[0] + pack1[2];
+    pack2[1] = pack1[1] + pack1[3];
+
+    _mm256_store_pd(pack1, _mm256_hadd_pd(mul3, mul4));
+    pack2[2] = pack1[0] + pack1[2];
+    pack2[3] = pack1[1] + pack1[3];
+
+    _mm256_store_pd(pack1, _mm256_div_pd(_mm256_set1_pd(1.0), _mm256_sqrt_pd(
+                    _mm256_load_pd(pack2))));
+
+    return std::make_tuple(pack1[0], pack1[1], pack1[2], pack1[3]);
 }
 
 // regularize ----------------------------------------------------------------
@@ -445,22 +483,29 @@ inline std::pair<std::pair<matrix<double, 3, 1>, double>,
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2
            ) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
+    alignas(32) double pack[4];
+    double l1, l2;
 
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
 
-    const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
-    const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(mul1, mul2));
-    const double l1 = std::sqrt(hadd[0] + hadd[2]);
-    const double l2 = std::sqrt(hadd[1] + hadd[3]);
+    _mm256_store_pd(pack, _mm256_hadd_pd(
+        _mm256_mul_pd(arg1, arg1), _mm256_mul_pd(arg2, arg2)));
+    _mm_store_pd(pack, _mm_sqrt_pd(
+                 _mm_set_pd(pack[1] + pack[3], pack[0] + pack[2])));
 
-    const matrix<double, 3, 1> rv1 = _mm256_div_pd(arg1, _mm256_set1_pd(l1));
-    const matrix<double, 3, 1> rv2 = _mm256_div_pd(arg2, _mm256_set1_pd(l2));
+    l1 = pack[0];
+    l2 = pack[1];
+    _mm_store_pd(pack, _mm_div_pd(_mm_set1_pd(1.0), _mm_load_pd(pack)));
 
-    return std::make_pair(std::make_pair(rv1, l1), std::make_pair(rv2, l2));
+    return std::make_pair(std::make_pair(v1 * pack[0], l1),
+                          std::make_pair(v2 * pack[1], l2));
 }
 template<>
 inline std::tuple<std::pair<matrix<double, 3, 1>, double>,
@@ -469,30 +514,35 @@ inline std::tuple<std::pair<matrix<double, 3, 1>, double>,
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
-
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
-    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+    alignas(32) double pack1[4];
+    alignas(32) double pack2[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
+    const __m256d arg3 = _mm256_load_pd(v3.data());
 
     const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
-    const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
 
-    // 216u == 0b11 01 10 00 --> 3 1 2 0
-    const matrix<double, 3, 1> hadd(_mm256_hadd_pd(
-        _mm256_permute4x64_pd(_mm256_hadd_pd(mul1, mul2), 216u), mul3));
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    const double l1 = std::sqrt(hadd[0]);
-    const double l2 = std::sqrt(hadd[2]);
-    const double l3 = std::sqrt(hadd[1] + hadd[3]);
+    _mm256_store_pd(pack1, _mm256_hadd_pd(mul1, mul2));
+    pack2[0] = pack1[0] + pack1[2];
+    pack2[1] = pack1[1] + pack1[3];
 
-    const matrix<double, 3, 1> rv1 = _mm256_div_pd(arg1, _mm256_set1_pd(l1));
-    const matrix<double, 3, 1> rv2 = _mm256_div_pd(arg2, _mm256_set1_pd(l2));
-    const matrix<double, 3, 1> rv3 = _mm256_div_pd(arg3, _mm256_set1_pd(l3));
+    _mm256_store_pd(pack1, _mm256_mul_pd(arg3, arg3));
+    pack2[2] = pack1[0] + pack1[1] + pack1[2];
 
-    return std::make_tuple(std::make_pair(rv1, l1), std::make_pair(rv2, l2),
-                           std::make_pair(rv3, l3));
+    _mm256_store_pd(pack1, _mm256_sqrt_pd(_mm256_load_pd(pack2)));
+    _mm256_store_pd(pack2, _mm256_div_pd(
+                    _mm256_set1_pd(1.0), _mm256_load_pd(pack1)));
+
+    return std::make_tuple(std::make_pair(v1 * pack2[0], pack1[0]),
+                           std::make_pair(v2 * pack2[1], pack1[1]),
+                           std::make_pair(v3 * pack2[2], pack1[2]));
 }
 template<>
 inline std::tuple<std::pair<matrix<double, 3, 1>, double>,
@@ -503,34 +553,42 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4
            ) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
-
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
-    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
-    const __m256d arg4 = _mm256_maskload_pd(v4.data(), mask);
+    alignas(32) double pack1[4];
+    alignas(32) double pack2[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
+    const __m256d arg3 = _mm256_load_pd(v3.data());
+    const __m256d arg4 = _mm256_load_pd(v4.data());
 
     const __m256d mul1 = _mm256_mul_pd(arg1, arg1);
     const __m256d mul2 = _mm256_mul_pd(arg2, arg2);
     const __m256d mul3 = _mm256_mul_pd(arg3, arg3);
     const __m256d mul4 = _mm256_mul_pd(arg4, arg4);
 
-    const __m256d hadd13 = _mm256_hadd_pd(mul1, mul3);
-    const __m256d hadd24 = _mm256_hadd_pd(mul2, mul4);
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  | hadd
+    //  |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| pack
 
-    // 216u == 0b11 01 10 00 --> 3 1 2 0
-    const matrix<double, 3, 1> ls = _mm256_sqrt_pd(_mm256_hadd_pd(
-            _mm256_permute4x64_pd(hadd13, 216u),
-            _mm256_permute4x64_pd(hadd24, 216u)));
+    _mm256_store_pd(pack1, _mm256_hadd_pd(mul1, mul2));
+    pack2[0] = pack1[0] + pack1[2];
+    pack2[1] = pack1[1] + pack1[3];
 
-    const matrix<double, 3, 1> rv1 = _mm256_div_pd(arg1, _mm256_set1_pd(ls[0]));
-    const matrix<double, 3, 1> rv2 = _mm256_div_pd(arg2, _mm256_set1_pd(ls[1]));
-    const matrix<double, 3, 1> rv3 = _mm256_div_pd(arg3, _mm256_set1_pd(ls[2]));
-    const matrix<double, 3, 1> rv4 = _mm256_div_pd(arg4, _mm256_set1_pd(ls[3]));
+    _mm256_store_pd(pack1, _mm256_hadd_pd(mul3, mul4));
+    pack2[2] = pack1[0] + pack1[2];
+    pack2[3] = pack1[1] + pack1[3];
 
-    return std::make_tuple(std::make_pair(rv1, ls[0]), std::make_pair(rv2, ls[1]),
-                           std::make_pair(rv3, ls[2]), std::make_pair(rv4, ls[3]));
+    _mm256_store_pd(pack1, _mm256_sqrt_pd(_mm256_load_pd(pack2)));
+    _mm256_store_pd(pack2, _mm256_div_pd(
+                    _mm256_set1_pd(1.0), _mm256_load_pd(pack1)));
+
+    return std::make_tuple(std::make_pair(v1 * pack2[0], pack1[0]),
+                           std::make_pair(v2 * pack2[1], pack1[1]),
+                           std::make_pair(v3 * pack2[2], pack1[2]),
+                           std::make_pair(v4 * pack2[3], pack1[3]));
 }
+
 // ---------------------------------------------------------------------------
 // math functions
 // ---------------------------------------------------------------------------
@@ -616,19 +674,18 @@ template<>
 inline double dot_product(
     const matrix<double, 3, 1>& lhs, const matrix<double, 3, 1>& rhs) noexcept
 {
-    const matrix<double, 3, 1> sq(_mm256_mul_pd(
+    alignas(32) double pack[4];
+    _mm256_store_pd(pack, _mm256_mul_pd(
         _mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data())));
-    return sq[0] + sq[1] + sq[2];
+    return pack[0] + pack[1] + pack[2];
 }
 
 template<>
 inline matrix<double, 3, 1> cross_product(
     const matrix<double, 3, 1>& x, const matrix<double, 3, 1>& y) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
-
-    const __m256d arg1 = _mm256_maskload_pd(x.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(y.data(), mask);
+    const __m256d arg1 = _mm256_load_pd(x.data());
+    const __m256d arg2 = _mm256_load_pd(y.data());
 
     // 3 0 2 1 --> 0b 11 00 10 01 == 201
     const __m256d y_ = _mm256_permute4x64_pd(arg1, 201u);
@@ -649,23 +706,24 @@ inline double scalar_triple_product(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const matrix<double, 3, 1>& v3) noexcept
 {
-    const __m256i mask = _mm256_set_epi64x(0, -1, -1, -1);
-
-    const __m256d arg1 = _mm256_maskload_pd(v1.data(), mask);
-    const __m256d arg2 = _mm256_maskload_pd(v2.data(), mask);
-    const __m256d arg3 = _mm256_maskload_pd(v3.data(), mask);
+    alignas(32) double pack[4];
+    const __m256d arg1 = _mm256_load_pd(v1.data());
+    const __m256d arg2 = _mm256_load_pd(v2.data());
+    const __m256d arg3 = _mm256_load_pd(v3.data());
 
     // 3 0 2 1 --> 0b 11 00 10 01 == 201
     const __m256d y_ = _mm256_permute4x64_pd(arg1, 201u);
     const __m256d x_ = _mm256_permute4x64_pd(arg2, 201u);
 
-    const matrix<double, 3, 1> z =
+    _mm256_store_pd(pack, _mm256_mul_pd(_mm256_permute4x64_pd(arg3, 201u),
 #ifdef __FMA__
-        _mm256_fmsub_pd(arg1, y_, _mm256_mul_pd(arg2, x_));
+        _mm256_fmsub_pd(arg1, y_, _mm256_mul_pd(arg2, x_))
 #else
-        _mm256_sub_pd(_mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
+        _mm256_sub_pd(_mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_))
 #endif
-    return z[0] + z[1] + z[2];
+        );
+
+    return pack[0] + pack[1] + pack[2];
 }
 
 } // mave
