@@ -5,10 +5,27 @@ SIMD-oriented small matrix and vector library
 
 It focuses on 3D vector operations (e.g. physical simulation, graphics, etc).
 
+## usage
+
+after including `mave/mave.hpp`, compile your code with
+`-march=native -mtune=native` to turn simd flags (e.g. `__AVX2__`) on.
+
+```cpp
+mave::matrix<double, 3, 3> m(1.0, 1.0, 1.0,
+                             1.0, 1.0, 1.0,
+                             1.0, 1.0, 1.0);
+mave::vector<double, 3>    v(1.0, 2.0, 3.0);
+
+mave::vector<double, 3>    w = m * v;
+
+std::cout << w[0] << ' ' << w[1] << ' ' << w[2] << '\n';
+```
+
 ## installation
 
 This library is header-only.
 The only thing that you need to do is add this library to your include path.
+
 
 ## building test codes
 
@@ -32,6 +49,7 @@ need to pass it to cmake.
 ```cpp
 $ cmake .. -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8
 ```
+
 
 ## reference
 
