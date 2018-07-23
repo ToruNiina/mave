@@ -129,10 +129,10 @@ struct alignas(32) matrix<double, 3, 1>
     reference       operator[](size_type i)       noexcept {return vs_[i];}
     const_reference operator[](size_type i) const noexcept {return vs_[i];}
 
-    reference       at(size_type, size_type j)       {return vs_.at(j);}
-    const_reference at(size_type, size_type j) const {return vs_.at(j);}
-    reference       operator()(size_type, size_type j)       noexcept {return vs_[j];}
-    const_reference operator()(size_type, size_type j) const noexcept {return vs_[j];}
+    reference       at(size_type i, size_type)       {return vs_.at(i);}
+    const_reference at(size_type i, size_type) const {return vs_.at(i);}
+    reference       operator()(size_type i, size_type)       noexcept {return vs_[i];}
+    const_reference operator()(size_type i, size_type) const noexcept {return vs_[i];}
 
   private:
     alignas(32) storage_type vs_;
