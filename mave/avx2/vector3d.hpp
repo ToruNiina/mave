@@ -721,7 +721,7 @@ inline double scalar_triple_product(
 #else
         _mm256_sub_pd(_mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_))
 #endif
-        );
+        ));
 
     return pack[0] + pack[1] + pack[2];
 }
