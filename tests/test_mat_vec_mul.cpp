@@ -13,8 +13,9 @@ constexpr std::size_t N = 12000;
 BOOST_AUTO_TEST_CASE_TEMPLATE(mat3x3_vec3, T, test_targets)
 {
     std::mt19937 mt(123456789);
-    const auto matrices = mave::test::generate_random<mave::matrix<T, 3, 3>>(N, mt);
-    const auto vectors  = mave::test::generate_random<mave::vector<T, 3>>(N, mt);
+
+    const auto matrices = mave::test::generate_random_positive<mave::matrix<T, 3, 3>>(N, mt);
+    const auto vectors  = mave::test::generate_random_positive<mave::vector<T, 3>>(N, mt);
 
     for(std::size_t i=0; i<N; ++i)
     {
@@ -22,6 +23,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(mat3x3_vec3, T, test_targets)
         const auto& v = vectors.at(i);
 
         const auto v2 = m * v;
+
         BOOST_TEST(v2[0] == m(0,0)*v[0] + m(0,1)*v[1] + m(0,2)*v[2], mave::test::tolerance<T>());
         BOOST_TEST(v2[1] == m(1,0)*v[0] + m(1,1)*v[1] + m(1,2)*v[2], mave::test::tolerance<T>());
         BOOST_TEST(v2[2] == m(2,0)*v[0] + m(2,1)*v[1] + m(2,2)*v[2], mave::test::tolerance<T>());
