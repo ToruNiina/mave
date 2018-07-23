@@ -13,6 +13,11 @@ struct is_matrix : std::false_type {};
 template<typename T, std::size_t R, std::size_t C>
 struct is_matrix<matrix<T, R, C>> : std::true_type {};
 
+template<typename T>
+struct is_vector : std::false_type {};
+template<typename T, std::size_t N>
+struct is_vector<matrix<T, N, 1>> : std::true_type {};
+
 // c++17 features ------------------------------------------------------------
 
 template<typename ...>
