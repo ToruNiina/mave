@@ -21,6 +21,9 @@ mave::vector<double, 3>    w = m * v;
 std::cout << w[0] << ' ' << w[1] << ' ' << w[2] << '\n';
 ```
 
+When you want to make `mave` faster by using `rcp` and `rsqrt`, define
+`MAVE_USE_APPROXIMATION` before including `mave/mave.hpp`.
+
 ## installation
 
 This library is header-only.
