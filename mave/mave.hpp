@@ -24,11 +24,18 @@
 #include "fma/fma.hpp"
 #endif //__FMA__
 
+#ifdef MAVE_USE_APPROXIMATION
+#define MAVE_APPROXIMATION_USED "on"
+#else
+#define MAVE_APPROXIMATION_USED "off"
+#endif
+
 namespace mave
 {
 inline constexpr const char* supported_instructions()
 {
-    return   "vector<double,    3>: " MAVE_VECTOR3_DOUBLE_IMPLEMENTATION
+    return   "approximation       : " MAVE_APPROXIMATION_USED
+           "\nvector<double,    3>: " MAVE_VECTOR3_DOUBLE_IMPLEMENTATION
            "\nvector<float,     3>: " MAVE_VECTOR3_FLOAT_IMPLEMENTATION
            "\nmatrix<double, 3, 3>: " MAVE_MATRIX_3X3_DOUBLE_IMPLEMENTATION
            "\nmatrix<float,  3, 3>: " MAVE_MATRIX_3X3_FLOAT_IMPLEMENTATION;
