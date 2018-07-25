@@ -84,6 +84,8 @@ struct matrix
     reference       operator()(size_type i, size_type j)       noexcept {return vs_[i*C+j];}
     const_reference operator()(size_type i, size_type j) const noexcept {return vs_[i*C+j];}
 
+    bool diagnosis() const noexcept {return true;}
+
   private:
     storage_type vs_;
 };
