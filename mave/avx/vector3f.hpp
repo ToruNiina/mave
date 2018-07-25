@@ -130,7 +130,7 @@ struct alignas(16) matrix<float, 3, 1>
     reference       operator()(size_type i, size_type)       noexcept {return vs_[i];}
     const_reference operator()(size_type i, size_type) const noexcept {return vs_[i];}
 
-    bool diagnosis() const noexcept {return vs_[3] == 0.0;}
+    bool diagnosis() const noexcept {return vs_[3] == 0.0f;}
 
   private:
     alignas(16) storage_type vs_;
