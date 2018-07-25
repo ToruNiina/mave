@@ -5,8 +5,12 @@
 #include "allocator.hpp"
 
 #if defined(__AVX2__)
+#  if defined(MAVE_USE_APPROXIMATION)
+#    include "avx2/vector3f_approx.hpp"
+#  else
+#    include "avx2/vector3f.hpp"
+#  endif
 #  include "avx2/vector3d.hpp"
-#  include "avx2/vector3f.hpp"
 #  include "avx2/matrix3x3d.hpp"
 #  include "avx2/matrix3x3f.hpp"
 #  include "avx2/vector_matrix_mul.hpp"
