@@ -30,6 +30,9 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(addition, T, test_targets)
             BOOST_TEST(v3[j] == v1[j] + v2[j],
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }
 
@@ -51,5 +54,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(add_assignment, T, test_targets)
             BOOST_TEST(v3[j] == v1[j] + v2[j],
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }

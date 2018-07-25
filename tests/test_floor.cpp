@@ -28,6 +28,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(floor_1arg, T, test_targets)
             BOOST_TEST(v2[j] == std::floor(v1[j]),
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
     }
 }
 
@@ -49,6 +51,10 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(floor_2arg, T, test_targets)
             BOOST_TEST(std::get<1>(vs)[j] == std::floor(v2[j]),
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(std::get<0>(vs).diagnosis());
+        BOOST_TEST(std::get<1>(vs).diagnosis());
     }
 }
 
@@ -73,6 +79,13 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(floor_3arg, T, test_targets)
             BOOST_TEST(std::get<2>(vs)[j] == std::floor(v3[j]),
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
+
+        BOOST_TEST(std::get<0>(vs).diagnosis());
+        BOOST_TEST(std::get<1>(vs).diagnosis());
+        BOOST_TEST(std::get<2>(vs).diagnosis());
     }
 }
 
@@ -100,5 +113,15 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(floor_4arg, T, test_targets)
             BOOST_TEST(std::get<3>(vs)[j] == std::floor(v4[j]),
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
+        BOOST_TEST(v4.diagnosis());
+
+        BOOST_TEST(std::get<0>(vs).diagnosis());
+        BOOST_TEST(std::get<1>(vs).diagnosis());
+        BOOST_TEST(std::get<2>(vs).diagnosis());
+        BOOST_TEST(std::get<3>(vs).diagnosis());
+
     }
 }

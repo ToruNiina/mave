@@ -16,47 +16,52 @@ constexpr std::size_t N = 12000;
 BOOST_AUTO_TEST_CASE_TEMPLATE(multiply, T, test_targets)
 {
     std::mt19937 mt(123456789);
-    const auto vectors1 = mave::test::generate_random<typename T::value_type>(N, mt);
-    const auto vectors2 = mave::test::generate_random<T>(N, mt);
+    const auto scalars = mave::test::generate_random<typename T::value_type>(N, mt);
+    const auto vectors = mave::test::generate_random<T>(N, mt);
 
     for(std::size_t i=0; i<N; ++i)
     {
-        const auto& v1 = vectors1.at(i);
-        const auto& v2 = vectors2.at(i);
+        const auto& s  = scalars.at(i);
+        const auto& v1 = vectors.at(i);
 
-        const auto v3 = v1 * v2;
-        for(std::size_t j=0; j<v3.size(); ++j)
+        const auto v2 = s * v1;
+        for(std::size_t j=0; j<v1.size(); ++j)
         {
-            BOOST_TEST(v3[j] == v1 * v2[j],
+            BOOST_TEST(v2[j] == s * v1[j],
                        mave::test::tolerance<typename T::value_type>());
         }
 
-        const auto v4 = v2 * v1;
-        for(std::size_t j=0; j<v3.size(); ++j)
+        const auto v3 = v1 * s;
+        for(std::size_t j=0; j<v1.size(); ++j)
         {
-            BOOST_TEST(v4[j] == v2[j] * v1,
+            BOOST_TEST(v3[j] == v1[j] * s,
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(mul, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(multiply_assign, T, test_targets)
 {
     std::mt19937 mt(123456789);
-    const auto vectors1 = mave::test::generate_random<typename T::value_type>(N, mt);
-    const auto vectors2 = mave::test::generate_random<T>(N, mt);
+    const auto scalars = mave::test::generate_random<typename T::value_type>(N, mt);
+    const auto vectors = mave::test::generate_random<T>(N, mt);
 
     for(std::size_t i=0; i<N; ++i)
     {
-        const auto& v1 = vectors1.at(i);
-        const auto& v2 = vectors2.at(i);
+        const auto& s  = scalars.at(i);
+        const auto& v1 = vectors.at(i);
 
-        auto v3 = v2;
-        v3 *= v1;
-        for(std::size_t j=0; j<v3.size(); ++j)
+        auto v2 = v1;
+        v2 *= s;
+        for(std::size_t j=0; j<v1.size(); ++j)
         {
-            BOOST_TEST(v3[j] == v1 * v2[j],
+            BOOST_TEST(v2[j] == v1[j] * s,
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
     }
 }

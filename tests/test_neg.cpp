@@ -27,5 +27,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(negation, T, test_targets)
             BOOST_TEST(v2[j] == -v1[j],
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
     }
 }

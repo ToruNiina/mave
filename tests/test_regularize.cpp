@@ -45,6 +45,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_1arg, T, test_targets)
                    mave::test::tolerance<real>());
         BOOST_TEST(std::get<0>(val)[2] * std::get<1>(val) == v[2],
                    mave::test::tolerance<real>());
+
+        BOOST_TEST(v.diagnosis());
     }
 }
 
@@ -88,6 +90,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_2arg, T, test_targets)
         BOOST_TEST(std::get<0>(val2)[2] * std::get<1>(val2) == v2[2],
                    mave::test::tolerance<real>());
 
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
     }
 }
 
@@ -143,6 +147,9 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_3arg, T, test_targets)
                    mave::test::tolerance<real>());
         BOOST_TEST(std::get<0>(val3)[2] * std::get<1>(val3) == v3[2],
                    mave::test::tolerance<real>());
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }
 
@@ -211,5 +218,10 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_4arg, T, test_targets)
                    mave::test::tolerance<real>());
         BOOST_TEST(std::get<0>(val4)[2] * std::get<1>(val4) == v4[2],
                    mave::test::tolerance<real>());
+
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
+        BOOST_TEST(v4.diagnosis());
     }
 }

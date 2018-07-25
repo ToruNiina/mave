@@ -30,5 +30,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(max, T, test_targets)
             BOOST_TEST(v3[j] == std::max(v1[j], v2[j]),
                        mave::test::tolerance<typename T::value_type>());
         }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }

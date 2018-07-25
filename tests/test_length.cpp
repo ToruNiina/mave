@@ -35,6 +35,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_1arg, T, test_targets)
         const auto ref = length_ref(v);
         const auto val = mave::length(v);
         BOOST_TEST(ref == val, mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(v.diagnosis());
     }
 }
 
@@ -56,6 +57,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_2arg, T, test_targets)
                    mave::test::tolerance<typename T::value_type>());
         BOOST_TEST(ref2 == std::get<1>(val),
                    mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
     }
 }
 
@@ -81,6 +84,9 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_3arg, T, test_targets)
                    mave::test::tolerance<typename T::value_type>());
         BOOST_TEST(ref3 == std::get<2>(val),
                    mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }
 
@@ -110,5 +116,9 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(length_4arg, T, test_targets)
                    mave::test::tolerance<typename T::value_type>());
         BOOST_TEST(ref4 == std::get<3>(val),
                    mave::test::tolerance<typename T::value_type>());
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
+        BOOST_TEST(v4.diagnosis());
     }
 }

@@ -7,7 +7,8 @@
 #include <tests/tolerance.hpp>
 
 typedef boost::mpl::list<
-    mave::vector<double, 3>, mave::vector<float, 3>
+    mave::vector<double, 3>,    mave::vector<float, 3>,
+    mave::matrix<double, 3, 3>, mave::matrix<float, 3, 3>
     > test_targets;
 
 constexpr std::size_t N = 12000;
@@ -26,9 +27,14 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(fmadd, T, test_targets)
         const auto& v2 = vectors2.at(i);
         const auto  v3 = mave::fmadd(s, v1, v2);
 
-        BOOST_TEST(v3[0] == std::fma(s, v1[0], v2[0]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[1] == std::fma(s, v1[1], v2[1]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[2] == std::fma(s, v1[2], v2[2]), mave::test::tolerance<typename T::value_type>());
+        for(std::size_t j=0; j<v3.size(); ++j)
+        {
+            BOOST_TEST(v3[j] == std::fma(s, v1[j], v2[j]),
+                       mave::test::tolerance<typename T::value_type>());
+        }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }
 
@@ -46,9 +52,14 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(fmsub, T, test_targets)
         const auto& v2 = vectors2.at(i);
         const auto  v3 = mave::fmsub(s, v1, v2);
 
-        BOOST_TEST(v3[0] == std::fma(s, v1[0], -v2[0]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[1] == std::fma(s, v1[1], -v2[1]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[2] == std::fma(s, v1[2], -v2[2]), mave::test::tolerance<typename T::value_type>());
+        for(std::size_t j=0; j<v3.size(); ++j)
+        {
+            BOOST_TEST(v3[j] == std::fma(s, v1[j], -v2[j]),
+                       mave::test::tolerance<typename T::value_type>());
+        }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }
 
@@ -66,9 +77,14 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(fnmadd, T, test_targets)
         const auto& v2 = vectors2.at(i);
         const auto  v3 = mave::fnmadd(s, v1, v2);
 
-        BOOST_TEST(v3[0] == std::fma(-s, v1[0], v2[0]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[1] == std::fma(-s, v1[1], v2[1]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[2] == std::fma(-s, v1[2], v2[2]), mave::test::tolerance<typename T::value_type>());
+        for(std::size_t j=0; j<v3.size(); ++j)
+        {
+            BOOST_TEST(v3[j] == std::fma(-s, v1[j], v2[j]),
+                       mave::test::tolerance<typename T::value_type>());
+        }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }
 
@@ -86,8 +102,13 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(fnmsub, T, test_targets)
         const auto& v2 = vectors2.at(i);
         const auto  v3 = mave::fnmsub(s, v1, v2);
 
-        BOOST_TEST(v3[0] == std::fma(-s, v1[0], -v2[0]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[1] == std::fma(-s, v1[1], -v2[1]), mave::test::tolerance<typename T::value_type>());
-        BOOST_TEST(v3[2] == std::fma(-s, v1[2], -v2[2]), mave::test::tolerance<typename T::value_type>());
+        for(std::size_t j=0; j<v3.size(); ++j)
+        {
+            BOOST_TEST(v3[j] == std::fma(-s, v1[j], -v2[j]),
+                       mave::test::tolerance<typename T::value_type>());
+        }
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
+        BOOST_TEST(v3.diagnosis());
     }
 }
