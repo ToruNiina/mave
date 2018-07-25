@@ -134,6 +134,8 @@ struct alignas(32) matrix<double, 3, 1>
     reference       operator()(size_type i, size_type)       noexcept {return vs_[i];}
     const_reference operator()(size_type i, size_type) const noexcept {return vs_[i];}
 
+    bool diagnosis() const noexcept {return vs_[3] == 0.0;}
+
   private:
     alignas(32) storage_type vs_;
 };
