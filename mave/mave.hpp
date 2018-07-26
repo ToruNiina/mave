@@ -17,10 +17,18 @@
 #elif defined(__AVX__)
 #  include "avx/vector3d.hpp"
 #  include "avx/vector3f.hpp"
-#else
+#endif
+
+#ifndef   MAVE_VECTOR3_DOUBLE_IMPLEMENTATION
 #  define MAVE_VECTOR3_DOUBLE_IMPLEMENTATION    "none"
+#endif
+#ifndef   MAVE_VECTOR3_FLOAT_IMPLEMENTATION
 #  define MAVE_VECTOR3_FLOAT_IMPLEMENTATION     "none"
+#endif
+#ifndef   MAVE_MATRIX_3X3_DOUBLE_IMPLEMENTATION
 #  define MAVE_MATRIX_3X3_DOUBLE_IMPLEMENTATION "none"
+#endif
+#ifndef   MAVE_MATRIX_3X3_FLOAT_IMPLEMENTATION
 #  define MAVE_MATRIX_3X3_FLOAT_IMPLEMENTATION  "none"
 #endif //__AVX__
 
