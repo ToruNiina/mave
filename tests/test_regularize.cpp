@@ -39,11 +39,11 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_1arg, T, test_targets)
         BOOST_TEST(ref == std::get<1>(val), mave::test::tolerance<real>());
         BOOST_TEST(length_ref(std::get<0>(val)) == real(1.0),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val)[0] * std::get<1>(val) == v[0],
+        BOOST_TEST(std::get<0>(val)[0] == v[0] / std::get<1>(val),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val)[1] * std::get<1>(val) == v[1],
+        BOOST_TEST(std::get<0>(val)[1] == v[1] / std::get<1>(val),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val)[2] * std::get<1>(val) == v[2],
+        BOOST_TEST(std::get<0>(val)[2] == v[2] / std::get<1>(val),
                    mave::test::tolerance<real>());
 
         BOOST_TEST(v.diagnosis());
@@ -76,19 +76,19 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_2arg, T, test_targets)
         BOOST_TEST(length_ref(std::get<0>(val2)) == real(1.0),
                    mave::test::tolerance<real>());
 
-        BOOST_TEST(std::get<0>(val1)[0] * std::get<1>(val1) == v1[0],
+        BOOST_TEST(std::get<0>(val1)[0] == v1[0] / std::get<1>(val1),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val1)[1] * std::get<1>(val1) == v1[1],
+        BOOST_TEST(std::get<0>(val1)[1] == v1[1] / std::get<1>(val1),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val1)[2] * std::get<1>(val1) == v1[2],
+        BOOST_TEST(std::get<0>(val1)[2] == v1[2] / std::get<1>(val1),
+                   mave::test::tolerance<real>());
+        BOOST_TEST(std::get<0>(val2)[0] == v2[0] / std::get<1>(val2),
+                   mave::test::tolerance<real>());
+        BOOST_TEST(std::get<0>(val2)[1] == v2[1] / std::get<1>(val2),
+                   mave::test::tolerance<real>());
+        BOOST_TEST(std::get<0>(val2)[2] == v2[2] / std::get<1>(val2),
                    mave::test::tolerance<real>());
 
-        BOOST_TEST(std::get<0>(val2)[0] * std::get<1>(val2) == v2[0],
-                   mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val2)[1] * std::get<1>(val2) == v2[1],
-                   mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val2)[2] * std::get<1>(val2) == v2[2],
-                   mave::test::tolerance<real>());
 
         BOOST_TEST(v1.diagnosis());
         BOOST_TEST(v2.diagnosis());
@@ -127,26 +127,25 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_3arg, T, test_targets)
         BOOST_TEST(length_ref(std::get<0>(val3)) == real(1.0),
                    mave::test::tolerance<real>());
 
-        BOOST_TEST(std::get<0>(val1)[0] * std::get<1>(val1) == v1[0],
+        BOOST_TEST(std::get<0>(val1)[0] == v1[0] / std::get<1>(val1),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val1)[1] * std::get<1>(val1) == v1[1],
+        BOOST_TEST(std::get<0>(val1)[1] == v1[1] / std::get<1>(val1),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val1)[2] * std::get<1>(val1) == v1[2],
+        BOOST_TEST(std::get<0>(val1)[2] == v1[2] / std::get<1>(val1),
+                   mave::test::tolerance<real>());
+        BOOST_TEST(std::get<0>(val2)[0] == v2[0] / std::get<1>(val2),
+                   mave::test::tolerance<real>());
+        BOOST_TEST(std::get<0>(val2)[1] == v2[1] / std::get<1>(val2),
+                   mave::test::tolerance<real>());
+        BOOST_TEST(std::get<0>(val2)[2] == v2[2] / std::get<1>(val2),
+                   mave::test::tolerance<real>());
+        BOOST_TEST(std::get<0>(val3)[0] == v3[0] / std::get<1>(val3),
+                   mave::test::tolerance<real>());
+        BOOST_TEST(std::get<0>(val3)[1] == v3[1] / std::get<1>(val3),
+                   mave::test::tolerance<real>());
+        BOOST_TEST(std::get<0>(val3)[2] == v3[2] / std::get<1>(val3),
                    mave::test::tolerance<real>());
 
-        BOOST_TEST(std::get<0>(val2)[0] * std::get<1>(val2) == v2[0],
-                   mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val2)[1] * std::get<1>(val2) == v2[1],
-                   mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val2)[2] * std::get<1>(val2) == v2[2],
-                   mave::test::tolerance<real>());
-
-        BOOST_TEST(std::get<0>(val3)[0] * std::get<1>(val3) == v3[0],
-                   mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val3)[1] * std::get<1>(val3) == v3[1],
-                   mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val3)[2] * std::get<1>(val3) == v3[2],
-                   mave::test::tolerance<real>());
         BOOST_TEST(v1.diagnosis());
         BOOST_TEST(v2.diagnosis());
         BOOST_TEST(v3.diagnosis());
@@ -191,32 +190,29 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(regularize_4arg, T, test_targets)
         BOOST_TEST(length_ref(std::get<0>(val4)) == real(1.0),
                    mave::test::tolerance<real>());
 
-        BOOST_TEST(std::get<0>(val1)[0] * std::get<1>(val1) == v1[0],
+        BOOST_TEST(std::get<0>(val1)[0] == v1[0] / std::get<1>(val1),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val1)[1] * std::get<1>(val1) == v1[1],
+        BOOST_TEST(std::get<0>(val1)[1] == v1[1] / std::get<1>(val1),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val1)[2] * std::get<1>(val1) == v1[2],
+        BOOST_TEST(std::get<0>(val1)[2] == v1[2] / std::get<1>(val1),
                    mave::test::tolerance<real>());
-
-        BOOST_TEST(std::get<0>(val2)[0] * std::get<1>(val2) == v2[0],
+        BOOST_TEST(std::get<0>(val2)[0] == v2[0] / std::get<1>(val2),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val2)[1] * std::get<1>(val2) == v2[1],
+        BOOST_TEST(std::get<0>(val2)[1] == v2[1] / std::get<1>(val2),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val2)[2] * std::get<1>(val2) == v2[2],
+        BOOST_TEST(std::get<0>(val2)[2] == v2[2] / std::get<1>(val2),
                    mave::test::tolerance<real>());
-
-        BOOST_TEST(std::get<0>(val3)[0] * std::get<1>(val3) == v3[0],
+        BOOST_TEST(std::get<0>(val3)[0] == v3[0] / std::get<1>(val3),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val3)[1] * std::get<1>(val3) == v3[1],
+        BOOST_TEST(std::get<0>(val3)[1] == v3[1] / std::get<1>(val3),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val3)[2] * std::get<1>(val3) == v3[2],
+        BOOST_TEST(std::get<0>(val3)[2] == v3[2] / std::get<1>(val3),
                    mave::test::tolerance<real>());
-
-        BOOST_TEST(std::get<0>(val4)[0] * std::get<1>(val4) == v4[0],
+        BOOST_TEST(std::get<0>(val4)[0] == v4[0] / std::get<1>(val4),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val4)[1] * std::get<1>(val4) == v4[1],
+        BOOST_TEST(std::get<0>(val4)[1] == v4[1] / std::get<1>(val4),
                    mave::test::tolerance<real>());
-        BOOST_TEST(std::get<0>(val4)[2] * std::get<1>(val4) == v4[2],
+        BOOST_TEST(std::get<0>(val4)[2] == v4[2] / std::get<1>(val4),
                    mave::test::tolerance<real>());
 
         BOOST_TEST(v1.diagnosis());
