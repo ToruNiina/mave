@@ -21,6 +21,8 @@ struct matrix
     static constexpr std::size_t total_size  = R * C;
     using value_type      = T;
     using storage_type    = std::array<T, total_size>;
+    using pointer         = value_type*;
+    using const_pointer   = value_type const*;
     using reference       = value_type&;
     using const_reference = value_type const&;
     using size_type       = std::size_t;
@@ -73,6 +75,9 @@ struct matrix
     }
 
     size_type size() const noexcept {return total_size;}
+
+    pointer       data()       noexcept {return vs_.data();}
+    const_pointer data() const noexcept {return vs_.data();}
 
     reference               at(size_type i)       {return vs_.at(i);}
     const_reference         at(size_type i) const {return vs_.at(i);}
