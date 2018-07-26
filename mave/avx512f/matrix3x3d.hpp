@@ -178,8 +178,8 @@ inline matrix<double, 3, 3> operator*(
     matrix<double, 3, 3> retval;
     typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
     typename matrix<double, 3, 3>::const_pointer ptr_1 = m1.data();
-    _mm512_store_pd(ptr_r,   _mm512_mul_pd(_mm512_load_pd(ptr_1  ), _mm512_set1_pd(s1)));
-    _mm256_store_pd(ptr_r+8, _mm256_mul_pd(_mm256_load_pd(ptr_1+8), _mm256_set1_pd(s1)));
+    _mm512_store_pd(ptr_r,   _mm512_mul_pd(_mm512_load_pd(ptr_1  ), _mm512_set1_pd(s2)));
+    _mm256_store_pd(ptr_r+8, _mm256_mul_pd(_mm256_load_pd(ptr_1+8), _mm256_set1_pd(s2)));
     return retval;
 }
 template<>
@@ -189,8 +189,8 @@ inline matrix<double, 3, 3> operator/(
     matrix<double, 3, 3> retval;
     typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
     typename matrix<double, 3, 3>::const_pointer ptr_1 = m1.data();
-    _mm512_store_pd(ptr_r,   _mm512_div_pd(_mm512_load_pd(ptr_1  ), _mm512_set1_pd(s1)));
-    _mm256_store_pd(ptr_r+8, _mm256_div_pd(_mm256_load_pd(ptr_1+8), _mm256_set1_pd(s1)));
+    _mm512_store_pd(ptr_r,   _mm512_div_pd(_mm512_load_pd(ptr_1  ), _mm512_set1_pd(s2)));
+    _mm256_store_pd(ptr_r+8, _mm256_div_pd(_mm256_load_pd(ptr_1+8), _mm256_set1_pd(s2)));
     return retval;
 }
 
