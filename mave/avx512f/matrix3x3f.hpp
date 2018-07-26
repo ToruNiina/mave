@@ -13,7 +13,7 @@
 #error "specialization of vector for 3x3 float is already defined"
 #endif
 
-#define MAVE_MATRIX_3X3_FLOAT_IMPLEMENTATION "avx2"
+#define MAVE_MATRIX_3X3_FLOAT_IMPLEMENTATION "avx512f"
 
 #include <x86intrin.h> // for *nix
 #include <type_traits>
