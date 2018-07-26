@@ -8,7 +8,7 @@
 #ifdef MAVE_VECTOR3_FLOAT_IMPLEMENTATION
 #error "specialization of vector for 3x float is already defined"
 #endif
-#define MAVE_VECTOR3_FLOAT_IMPLEMENTATION "avx2"
+#define MAVE_VECTOR3_FLOAT_IMPLEMENTATION "avx2-approx"
 
 #include <x86intrin.h>
 #include <type_traits>
@@ -170,7 +170,7 @@ inline matrix<float, 3, 1> operator/(
     const matrix<float, 3, 1>& lhs, const float rhs) noexcept
 {
     return _mm_mul_ps(_mm_load_ps(lhs.data()), _mm_set1_ps(
-                _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ss(other)))));
+                _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ss(rhs)))));
 }
 
 // ---------------------------------------------------------------------------
@@ -564,7 +564,7 @@ regularize(const matrix<float, 3, 1>& v) noexcept
     //  |  |
     // |as|as|as|as|
     return std::make_pair(matrix<float, 3, 1>(_mm_mul_ps(arg, rlen)),
-                          lsq * _mm_cvtss_f32(rlen));
+                          _mm_cvtss_f32(lsq) * _mm_cvtss_f32(rlen));
 }
 template<>
 inline std::pair<std::pair<matrix<float, 3, 1>, float>,
