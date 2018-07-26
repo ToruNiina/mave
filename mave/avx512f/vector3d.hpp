@@ -584,9 +584,9 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const __m256d rv3 = _mm256_mul_pd(arg3, _mm256_set1_pd(pack[2]));
 
     _mm256_store_pd(pack, len);
-    return std::make_tuple(std::make_pair(rv1, pack[0]),
-                           std::make_pair(rv2, pack[1]),
-                           std::make_pair(rv3, pack[2]));
+    return std::make_tuple(std::make_pair(matrix<double, 3, 1>(rv1), pack[0]),
+                           std::make_pair(matrix<double, 3, 1>(rv2), pack[1]),
+                           std::make_pair(matrix<double, 3, 1>(rv3), pack[2]));
 }
 template<>
 inline std::tuple<std::pair<matrix<double, 3, 1>, double>,
@@ -634,10 +634,10 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const __m256d rv4 = _mm256_mul_pd(arg4, _mm256_set1_pd(pack[3]));
 
     _mm256_store_pd(pack, len);
-    return std::make_tuple(std::make_pair(rv1, pack[0]),
-                           std::make_pair(rv2, pack[1]),
-                           std::make_pair(rv3, pack[2]),
-                           std::make_pair(rv4, pack[3]));
+    return std::make_tuple(std::make_pair(matrix<double, 3, 1>(rv1), pack[0]),
+                           std::make_pair(matrix<double, 3, 1>(rv2), pack[1]),
+                           std::make_pair(matrix<double, 3, 1>(rv3), pack[2]),
+                           std::make_pair(matrix<double, 3, 1>(rv4), pack[3]));
 }
 
 // ---------------------------------------------------------------------------

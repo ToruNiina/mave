@@ -602,9 +602,9 @@ regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
 
     _mm_store_ps(pack, len);
     return std::make_tuple(
-            std::make_pair(_mm512_extractf32x4_ps(rvs, 0), pack[0]),
-            std::make_pair(_mm512_extractf32x4_ps(rvs, 1), pack[1]),
-            std::make_pair(_mm512_extractf32x4_ps(rvs, 2), pack[2])
+            std::make_pair(matrix<float, 3, 1>(_mm512_extractf32x4_ps(rvs, 0)), pack[0]),
+            std::make_pair(matrix<float, 3, 1>(_mm512_extractf32x4_ps(rvs, 1)), pack[1]),
+            std::make_pair(matrix<float, 3, 1>(_mm512_extractf32x4_ps(rvs, 2)), pack[2])
             );
 }
 template<>
@@ -653,10 +653,10 @@ regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
 
     _mm_store_ps(pack, len);
     return std::make_tuple(
-            std::make_pair(_mm512_extractf32x4_ps(rvs, 0), pack[0]),
-            std::make_pair(_mm512_extractf32x4_ps(rvs, 1), pack[1]),
-            std::make_pair(_mm512_extractf32x4_ps(rvs, 2), pack[2]),
-            std::make_pair(_mm512_extractf32x4_ps(rvs, 3), pack[3])
+            std::make_pair(matrix<float, 3, 1>(_mm512_extractf32x4_ps(rvs, 0)), pack[0]),
+            std::make_pair(matrix<float, 3, 1>(_mm512_extractf32x4_ps(rvs, 1)), pack[1]),
+            std::make_pair(matrix<float, 3, 1>(_mm512_extractf32x4_ps(rvs, 2)), pack[2]),
+            std::make_pair(matrix<float, 3, 1>(_mm512_extractf32x4_ps(rvs, 3)), pack[3])
             );
 }
 
