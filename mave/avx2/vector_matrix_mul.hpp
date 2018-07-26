@@ -2,13 +2,12 @@
 #define MAVE_AVX2_VECTOR_MATRIX_MUL_HPP
 
 #ifndef __AVX2__
-#error "mave/avx2/matrix3x3d.hpp requires avx support but __AVX2__ is not defined."
+#error "mave/avx2/vector_matrix_mul.hpp requires avx2 support but __AVX2__ is not defined."
 #endif
 
-#include "matrix3x3d.hpp"
-#include "matrix3x3f.hpp"
-#include "vector3d.hpp"
-#include "vector3f.hpp"
+#ifndef MAVE_MAVE_HPP
+#error "do not use mave/avx2/matrix3x3d.hpp alone. include mave/mave.hpp."
+#endif
 
 namespace mave
 {
