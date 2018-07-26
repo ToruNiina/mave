@@ -174,7 +174,7 @@ template<>
 inline matrix<double, 3, 1> operator/(
     const matrix<double, 3, 1>& v1, const double v2) noexcept
 {
-    return _mm256_div_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(
+    return _mm256_mul_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(
         _mm_cvtsd_f64(_mm_rcp14_sd(_mm_undefined_pd(), _mm_set_sd(v2)))));
 }
 
