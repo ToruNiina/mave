@@ -12,6 +12,8 @@
 #    include "avx512f/vector3f.hpp"
 #    include "avx512f/vector3d.hpp"
 #  endif
+#  include "avx512f/matrix3x3f.hpp"
+#  include "avx512f/matrix3x3d.hpp"
 #elif defined(__AVX2__)
 #  if defined(MAVE_USE_APPROXIMATION)
 #    include "avx2/vector3f_approx.hpp"
