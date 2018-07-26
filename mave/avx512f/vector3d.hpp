@@ -265,8 +265,8 @@ inline std::tuple<double, double, double, double> length_sq(
     const __m512d arg12 = _mm512_insertf64x4(_mm512_castpd256_pd512(arg1), arg2, 1);
     const __m512d arg34 = _mm512_insertf64x4(_mm512_castpd256_pd512(arg3), arg4, 1);
 
-    const __m256d mul12 = _mm512_mul_pd(arg12, arg12);
-    const __m256d mul34 = _mm512_mul_pd(arg34, arg34);
+    const __m512d mul12 = _mm512_mul_pd(arg12, arg12);
+    const __m512d mul34 = _mm512_mul_pd(arg34, arg34);
 
     // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|d1|d2|d3|00|
     //   0  1  2  3  4  5  6  7    8  9  A  B  C  D  E  F
@@ -371,8 +371,8 @@ inline std::tuple<double, double, double, double> length(
     const __m512d arg12 = _mm512_insertf64x4(_mm512_castpd256_pd512(arg1), arg2, 1);
     const __m512d arg34 = _mm512_insertf64x4(_mm512_castpd256_pd512(arg3), arg4, 1);
 
-    const __m256d mul12 = _mm512_mul_pd(arg12, arg12);
-    const __m256d mul34 = _mm512_mul_pd(arg34, arg34);
+    const __m512d mul12 = _mm512_mul_pd(arg12, arg12);
+    const __m512d mul34 = _mm512_mul_pd(arg34, arg34);
 
     // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|d1|d2|d3|00|
     //   0  1  2  3  4  5  6  7    8  9  A  B  C  D  E  F
@@ -475,8 +475,8 @@ rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const __m512d arg12 = _mm512_insertf64x4(_mm512_castpd256_pd512(arg1), arg2, 1);
     const __m512d arg34 = _mm512_insertf64x4(_mm512_castpd256_pd512(arg3), arg4, 1);
 
-    const __m256d mul12 = _mm512_mul_pd(arg12, arg12);
-    const __m256d mul34 = _mm512_mul_pd(arg34, arg34);
+    const __m512d mul12 = _mm512_mul_pd(arg12, arg12);
+    const __m512d mul34 = _mm512_mul_pd(arg34, arg34);
 
     // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|d1|d2|d3|00|
     //   0  1  2  3  4  5  6  7    8  9  A  B  C  D  E  F
@@ -606,8 +606,8 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
     const __m512d arg12 = _mm512_insertf64x4(_mm512_castpd256_pd512(arg1), arg2, 1);
     const __m512d arg34 = _mm512_insertf64x4(_mm512_castpd256_pd512(arg3), arg4, 1);
 
-    const __m256d mul12 = _mm512_mul_pd(arg12, arg12);
-    const __m256d mul34 = _mm512_mul_pd(arg34, arg34);
+    const __m512d mul12 = _mm512_mul_pd(arg12, arg12);
+    const __m512d mul34 = _mm512_mul_pd(arg34, arg34);
 
     // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|d1|d2|d3|00|
     //   0  1  2  3  4  5  6  7    8  9  A  B  C  D  E  F
