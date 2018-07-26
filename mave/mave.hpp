@@ -4,7 +4,15 @@
 #include "vector.hpp"
 #include "allocator.hpp"
 
-#if defined(__AVX2__)
+#if defined(__AVX512F__)
+#  if defined(MAVE_USE_APPROXIMATION)
+#    include "avx512f/vector3f_approx.hpp"
+#    include "avx512f/vector3d_approx.hpp"
+#  else
+#    include "avx512f/vector3f.hpp"
+#    include "avx512f/vector3d.hpp"
+#  endif
+#elif defined(__AVX2__)
 #  if defined(MAVE_USE_APPROXIMATION)
 #    include "avx2/vector3f_approx.hpp"
 #  else
