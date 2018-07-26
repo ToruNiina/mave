@@ -12,6 +12,7 @@ else()
         WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/extlib"
         RESULT_VARIABLE DOWNLOAD_BOOST_RESULT OUTPUT_QUIET ERROR_QUIET)
     if(NOT ${DOWNLOAD_BOOST_RESULT} EQUAL "0")
+        file(REMOVE ${PROJECT_SOURCE_DIR}/extlib/boost_1_67_0.tar.bz2)
         message(FATAL_ERROR "failed to download Boost 1.67.0. please confirm network connections.")
     endif()
 
@@ -28,6 +29,7 @@ else()
     endif()
 
     if(NOT ${DOWNLOADED_SHA256SUM_RESULT} EQUAL "0")
+        file(REMOVE ${PROJECT_SOURCE_DIR}/extlib/boost_1_67_0.tar.bz2)
         message(FATAL_ERROR "boost_1_67_0.tar.bz2 has invalid sha256sum!")
     endif()
 
