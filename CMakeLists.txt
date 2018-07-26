@@ -41,4 +41,9 @@ else()
 endif()
 include_directories(${PROJECT_SOURCE_DIR}/extlib/boost_1_67_0)
 
+OPTION(MAVE_USE_APPROX "use approximation functions" OFF)
+if(MAVE_USE_APPROX)
+    add_definitions(-DMAVE_USE_APPROXIMATION)
+endif(MAVE_USE_APPROX)
+
 add_subdirectory(tests)
