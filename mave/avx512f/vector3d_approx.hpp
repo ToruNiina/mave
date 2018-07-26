@@ -114,8 +114,9 @@ struct alignas(32) matrix<double, 3, 1>
     matrix& operator/=(const double other) noexcept
     {
         const __m256d v1 = _mm256_load_pd(this->data());
-        const __m256d v2 = _mm256_set1_pd(other);
-        _mm256_store_pd(this->data(), _mm256_div_pd(v1, v2));
+        const __m256d v2 = _mm256_set1_pd(_mm_cvtsd_f64(
+                    _mm_rcp14_sd(_mm_undefined_pd(), _mm_set_sd(other))));
+        _mm256_store_pd(this->data(), _mm256_mul_pd(v1, v2));
         return *this;
     }
 
@@ -173,7 +174,8 @@ template<>
 inline matrix<double, 3, 1> operator/(
     const matrix<double, 3, 1>& v1, const double v2) noexcept
 {
-    return _mm256_div_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(v2));
+    return _mm256_div_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(
+        _mm_cvtsd_f64(_mm_rcp14_sd(_mm_undefined_pd(), _mm_set_sd(v2)))));
 }
 
 // ---------------------------------------------------------------------------
