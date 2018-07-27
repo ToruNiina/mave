@@ -1,5 +1,7 @@
 # synopsis
 
+all the types and functions are defined in `namespace mave`.
+
 ## matrix
 
 ```cpp
@@ -325,6 +327,75 @@ cross_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept;
 template<typename T>
 T scalar_triple_product(const vector<T, 3>& v1, const vector<T, 3>& v2,
                         const vector<T, 3>& v3) noexcept;
+```
+
+## allocator
+
+```cpp
+template<typename T, std::size_t Alignment = std::alignment_of<T>::value>
+class aligned_allocator
+{
+  public:
+    using value_type      = T;
+    using size_type       = std::size_t;
+    using difference_type = std::ptrdiff_t;
+    using pointer         = value_type*;
+    using const_pointer   = value_type const*;
+    using reference       = value_type&;
+    using const_reference = value_type const&;
+    using propagate_on_container_move_assignment = std::true_type;
+
+    template<typename U>
+    struct rebind
+    {
+        using other = aligned_allocator<U, std::alignment_of<U>::value>;
+    };
+
+    // alignment should be larger than some threshold depends on an architecture.
+    static constexpr std::size_t alignment = /* implementation defined */;
+
+  public:
+
+    aligned_allocator() noexcept = default;
+    aligned_allocator(const aligned_allocator&) noexcept = default;
+    aligned_allocator& operator=(const aligned_allocator&) noexcept = default;
+
+    template<typename U, std::size_t B>
+    aligned_allocator(const aligned_allocator<U, B>&) noexcept;
+    template<typename U, std::size_t B>
+    aligned_allocator& operator=(const aligned_allocator<U, B>&) noexcept;
+
+    pointer   allocate(std::size_t n);
+    void    deallocate(pointer p, std::size_t);
+
+    pointer       address(reference       x) const noexcept;
+    const_pointer address(const_reference x) const noexcept;
+
+    size_type max_size() const noexcept;
+
+    void construct(pointer p, const_reference val);
+    template <class U, class... Args>
+    void construct(U* p, Args&&... args);
+
+    void destroy(pointer p);
+    template <class U>
+    void destroy(U* p);
+
+};
+template<typename T, std::size_t A>
+constexpr std::size_t aligned_allocator<T, A>::alignment;
+
+template<typename T, std::size_t A>
+bool operator==(const aligned_allocator<T, A>&, const aligned_allocator<T, A>&);
+template<typename T, std::size_t A>
+bool operator!=(const aligned_allocator<T, A>&, const aligned_allocator<T, A>&);
+```
+
+allocation functions are also supported.
+
+```cpp
+void* aligned_alloc(std::size_t alignment, std::size_t size);
+void  aligned_free(void* ptr);
 ```
 
 ## math functions
