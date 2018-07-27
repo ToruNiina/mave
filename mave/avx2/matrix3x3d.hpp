@@ -132,6 +132,10 @@ struct alignas(32) matrix<double, 3, 3>
     alignas(32) storage_type vs_;
 };
 
+// ---------------------------------------------------------------------------
+// negation operator
+// ---------------------------------------------------------------------------
+
 template<>
 inline matrix<double, 3, 3> operator-(const matrix<double, 3, 3>& m) noexcept
 {
@@ -145,6 +149,33 @@ inline matrix<double, 3, 3> operator-(const matrix<double, 3, 3>& m) noexcept
     return retval;
 }
 template<>
+inline std::pair<matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator-(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> ms) noexcept
+{
+    return std::make_pair(-std::get<0>(ms), -std::get<1>(ms));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator-(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&> ms) noexcept
+{
+    return std::make_tuple(-std::get<0>(ms), -std::get<1>(ms), -std::get<2>(ms));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>,
+                  matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator-(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> ms) noexcept
+{
+    return std::make_tuple(-std::get<0>(ms), -std::get<1>(ms),
+                           -std::get<2>(ms), -std::get<3>(ms));
+}
+
+// ---------------------------------------------------------------------------
+// addition operator+
+// ---------------------------------------------------------------------------
+
+template<>
 inline matrix<double, 3, 3> operator+(
     const matrix<double, 3, 3>& m1, const matrix<double, 3, 3>& m2) noexcept
 {
@@ -157,6 +188,46 @@ inline matrix<double, 3, 3> operator+(
     _mm256_store_pd(ptr_r+8, _mm256_add_pd(_mm256_load_pd(ptr_1+8), _mm256_load_pd(ptr_2+8)));
     return retval;
 }
+
+template<>
+inline std::pair<matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator+(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> lhs,
+          std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> rhs
+          ) noexcept
+{
+    return std::make_pair(std::get<0>(lhs) + std::get<0>(rhs),
+                          std::get<1>(lhs) + std::get<1>(rhs));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator+(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&> lhs,
+          std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&> rhs) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) + std::get<0>(rhs),
+                           std::get<1>(lhs) + std::get<1>(rhs),
+                           std::get<2>(lhs) + std::get<2>(rhs));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>,
+                  matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator+(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> lhs,
+          std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> rhs
+          ) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) + std::get<0>(rhs),
+                           std::get<1>(lhs) + std::get<1>(rhs),
+                           std::get<2>(lhs) + std::get<2>(rhs),
+                           std::get<3>(lhs) + std::get<3>(rhs));
+}
+
+// ---------------------------------------------------------------------------
+// subtraction operator-
+// ---------------------------------------------------------------------------
+
 template<>
 inline matrix<double, 3, 3> operator-(
     const matrix<double, 3, 3>& m1, const matrix<double, 3, 3>& m2) noexcept
@@ -171,18 +242,44 @@ inline matrix<double, 3, 3> operator-(
     return retval;
 }
 template<>
-inline matrix<double, 3, 3> operator*(
-    const double s1, const matrix<double, 3, 3>& m2) noexcept
+inline std::pair<matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator-(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> lhs,
+          std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> rhs
+          ) noexcept
 {
-    const __m256d scalar = _mm256_set1_pd(s1);
-    matrix<double, 3, 3> retval;
-    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
-    typename matrix<double, 3, 3>::const_pointer ptr_2 = m2.data();
-    _mm256_store_pd(ptr_r,   _mm256_mul_pd(scalar, _mm256_load_pd(ptr_2  )));
-    _mm256_store_pd(ptr_r+4, _mm256_mul_pd(scalar, _mm256_load_pd(ptr_2+4)));
-    _mm256_store_pd(ptr_r+8, _mm256_mul_pd(scalar, _mm256_load_pd(ptr_2+8)));
-    return retval;
+    return std::make_pair(std::get<0>(lhs) - std::get<0>(rhs),
+                          std::get<1>(lhs) - std::get<1>(rhs));
 }
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator-(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&> lhs,
+          std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&> rhs) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) - std::get<0>(rhs),
+                           std::get<1>(lhs) - std::get<1>(rhs),
+                           std::get<2>(lhs) - std::get<2>(rhs));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>,
+                  matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator-(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> lhs,
+          std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> rhs
+          ) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) - std::get<0>(rhs),
+                           std::get<1>(lhs) - std::get<1>(rhs),
+                           std::get<2>(lhs) - std::get<2>(rhs),
+                           std::get<3>(lhs) - std::get<3>(rhs));
+}
+
+// ---------------------------------------------------------------------------
+// multiplication operator*
+// ---------------------------------------------------------------------------
+
 template<>
 inline matrix<double, 3, 3> operator*(
     const matrix<double, 3, 3>& m1, const double s2) noexcept
@@ -197,6 +294,89 @@ inline matrix<double, 3, 3> operator*(
     return retval;
 }
 template<>
+inline std::pair<matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator*(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> lhs,
+          std::tuple<double, double> rhs) noexcept
+{
+    return std::make_pair(std::get<0>(lhs) * std::get<0>(rhs),
+                          std::get<1>(lhs) * std::get<1>(rhs));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator*(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&> lhs,
+          std::tuple<double, double, double> rhs) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) * std::get<0>(rhs),
+                           std::get<1>(lhs) * std::get<1>(rhs),
+                           std::get<2>(lhs) * std::get<2>(rhs));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>,
+                  matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator*(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> lhs,
+          std::tuple<double, double, double, double> rhs) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) * std::get<0>(rhs),
+                           std::get<1>(lhs) * std::get<1>(rhs),
+                           std::get<2>(lhs) * std::get<2>(rhs),
+                           std::get<3>(lhs) * std::get<3>(rhs));
+}
+
+// ---------------------------------------------------------------------------
+
+template<>
+inline matrix<double, 3, 3> operator*(
+    const double s1, const matrix<double, 3, 3>& m2) noexcept
+{
+    const __m256d scalar = _mm256_set1_pd(s1);
+    matrix<double, 3, 3> retval;
+    typename matrix<double, 3, 3>::pointer       ptr_r = retval.data();
+    typename matrix<double, 3, 3>::const_pointer ptr_2 = m2.data();
+    _mm256_store_pd(ptr_r,   _mm256_mul_pd(scalar, _mm256_load_pd(ptr_2  )));
+    _mm256_store_pd(ptr_r+4, _mm256_mul_pd(scalar, _mm256_load_pd(ptr_2+4)));
+    _mm256_store_pd(ptr_r+8, _mm256_mul_pd(scalar, _mm256_load_pd(ptr_2+8)));
+    return retval;
+}
+template<>
+inline std::pair<matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator*(std::tuple<double, double> lhs,
+          std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> rhs
+          ) noexcept
+{
+    return std::make_pair(std::get<0>(lhs) * std::get<0>(rhs),
+                          std::get<1>(lhs) * std::get<1>(rhs));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator*(std::tuple<double, double, double> lhs,
+          std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&> rhs) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) * std::get<0>(rhs),
+                           std::get<1>(lhs) * std::get<1>(rhs),
+                           std::get<2>(lhs) * std::get<2>(rhs));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>,
+                  matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator*(std::tuple<double, double, double, double> lhs,
+          std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> rhs
+          ) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) * std::get<0>(rhs),
+                           std::get<1>(lhs) * std::get<1>(rhs),
+                           std::get<2>(lhs) * std::get<2>(rhs),
+                           std::get<3>(lhs) * std::get<3>(rhs));
+}
+
+// ---------------------------------------------------------------------------
+// division operator/
+// ---------------------------------------------------------------------------
+
+template<>
 inline matrix<double, 3, 3> operator/(
     const matrix<double, 3, 3>& m1, const double s2) noexcept
 {
@@ -208,6 +388,36 @@ inline matrix<double, 3, 3> operator/(
     _mm256_store_pd(ptr_r+4, _mm256_div_pd(_mm256_load_pd(ptr_1+4), scalar));
     _mm256_store_pd(ptr_r+8, _mm256_div_pd(_mm256_load_pd(ptr_1+8), scalar));
     return retval;
+}
+template<>
+inline std::pair<matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator/(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> lhs,
+          std::tuple<double, double> rhs) noexcept
+{
+    return std::make_pair(std::get<0>(lhs) / std::get<0>(rhs),
+                          std::get<1>(lhs) / std::get<1>(rhs));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator/(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&> lhs,
+          std::tuple<double, double, double> rhs) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) / std::get<0>(rhs),
+                           std::get<1>(lhs) / std::get<1>(rhs),
+                           std::get<2>(lhs) / std::get<2>(rhs));
+}
+template<>
+inline std::tuple<matrix<double, 3, 3>, matrix<double, 3, 3>,
+                  matrix<double, 3, 3>, matrix<double, 3, 3>>
+operator/(std::tuple<const matrix<double, 3, 3>&, const matrix<double, 3, 3>&,
+                     const matrix<double, 3, 3>&, const matrix<double, 3, 3>&> lhs,
+          std::tuple<double, double, double, double> rhs) noexcept
+{
+    return std::make_tuple(std::get<0>(lhs) / std::get<0>(rhs),
+                           std::get<1>(lhs) / std::get<1>(rhs),
+                           std::get<2>(lhs) / std::get<2>(rhs),
+                           std::get<3>(lhs) / std::get<3>(rhs));
 }
 
 // ---------------------------------------------------------------------------
