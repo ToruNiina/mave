@@ -21,6 +21,32 @@ mave::vector<double, 3>    w = m * v;
 std::cout << w[0] << ' ' << w[1] << ' ' << w[2] << '\n';
 ```
 
+it automatically uses SIMD instructions for the minimal width to store
+vector/matrix (e.g. for `mave::vector<float, 3>`, use `SSE` with `__m128`).
+
+if `AVX` is available, you can use `__m256` to calculate 2 vector addition at
+once.
+
+```cpp
+mave::vector<double, 3> v1(1.0, 2.0, 3.0), v2(4.0, 5.0, 6.0);
+mave::vector<double, 3> w1(1.0, 2.0, 3.0), w2(4.0, 5.0, 6.0);
+mave::vector<double, 3> u1, u2;
+
+std::tie(u1, u2) = std::tie(v1, v2) + std::tie(w1, w2);
+```
+
+you need to use `std::make_tuple` instead of `std::tie` to do scalar mul/div.
+
+```cpp
+float s1 = 1.0, s2 = 2.0, s3 = 3.0, s4 = 4.0;
+mave::vector<float, 3> v1(1.0, 2.0, 3.0), v2( 4.0,  5.0,  6.0),
+                       v3(7.0, 8.0, 9.0), v4(10.0, 11.0, 12.0);
+
+mave::vector<float, 3> w1, w2, w3, w4;
+
+std::tie(w1, w2, w3, w4) = std::tie(v1, v2, v3, v4) + std::make_tuple(s1, s2, s3, s4);
+```
+
 When you want to make `mave` faster by using `rcp` and `rsqrt`, define
 `MAVE_USE_APPROXIMATION` before including `mave/mave.hpp`.
 
@@ -28,7 +54,6 @@ When you want to make `mave` faster by using `rcp` and `rsqrt`, define
 
 This library is header-only.
 The only thing that you need to do is add this library to your include path.
-
 
 ## building test codes
 
@@ -113,32 +138,138 @@ struct matrix
     const_reference operator()(size_type i, size_type j) const noexcept;
 };
 
-// unary negation operator
+// negation
 template<typename T, std::size_t R, std::size_t C>
 matrix<T, R, C> operator-(const matrix<T, R, C>& lhs) noexcept;
 
-// here, U := decltype(std::declval<T1>() [op] std::declval<T2>()).
-// [op] depends on the operator.
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-matrix<U, R, C>
-operator+(const matrix<T1, R, C>& lhs, const matrix<T2, R, C>& rhs) noexcept;
+template<typename T, std::size_t R, std::size_t C>
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> ms) noexcept;
 
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-matrix<U, R, C>
-operator-(const matrix<T1, R, C>& lhs, const matrix<T2, R, C>& rhs) noexcept;
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> ms) noexcept;
 
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-matrix<U, R, C>
-operator*(const matrix<T1, R, C>& lhs, const T2 rhs) noexcept;
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> ms) noexcept;
 
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-matrix<U, R, C>
-operator*(const T1 lhs, const matrix<T2, R, C>& rhs) noexcept;
+// addition
+template<typename T, std::size_t R, std::size_t C>
+matrix<T, R, C>
+operator+(const matrix<T, R, C>& lhs, const matrix<T, R, C>& rhs) noexcept;
 
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-matrix<U, R, C>
-operator/(const matrix<T1, R, C>& lhs, const T2 rhs) noexcept;
+template<typename T, std::size_t R, std::size_t C>
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator+(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept;
 
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator+(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator+(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept;
+
+// subtraction
+template<typename T, std::size_t R, std::size_t C>
+matrix<T, R, C>
+operator-(const matrix<T, R, C>& lhs, const matrix<T, R, C>& rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept;
+
+// scalar multiplication
+template<typename T, std::size_t R, std::size_t C>
+matrix<T, R, C>
+operator*(const matrix<T, R, C>& lhs, const T rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<T, T> rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> lhs,
+          std::tuple<T, T, T> rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<T, T, T, T> rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+matrix<T, R, C>
+operator*(const T lhs, const matrix<T, R, C>& rhs) noexcept
+
+template<typename T, std::size_t R, std::size_t C>
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator*(std::tuple<T, T> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
+
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator*(std::tuple<T, T, T> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> rhs) noexcept
+
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator*(std::tuple<T, T, T, T> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
+
+// scalar division
+template<typename T, std::size_t R, std::size_t C>
+matrix<T, R, C>
+operator/(const matrix<T, R, C>& lhs, const T rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator/(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<T, T> rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator/(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> lhs,
+          std::tuple<T, T, T> rhs) noexcept;
+
+template<typename T, std::size_t R, std::size_t C>
+std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator/(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<T, T, T, T> rhs) noexcept;
+
+// matrix multiplication
 template<typename T1, typename T2, std::size_t A, std::size_t B, std::size_t C>
 matrix<U, A, C>
 operator*(const matrix<T1, A, B>& lhs, const matrix<T2, B, C>& rhs) noexcept;

@@ -1,6 +1,7 @@
 #ifndef MAVE_MATRIX_HPP
 #define MAVE_MATRIX_HPP
 #include "type_traits.hpp"
+#include <utility>
 #include <array>
 #include <tuple>
 #include <cmath>
@@ -102,6 +103,10 @@ constexpr std::size_t matrix<T, R, C>::column_size;
 template<typename T, std::size_t R, std::size_t C>
 constexpr std::size_t matrix<T, R, C>::total_size;
 
+// ---------------------------------------------------------------------------
+// negation operator
+// ---------------------------------------------------------------------------
+
 template<typename T, std::size_t R, std::size_t C>
 inline matrix<T, R, C>
 operator-(const matrix<T, R, C>& lhs) noexcept
@@ -110,47 +115,342 @@ operator-(const matrix<T, R, C>& lhs) noexcept
     for(std::size_t i=0; i<R*C; ++i) {retval[i] = -lhs[i];}
     return retval;
 }
-
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-inline matrix<decltype(std::declval<T1>() + std::declval<T2>()), R, C>
-operator+(const matrix<T1, R, C>& lhs, const matrix<T2, R, C>& rhs) noexcept
+template<typename T, std::size_t R, std::size_t C>
+inline std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> ms) noexcept
 {
-    matrix<decltype(std::declval<T1>() + std::declval<T2>()), R, C> retval;
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = -std::get<0>(ms)[i];
+        r2[i] = -std::get<1>(ms)[i];
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> ms) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = -std::get<0>(ms)[i];
+        r2[i] = -std::get<1>(ms)[i];
+        r3[i] = -std::get<2>(ms)[i];
+    }
+    return std::make_tuple(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> ms) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = -std::get<0>(ms)[i];
+        r2[i] = -std::get<1>(ms)[i];
+        r3[i] = -std::get<2>(ms)[i];
+        r4[i] = -std::get<3>(ms)[i];
+    }
+    return std::make_tuple(r1, r2, r3, r4);
+}
+
+// ---------------------------------------------------------------------------
+// addition operator+
+// ---------------------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+operator+(const matrix<T, R, C>& lhs, const matrix<T, R, C>& rhs) noexcept
+{
+    matrix<T, R, C> retval;
     for(std::size_t i=0; i<R*C; ++i) {retval[i] = lhs[i] + rhs[i];}
     return retval;
 }
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-inline matrix<decltype(std::declval<T1>() - std::declval<T2>()), R, C>
-operator-(const matrix<T1, R, C>& lhs, const matrix<T2, R, C>& rhs) noexcept
+template<typename T, std::size_t R, std::size_t C>
+inline std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator+(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
+          ) noexcept
 {
-    matrix<decltype(std::declval<T1>() - std::declval<T2>()), R, C> retval;
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] + std::get<0>(rhs)[i];
+        r2[i] = std::get<1>(lhs)[i] + std::get<1>(rhs)[i];
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator+(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] + std::get<0>(rhs)[i];
+        r2[i] = std::get<1>(lhs)[i] + std::get<1>(rhs)[i];
+        r3[i] = std::get<2>(lhs)[i] + std::get<2>(rhs)[i];
+    }
+    return std::make_tuple(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator+(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
+          ) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] + std::get<0>(rhs)[i];
+        r2[i] = std::get<1>(lhs)[i] + std::get<1>(rhs)[i];
+        r3[i] = std::get<2>(lhs)[i] + std::get<2>(rhs)[i];
+        r4[i] = std::get<3>(lhs)[i] + std::get<3>(rhs)[i];
+    }
+    return std::make_tuple(r1, r2, r3, r4);
+}
+
+// ---------------------------------------------------------------------------
+// subtraction operator-
+// ---------------------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+operator-(const matrix<T, R, C>& lhs, const matrix<T, R, C>& rhs) noexcept
+{
+    matrix<T, R, C> retval;
     for(std::size_t i=0; i<R*C; ++i) {retval[i] = lhs[i] - rhs[i];}
     return retval;
 }
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-inline matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C>
-operator*(const matrix<T1, R, C>& lhs, const T2 rhs) noexcept
+template<typename T, std::size_t R, std::size_t C>
+inline std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
+          ) noexcept
 {
-    matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C> retval;
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] - std::get<0>(rhs)[i];
+        r2[i] = std::get<1>(lhs)[i] - std::get<1>(rhs)[i];
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] - std::get<0>(rhs)[i];
+        r2[i] = std::get<1>(lhs)[i] - std::get<1>(rhs)[i];
+        r3[i] = std::get<2>(lhs)[i] - std::get<2>(rhs)[i];
+    }
+    return std::make_tuple(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
+          ) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] - std::get<0>(rhs)[i];
+        r2[i] = std::get<1>(lhs)[i] - std::get<1>(rhs)[i];
+        r3[i] = std::get<2>(lhs)[i] - std::get<2>(rhs)[i];
+        r4[i] = std::get<3>(lhs)[i] - std::get<3>(rhs)[i];
+    }
+    return std::make_tuple(r1, r2, r3, r4);
+}
+
+// ---------------------------------------------------------------------------
+// multiplication operator*
+// ---------------------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+operator*(const matrix<T, R, C>& lhs, const T rhs) noexcept
+{
+    matrix<T, R, C> retval;
     for(std::size_t i=0; i<R*C; ++i) {retval[i] = lhs[i] * rhs;}
     return retval;
 }
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-inline matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C>
-operator*(const T1 lhs, const matrix<T2, R, C>& rhs) noexcept
+template<typename T, std::size_t R, std::size_t C>
+inline std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<T, T> rhs) noexcept
 {
-    matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C> retval;
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] * std::get<0>(rhs);
+        r2[i] = std::get<1>(lhs)[i] * std::get<1>(rhs);
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> lhs,
+          std::tuple<T, T, T> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] * std::get<0>(rhs);
+        r2[i] = std::get<1>(lhs)[i] * std::get<1>(rhs);
+        r3[i] = std::get<2>(lhs)[i] * std::get<2>(rhs);
+    }
+    return std::make_tuple(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<T, T, T, T> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] * std::get<0>(rhs);
+        r2[i] = std::get<1>(lhs)[i] * std::get<1>(rhs);
+        r3[i] = std::get<2>(lhs)[i] * std::get<2>(rhs);
+        r4[i] = std::get<3>(lhs)[i] * std::get<3>(rhs);
+    }
+    return std::make_tuple(r1, r2, r3, r4);
+}
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+operator*(const T lhs, const matrix<T, R, C>& rhs) noexcept
+{
+    matrix<T, R, C> retval;
     for(std::size_t i=0; i<R*C; ++i) {retval[i] = lhs * rhs[i];}
     return retval;
 }
-template<typename T1, typename T2, std::size_t R, std::size_t C>
-inline matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C>
-operator/(const matrix<T1, R, C>& lhs, const T2 rhs) noexcept
+template<typename T, std::size_t R, std::size_t C>
+inline std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator*(std::tuple<T, T> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
+          ) noexcept
 {
-    matrix<decltype(std::declval<T1>() * std::declval<T2>()), R, C> retval;
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs) * std::get<0>(rhs)[i];
+        r2[i] = std::get<1>(lhs) * std::get<1>(rhs)[i];
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator*(std::tuple<T, T, T> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs) * std::get<0>(rhs)[i];
+        r2[i] = std::get<1>(lhs) * std::get<1>(rhs)[i];
+        r3[i] = std::get<2>(lhs) * std::get<2>(rhs)[i];
+    }
+    return std::make_tuple(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator*(std::tuple<T, T, T, T> lhs,
+          std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
+          ) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs) * std::get<0>(rhs)[i];
+        r2[i] = std::get<1>(lhs) * std::get<1>(rhs)[i];
+        r3[i] = std::get<2>(lhs) * std::get<2>(rhs)[i];
+        r4[i] = std::get<3>(lhs) * std::get<3>(rhs)[i];
+    }
+    return std::make_tuple(r1, r2, r3, r4);
+}
+
+// ---------------------------------------------------------------------------
+// division operator/
+// ---------------------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+inline matrix<T, R, C>
+operator/(const matrix<T, R, C>& lhs, const T rhs) noexcept
+{
+    matrix<T, R, C> retval;
     for(std::size_t i=0; i<R*C; ++i) {retval[i] = lhs[i] / rhs;}
     return retval;
 }
+template<typename T, std::size_t R, std::size_t C>
+inline std::pair<matrix<T, R, C>, matrix<T, R, C>>
+operator/(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<T, T> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] / std::get<0>(rhs);
+        r2[i] = std::get<1>(lhs)[i] / std::get<1>(rhs);
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+operator/(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&> lhs,
+          std::tuple<T, T, T> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] / std::get<0>(rhs);
+        r2[i] = std::get<1>(lhs)[i] / std::get<1>(rhs);
+        r3[i] = std::get<2>(lhs)[i] / std::get<2>(rhs);
+    }
+    return std::make_tuple(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+inline std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+operator/(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                     const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+          std::tuple<T, T, T, T> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::get<0>(lhs)[i] / std::get<0>(rhs);
+        r2[i] = std::get<1>(lhs)[i] / std::get<1>(rhs);
+        r3[i] = std::get<2>(lhs)[i] / std::get<2>(rhs);
+        r4[i] = std::get<3>(lhs)[i] / std::get<3>(rhs);
+    }
+    return std::make_tuple(r1, r2, r3, r4);
+}
+
+// ---------------------------------------------------------------------------
+// matrix multiplication operator-
+// ---------------------------------------------------------------------------
 
 template<typename T1, typename T2, std::size_t A, std::size_t B, std::size_t C>
 inline matrix<decltype(std::declval<T1>() * std::declval<T2>()), A, C>
