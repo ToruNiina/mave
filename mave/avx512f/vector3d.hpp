@@ -140,11 +140,54 @@ struct alignas(32) matrix<double, 3, 1>
     alignas(32) storage_type vs_;
 };
 
+// ---------------------------------------------------------------------------
+// negation operator-
+// ---------------------------------------------------------------------------
+
 template<>
 MAVE_INLINE matrix<double, 3, 1> operator-(const matrix<double, 3, 1>& v) noexcept
 {
     return _mm256_sub_pd(_mm256_setzero_pd(), _mm256_load_pd(v.data()));
 }
+template<>
+MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> ms
+          ) noexcept
+{
+    const __m512 v12 = _mm512_sub_pd(_mm512_setzero_pd(), _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(v1.data())),
+                               _mm256_load_pd(v2.data()), 1));
+
+    return std::make_pair(matrix<double, 3, 1>(_mm512_castpd512_pd256(v12)),
+                          matrix<double, 3, 1>(_mm512_extractf64x4_pd(v12, 1)));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&> ms) noexcept
+{
+    const auto v12 = -std::tie(std::get<0>(ms), std::get<1>(ms));
+    return std::make_tuple(std::get<0>(v12), std::get<1>(v12), -std::get<2>(ms));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+           matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&, const matrix<double,3,1>&> ms
+          ) noexcept
+{
+    const auto v12 = -std::tie(std::get<0>(ms), std::get<1>(ms));
+    const auto v34 = -std::tie(std::get<2>(ms), std::get<3>(ms));
+    return std::make_tuple(std::get<0>(v12), std::get<1>(v12),
+                           std::get<0>(v34), std::get<1>(v34));
+}
+
+// ---------------------------------------------------------------------------
+// addition operator+
+// ---------------------------------------------------------------------------
+
 template<>
 MAVE_INLINE matrix<double, 3, 1> operator+(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
