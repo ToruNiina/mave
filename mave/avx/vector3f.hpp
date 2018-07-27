@@ -137,37 +137,37 @@ struct alignas(16) matrix<float, 3, 1>
 };
 
 template<>
-inline matrix<float, 3, 1> operator-(const matrix<float, 3, 1>& lhs) noexcept
+MAVE_INLINE matrix<float, 3, 1> operator-(const matrix<float, 3, 1>& lhs) noexcept
 {
     return _mm_sub_ps(_mm_setzero_ps(), _mm_load_ps(lhs.data()));
 }
 
 template<>
-inline matrix<float, 3, 1> operator+(
+MAVE_INLINE matrix<float, 3, 1> operator+(
     const matrix<float, 3, 1>& lhs, const matrix<float, 3, 1>& rhs) noexcept
 {
     return _mm_add_ps(_mm_load_ps(lhs.data()), _mm_load_ps(rhs.data()));
 }
 template<>
-inline matrix<float, 3, 1> operator-(
+MAVE_INLINE matrix<float, 3, 1> operator-(
     const matrix<float, 3, 1>& lhs, const matrix<float, 3, 1>& rhs) noexcept
 {
     return _mm_sub_ps(_mm_load_ps(lhs.data()), _mm_load_ps(rhs.data()));
 }
 template<>
-inline matrix<float, 3, 1> operator*(
+MAVE_INLINE matrix<float, 3, 1> operator*(
     const float lhs, const matrix<float, 3, 1>& rhs) noexcept
 {
     return _mm_mul_ps(_mm_set1_ps(lhs), _mm_load_ps(rhs.data()));
 }
 template<>
-inline matrix<float, 3, 1> operator*(
+MAVE_INLINE matrix<float, 3, 1> operator*(
     const matrix<float, 3, 1>& lhs, const float rhs) noexcept
 {
     return _mm_mul_ps(_mm_load_ps(lhs.data()), _mm_set1_ps(rhs));
 }
 template<>
-inline matrix<float, 3, 1> operator/(
+MAVE_INLINE matrix<float, 3, 1> operator/(
     const matrix<float, 3, 1>& lhs, const float rhs) noexcept
 {
     return _mm_div_ps(_mm_load_ps(lhs.data()), _mm_set1_ps(rhs));
@@ -180,7 +180,7 @@ inline matrix<float, 3, 1> operator/(
 // length_sq -----------------------------------------------------------------
 
 template<>
-inline float length_sq(const matrix<float, 3, 1>& v) noexcept
+MAVE_INLINE float length_sq(const matrix<float, 3, 1>& v) noexcept
 {
     const __m128 arg = _mm_load_ps(v.data());
     const matrix<float, 3, 1> sq(_mm_mul_ps(arg, arg));
@@ -188,7 +188,7 @@ inline float length_sq(const matrix<float, 3, 1>& v) noexcept
 }
 
 template<>
-inline std::pair<float, float> length_sq(
+MAVE_INLINE std::pair<float, float> length_sq(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
     // to assure the 4th value is 0, mask it
@@ -216,7 +216,7 @@ inline std::pair<float, float> length_sq(
 }
 
 template<>
-inline std::tuple<float, float, float> length_sq(
+MAVE_INLINE std::tuple<float, float, float> length_sq(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3) noexcept
 {
@@ -247,7 +247,7 @@ inline std::tuple<float, float, float> length_sq(
 }
 
 template<>
-inline std::tuple<float, float, float, float> length_sq(
+MAVE_INLINE std::tuple<float, float, float, float> length_sq(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4) noexcept
 {
@@ -280,13 +280,13 @@ inline std::tuple<float, float, float, float> length_sq(
 // length --------------------------------------------------------------------
 
 template<>
-inline float length(const matrix<float, 3, 1>& v) noexcept
+MAVE_INLINE float length(const matrix<float, 3, 1>& v) noexcept
 {
     return std::sqrt(length_sq(v));
 }
 
 template<>
-inline std::pair<float, float> length(
+MAVE_INLINE std::pair<float, float> length(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
     const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
@@ -303,7 +303,7 @@ inline std::pair<float, float> length(
 }
 
 template<>
-inline std::tuple<float, float, float> length(
+MAVE_INLINE std::tuple<float, float, float> length(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3) noexcept
 {
@@ -324,7 +324,7 @@ inline std::tuple<float, float, float> length(
 }
 
 template<>
-inline std::tuple<float, float, float, float> length(
+MAVE_INLINE std::tuple<float, float, float, float> length(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4) noexcept
 {
@@ -357,13 +357,13 @@ inline std::tuple<float, float, float, float> length(
 // rlength -------------------------------------------------------------------
 
 template<>
-inline float rlength(const matrix<float, 3, 1>& v) noexcept
+MAVE_INLINE float rlength(const matrix<float, 3, 1>& v) noexcept
 {
     return 1.0f / std::sqrt(length_sq(v));
 }
 
 template<>
-inline std::pair<float, float> rlength(
+MAVE_INLINE std::pair<float, float> rlength(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
     const __m128i mask = _mm_set_epi32(0, 1, 1, 1);
@@ -381,7 +381,7 @@ inline std::pair<float, float> rlength(
 }
 
 template<>
-inline std::tuple<float, float, float> rlength(
+MAVE_INLINE std::tuple<float, float, float> rlength(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3) noexcept
 {
@@ -403,7 +403,7 @@ inline std::tuple<float, float, float> rlength(
 }
 
 template<>
-inline std::tuple<float, float, float, float> rlength(
+MAVE_INLINE std::tuple<float, float, float, float> rlength(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4) noexcept
 {
@@ -428,7 +428,7 @@ inline std::tuple<float, float, float, float> rlength(
 // regularize ----------------------------------------------------------------
 
 template<>
-inline std::pair<matrix<float, 3, 1>, float>
+MAVE_INLINE std::pair<matrix<float, 3, 1>, float>
 regularize(const matrix<float, 3, 1>& v) noexcept
 {
     const __m128 arg = _mm_load_ps(v.data());
@@ -448,7 +448,7 @@ regularize(const matrix<float, 3, 1>& v) noexcept
                           _mm256_cvtss_f32(len));
 }
 template<>
-inline std::pair<std::pair<matrix<float, 3, 1>, float>,
+MAVE_INLINE std::pair<std::pair<matrix<float, 3, 1>, float>,
                  std::pair<matrix<float, 3, 1>, float>>
 regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2
            ) noexcept
@@ -485,7 +485,7 @@ regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2
                           std::make_pair(rv2, regul[4]));
 }
 template<>
-inline std::tuple<std::pair<matrix<float, 3, 1>, float>,
+MAVE_INLINE std::tuple<std::pair<matrix<float, 3, 1>, float>,
                   std::pair<matrix<float, 3, 1>, float>,
                   std::pair<matrix<float, 3, 1>, float>>
 regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
@@ -495,7 +495,7 @@ regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     return std::make_tuple(std::get<0>(v12), std::get<1>(v12), regularize(v3));
 }
 template<>
-inline std::tuple<std::pair<matrix<float, 3, 1>, float>,
+MAVE_INLINE std::tuple<std::pair<matrix<float, 3, 1>, float>,
                   std::pair<matrix<float, 3, 1>, float>,
                   std::pair<matrix<float, 3, 1>, float>,
                   std::pair<matrix<float, 3, 1>, float>>
@@ -514,14 +514,14 @@ regularize(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 1> max(
+MAVE_INLINE matrix<float, 3, 1> max(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
     return _mm_max_ps(_mm_load_ps(v1.data()), _mm_load_ps(v2.data()));
 }
 
 template<>
-inline matrix<float, 3, 1> min(
+MAVE_INLINE matrix<float, 3, 1> min(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
     return _mm_min_ps(_mm_load_ps(v1.data()), _mm_load_ps(v2.data()));
@@ -530,13 +530,13 @@ inline matrix<float, 3, 1> min(
 // floor ---------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 1> floor(const matrix<float, 3, 1>& v) noexcept
+MAVE_INLINE matrix<float, 3, 1> floor(const matrix<float, 3, 1>& v) noexcept
 {
     return _mm_floor_ps(_mm_load_ps(v.data()));
 }
 
 template<>
-inline std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
+MAVE_INLINE std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
 floor(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
     const __m128 arg1 = _mm_load_ps(v1.data());
@@ -548,7 +548,7 @@ floor(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
                           matrix<float, 3, 1>(result[4], result[5], result[6]));
 }
 template<>
-inline std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
+MAVE_INLINE std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
                   matrix<float, 3, 1>>
 floor(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
       const matrix<float, 3, 1>& v3) noexcept
@@ -557,7 +557,7 @@ floor(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     return std::make_tuple(std::get<0>(v12), std::get<1>(v12), floor(v3));
 }
 template<>
-inline std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
+MAVE_INLINE std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
                   matrix<float, 3, 1>, matrix<float, 3, 1>>
 floor(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
       const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4) noexcept
@@ -571,13 +571,13 @@ floor(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
 // ceil ----------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 1> ceil(const matrix<float, 3, 1>& v) noexcept
+MAVE_INLINE matrix<float, 3, 1> ceil(const matrix<float, 3, 1>& v) noexcept
 {
     return _mm_ceil_ps(_mm_load_ps(v.data()));
 }
 
 template<>
-inline std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
+MAVE_INLINE std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
 ceil(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
     const __m128 arg1 = _mm_load_ps(v1.data());
@@ -589,7 +589,7 @@ ceil(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
                           matrix<float, 3, 1>(result[4], result[5], result[6]));
 }
 template<>
-inline std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
+MAVE_INLINE std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
                   matrix<float, 3, 1>>
 ceil(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
       const matrix<float, 3, 1>& v3) noexcept
@@ -598,7 +598,7 @@ ceil(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     return std::make_tuple(std::get<0>(v12), std::get<1>(v12), ceil(v3));
 }
 template<>
-inline std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
+MAVE_INLINE std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
                   matrix<float, 3, 1>, matrix<float, 3, 1>>
 ceil(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
       const matrix<float, 3, 1>& v3, const matrix<float, 3, 1>& v4) noexcept
@@ -611,7 +611,7 @@ ceil(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
 // ---------------------------------------------------------------------------
 
 template<>
-inline float dot_product(
+MAVE_INLINE float dot_product(
     const matrix<float, 3, 1>& lhs, const matrix<float, 3, 1>& rhs) noexcept
 {
     const matrix<float, 3, 1> sq(
@@ -620,7 +620,7 @@ inline float dot_product(
 }
 
 template<>
-inline matrix<float, 3, 1> cross_product(
+MAVE_INLINE matrix<float, 3, 1> cross_product(
     const matrix<float, 3, 1>& x, const matrix<float, 3, 1>& y) noexcept
 {
     const __m128 y_ = _mm_set_ps(0.0, y[0], y[2], y[1]);
@@ -634,7 +634,7 @@ inline matrix<float, 3, 1> cross_product(
 }
 
 template<>
-inline float scalar_triple_product(
+MAVE_INLINE float scalar_triple_product(
     const matrix<float, 3, 1>& lhs, const matrix<float, 3, 1>& mid,
     const matrix<float, 3, 1>& rhs) noexcept
 {
