@@ -5,6 +5,17 @@ SIMD-oriented small matrix and vector library
 
 It focuses on 3D vector operations (e.g. physical simulation, graphics, etc).
 
+|          |  AVX      |  AVX2     |  AVX512F  |
+|:---------|:----------|:----------|:----------|
+|matrix3x3d| --        | OK        | partially |
+|matrix3x3f| --        | OK        | partially |
+|vector3d  | partially | OK        | partially |
+|vector3f  | partially | OK        | partially |
+|matrix4x4d| --        | --        | --        |
+|matrix4x4f| --        | --        | --        |
+|vector4d  | --        | --        | --        |
+|vector4f  | --        | --        | --        |
+
 ## usage
 
 after including `mave/mave.hpp`, compile your code with
@@ -44,11 +55,15 @@ mave::vector<float, 3> v1(1.0, 2.0, 3.0), v2( 4.0,  5.0,  6.0),
 
 mave::vector<float, 3> w1, w2, w3, w4;
 
-std::tie(w1, w2, w3, w4) = std::tie(v1, v2, v3, v4) + std::make_tuple(s1, s2, s3, s4);
+std::tie(w1, w2, w3, w4) = std::tie(v1, v2, v3, v4) * std::make_tuple(s1, s2, s3, s4);
 ```
 
-When you want to make `mave` faster by using `rcp` and `rsqrt`, define
-`MAVE_USE_APPROXIMATION` before including `mave/mave.hpp`.
+When you want to make `mave` faster by using `rcp` and `rsqrt` instructions,
+define `MAVE_USE_APPROXIMATION` before including `mave/mave.hpp`.
+
+`mave::matrix` / `mave::vector` requires larger alignment than normal types.
+to store `mave::matrix` / `mave::vector` in `std::vector`, you need to use
+custom allocator `mave::aligned_allocator<T>`.
 
 ## installation
 
