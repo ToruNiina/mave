@@ -17,7 +17,7 @@ namespace mave
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<double, 3, 1> operator*(
+MAVE_INLINE matrix<double, 3, 1> operator*(
     const matrix<double, 3, 3>& m, const matrix<double, 3, 1>& v) noexcept
 {
     const __m256d v0 = _mm256_load_pd(v.data());
@@ -38,7 +38,7 @@ inline matrix<double, 3, 1> operator*(
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 1> operator*(
+MAVE_INLINE matrix<float, 3, 1> operator*(
     const matrix<float, 3, 3>& m, const matrix<float, 3, 1>& v) noexcept
 {
     const __m128 v128 = _mm_load_ps(v.data());

@@ -1,5 +1,6 @@
 #ifndef MAVE_MAVE_HPP
 #define MAVE_MAVE_HPP
+#include "macros.hpp"
 #include "matrix.hpp"
 #include "vector.hpp"
 #include "allocator.hpp"

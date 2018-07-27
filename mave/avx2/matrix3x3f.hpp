@@ -141,7 +141,7 @@ struct alignas(32) matrix<float, 3, 3>
 };
 
 template<>
-inline matrix<float, 3, 3> operator-(const matrix<float, 3, 3>& m) noexcept
+MAVE_INLINE matrix<float, 3, 3> operator-(const matrix<float, 3, 3>& m) noexcept
 {
     matrix<float, 3, 3> retval;
     typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
@@ -151,7 +151,7 @@ inline matrix<float, 3, 3> operator-(const matrix<float, 3, 3>& m) noexcept
     return retval;
 }
 template<>
-inline std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms) noexcept
 {
     matrix<float, 3, 3> r1, r2;
@@ -172,7 +172,7 @@ operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms)
     return std::make_pair(r1, r2);
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&> ms) noexcept
 {
@@ -180,7 +180,7 @@ operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
     return std::make_tuple(std::get<0>(m12), std::get<1>(m12), -std::get<2>(ms));
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
                   matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms) noexcept
@@ -196,7 +196,7 @@ operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> operator+(
+MAVE_INLINE matrix<float, 3, 3> operator+(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -208,7 +208,7 @@ inline matrix<float, 3, 3> operator+(
     return retval;
 }
 template<>
-inline std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator+(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> rhs
           ) noexcept
@@ -233,7 +233,7 @@ operator+(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs
     return std::make_pair(r1, r2);
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator+(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&> lhs,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
@@ -245,7 +245,7 @@ operator+(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                            std::get<2>(lhs) + std::get<2>(rhs));
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
                   matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator+(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
@@ -267,7 +267,7 @@ operator+(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> operator-(
+MAVE_INLINE matrix<float, 3, 3> operator-(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -279,7 +279,7 @@ inline matrix<float, 3, 3> operator-(
     return retval;
 }
 template<>
-inline std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> rhs
           ) noexcept
@@ -304,7 +304,7 @@ operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs
     return std::make_pair(r1, r2);
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&> lhs,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
@@ -316,7 +316,7 @@ operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                            std::get<2>(lhs) - std::get<2>(rhs));
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
                   matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
@@ -338,7 +338,7 @@ operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> operator*(
+MAVE_INLINE matrix<float, 3, 3> operator*(
     const matrix<float, 3, 3>& m1, const float s2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -349,7 +349,7 @@ inline matrix<float, 3, 3> operator*(
     return retval;
 }
 template<>
-inline std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
           std::tuple<float, float> rhs) noexcept
 {
@@ -373,7 +373,7 @@ operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs
     return std::make_pair(r1, r2);
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&> lhs,
           std::tuple<float, float, float> rhs) noexcept
@@ -384,7 +384,7 @@ operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                            std::get<2>(lhs) * std::get<2>(rhs));
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
                   matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
@@ -400,7 +400,7 @@ operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
 }
 
 template<>
-inline matrix<float, 3, 3> operator*(
+MAVE_INLINE matrix<float, 3, 3> operator*(
     const float s1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -411,7 +411,7 @@ inline matrix<float, 3, 3> operator*(
     return retval;
 }
 template<>
-inline std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator*(std::tuple<float, float> lhs,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> rhs
           ) noexcept
@@ -437,7 +437,7 @@ operator*(std::tuple<float, float> lhs,
     return std::make_pair(r1, r2);
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator*(std::tuple<float, float, float> lhs,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&> rhs) noexcept
@@ -449,7 +449,7 @@ operator*(std::tuple<float, float, float> lhs,
                            std::get<2>(lhs) * std::get<2>(rhs));
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
                   matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator*(std::tuple<float, float, float, float> lhs,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
@@ -472,7 +472,7 @@ operator*(std::tuple<float, float, float, float> lhs,
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> operator/(
+MAVE_INLINE matrix<float, 3, 3> operator/(
     const matrix<float, 3, 3>& m1, const float s2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -483,7 +483,7 @@ inline matrix<float, 3, 3> operator/(
     return retval;
 }
 template<>
-inline std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
           std::tuple<float, float> rhs) noexcept
 {
@@ -507,7 +507,7 @@ operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs
     return std::make_pair(r1, r2);
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&> lhs,
           std::tuple<float, float, float> rhs) noexcept
@@ -518,7 +518,7 @@ operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                            std::get<2>(lhs) / std::get<2>(rhs));
 }
 template<>
-inline std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
                   matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                      const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
@@ -539,7 +539,7 @@ operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> operator*(
+MAVE_INLINE matrix<float, 3, 3> operator*(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     // TODO: tune with __m256 and haddps
@@ -568,7 +568,7 @@ inline matrix<float, 3, 3> operator*(
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> max(
+MAVE_INLINE matrix<float, 3, 3> max(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -581,7 +581,7 @@ inline matrix<float, 3, 3> max(
 }
 
 template<>
-inline matrix<float, 3, 3> min(
+MAVE_INLINE matrix<float, 3, 3> min(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -596,7 +596,7 @@ inline matrix<float, 3, 3> min(
 // floor ---------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> floor(const matrix<float, 3, 3>& m) noexcept
+MAVE_INLINE matrix<float, 3, 3> floor(const matrix<float, 3, 3>& m) noexcept
 {
     matrix<float, 3, 3> retval;
     typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
@@ -605,11 +605,52 @@ inline matrix<float, 3, 3> floor(const matrix<float, 3, 3>& m) noexcept
     _mm128_store_ps(ptr_r+8, _mm128_floor_ps(_mm128_load_ps(ptr_1+8)));
     return retval;
 }
+template<>
+MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+floor(const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
+{
+    matrix<float, 3, 3> r1, r2;
+    typename matrix<float, 3, 3>::pointer       ptr_r1 = r1.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r2 = r2.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m1 = m1.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m2 = m2.data();
+
+    _mm256_store_ps(ptr_r1, _mm256_floor_ps(_mm256_load_ps(ptr_m1)));
+    _mm256_store_ps(ptr_r2, _mm256_floor_ps(_mm256_load_ps(ptr_m2)));
+
+    __m256 m12 = _mm256_floor_ps(_mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(ptr_m1+8)), _mm_load_ps(ptr_m2+8), 1));
+
+    _mm128_store_ps(ptr_r1+8, _mm256_castps256_ps128(m12));
+    _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(m12, 1));
+
+    return std::make_pair(r1, r2);
+}
+template<>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+                       matrix<float, 3, 3>>
+floor(const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2,
+      const matrix<float, 3, 3>& m3) noexcept
+{
+    const auto r12 = floor(m1, m2);
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12), floor(m3));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+                       matrix<float, 3, 3>, matrix<float, 3, 3>>
+floor(const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2,
+      const matrix<float, 3, 3>& m3, const matrix<float, 3, 3>& m4) noexcept
+{
+    const auto r12 = floor(m1, m2);
+    const auto r34 = floor(m3, m4);
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<0>(r34), std::get<1>(r34));
+}
 
 // ceil ----------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> ceil(const matrix<float, 3, 3>& m) noexcept
+MAVE_INLINE matrix<float, 3, 3> ceil(const matrix<float, 3, 3>& m) noexcept
 {
     matrix<float, 3, 3> retval;
     typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
@@ -617,6 +658,47 @@ inline matrix<float, 3, 3> ceil(const matrix<float, 3, 3>& m) noexcept
     _mm256_store_ps(ptr_r,   _mm256_ceil_ps(_mm256_load_ps(ptr_1  )));
     _mm128_store_ps(ptr_r+8, _mm128_ceil_ps(_mm128_load_ps(ptr_1+8)));
     return retval;
+}
+template<>
+MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+ceil(const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
+{
+    matrix<float, 3, 3> r1, r2;
+    typename matrix<float, 3, 3>::pointer       ptr_r1 = r1.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r2 = r2.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m1 = m1.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m2 = m2.data();
+
+    _mm256_store_ps(ptr_r1, _mm256_ceil_ps(_mm256_load_ps(ptr_m1)));
+    _mm256_store_ps(ptr_r2, _mm256_ceil_ps(_mm256_load_ps(ptr_m2)));
+
+    __m256 m12 = _mm256_ceil_ps(_mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(ptr_m1+8)), _mm_load_ps(ptr_m2+8), 1));
+
+    _mm128_store_ps(ptr_r1+8, _mm256_castps256_ps128(m12));
+    _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(m12, 1));
+
+    return std::make_pair(r1, r2);
+}
+template<>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+                       matrix<float, 3, 3>>
+ceil(const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2,
+      const matrix<float, 3, 3>& m3) noexcept
+{
+    const auto r12 = ceil(m1, m2);
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12), ceil(m3));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+                       matrix<float, 3, 3>, matrix<float, 3, 3>>
+ceil(const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2,
+      const matrix<float, 3, 3>& m3, const matrix<float, 3, 3>& m4) noexcept
+{
+    const auto r12 = ceil(m1, m2);
+    const auto r34 = ceil(m3, m4);
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<0>(r34), std::get<1>(r34));
 }
 
 // ---------------------------------------------------------------------------
