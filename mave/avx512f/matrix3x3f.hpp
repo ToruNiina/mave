@@ -165,7 +165,7 @@ struct alignas(64) matrix<float, 3, 3>
 };
 
 template<>
-inline matrix<float, 3, 3> operator-(const matrix<float, 3, 3>& m) noexcept
+MAVE_INLINE matrix<float, 3, 3> operator-(const matrix<float, 3, 3>& m) noexcept
 {
     matrix<float, 3, 3> retval;
     typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
@@ -180,7 +180,7 @@ inline matrix<float, 3, 3> operator-(const matrix<float, 3, 3>& m) noexcept
     return retval;
 }
 template<>
-inline matrix<float, 3, 3> operator+(
+MAVE_INLINE matrix<float, 3, 3> operator+(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -199,7 +199,7 @@ inline matrix<float, 3, 3> operator+(
     return retval;
 }
 template<>
-inline matrix<float, 3, 3> operator-(
+MAVE_INLINE matrix<float, 3, 3> operator-(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -218,7 +218,7 @@ inline matrix<float, 3, 3> operator-(
     return retval;
 }
 template<>
-inline matrix<float, 3, 3> operator*(
+MAVE_INLINE matrix<float, 3, 3> operator*(
     const float s1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -234,7 +234,7 @@ inline matrix<float, 3, 3> operator*(
     return retval;
 }
 template<>
-inline matrix<float, 3, 3> operator*(
+MAVE_INLINE matrix<float, 3, 3> operator*(
     const matrix<float, 3, 3>& m1, const float s2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -251,7 +251,7 @@ inline matrix<float, 3, 3> operator*(
     return retval;
 }
 template<>
-inline matrix<float, 3, 3> operator/(
+MAVE_INLINE matrix<float, 3, 3> operator/(
     const matrix<float, 3, 3>& m1, const float s2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -273,7 +273,7 @@ inline matrix<float, 3, 3> operator/(
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> operator*(
+MAVE_INLINE matrix<float, 3, 3> operator*(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     // TODO
@@ -302,7 +302,7 @@ inline matrix<float, 3, 3> operator*(
 // ---------------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> max(
+MAVE_INLINE matrix<float, 3, 3> max(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -322,7 +322,7 @@ inline matrix<float, 3, 3> max(
 }
 
 template<>
-inline matrix<float, 3, 3> min(
+MAVE_INLINE matrix<float, 3, 3> min(
     const matrix<float, 3, 3>& m1, const matrix<float, 3, 3>& m2) noexcept
 {
     matrix<float, 3, 3> retval;
@@ -344,7 +344,7 @@ inline matrix<float, 3, 3> min(
 // floor ---------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> floor(const matrix<float, 3, 3>& m) noexcept
+MAVE_INLINE matrix<float, 3, 3> floor(const matrix<float, 3, 3>& m) noexcept
 {
     matrix<float, 3, 3> retval;
     typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
@@ -357,7 +357,7 @@ inline matrix<float, 3, 3> floor(const matrix<float, 3, 3>& m) noexcept
 // ceil ----------------------------------------------------------------------
 
 template<>
-inline matrix<float, 3, 3> ceil(const matrix<float, 3, 3>& m) noexcept
+MAVE_INLINE matrix<float, 3, 3> ceil(const matrix<float, 3, 3>& m) noexcept
 {
     matrix<float, 3, 3> retval;
     typename matrix<float, 3, 3>::pointer       ptr_r = retval.data();
