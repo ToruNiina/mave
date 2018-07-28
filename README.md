@@ -11,12 +11,10 @@ It focuses on 3D vector operations (e.g. physical simulation, graphics, etc).
 |:---------|:----------|:----------|:----------|
 |matrix3x3d| --        | OK        | partially |
 |matrix3x3f| --        | OK        | partially |
-|vector3d  | partially | OK        | partially |
-|vector3f  | partially | OK        | partially |
-|matrix4x4d| --        | --        | --        |
-|matrix4x4f| --        | --        | --        |
-|vector4d  | --        | --        | --        |
-|vector4f  | --        | --        | --        |
+|vector3d  | partially | OK        | OK        |
+|vector3f  | partially | OK        | OK        |
+
+`matrix4x4x` and `vector4x` are also planned, but not implemented now.
 
 ## usage
 
