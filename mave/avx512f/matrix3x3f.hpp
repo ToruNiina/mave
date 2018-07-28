@@ -1,8 +1,8 @@
-#ifndef MAVE_AVX2_MATRIX_3x3_FLOAT_HPP
-#define MAVE_AVX2_MATRIX_3x3_FLOAT_HPP
+#ifndef MAVE_AVX512F_MATRIX_3x3_FLOAT_HPP
+#define MAVE_AVX512F_MATRIX_3x3_FLOAT_HPP
 
-#ifndef __AVX2__
-#error "mave/avx2/matrix3x3f.hpp requires avx support but __AVX2__ is not defined."
+#ifndef __AVX512F__
+#error "mave/avx512f/matrix3x3f.hpp requires avx512f support but __AVX512F__ is not defined."
 #endif
 
 #ifndef MAVE_MATRIX_HPP
