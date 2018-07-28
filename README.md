@@ -7,12 +7,13 @@ SIMD-oriented small matrix and vector library
 
 It focuses on 3D vector operations (e.g. physical simulation, graphics, etc).
 
-|          |  AVX      |  AVX2     |  AVX512F  |
-|:---------|:----------|:----------|:----------|
-|matrix3x3d| --        | OK        | partially |
-|matrix3x3f| --        | OK        | partially |
-|vector3d  | partially | OK        | OK        |
-|vector3f  | partially | OK        | OK        |
+|              |    AVX      |  AVX2                         |  AVX512   |
+|:-------------|:------------|:------------------------------|:----------|
+|CPU generation| SandyBridge | Haswell, Broadwell, Skylake-S | Skylake-X |
+|  matrix3x3d  | --          | OK                            | partially |
+|  matrix3x3f  | --          | OK                            | partially |
+|  vector3d    | partially   | OK                            | OK        |
+|  vector3f    | partially   | OK                            | OK        |
 
 `matrix4x4x` and `vector4x` are also planned, but not implemented now.
 
