@@ -1,6 +1,8 @@
 mave
 ====
 
+[![Build Status](https://travis-ci.com/ToruNiina/mave.svg?branch=master)](https://travis-ci.com/ToruNiina/mave)
+
 SIMD-oriented small matrix and vector library
 
 It focuses on 3D vector operations (e.g. physical simulation, graphics, etc).
