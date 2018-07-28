@@ -327,8 +327,8 @@ operator*(std::tuple<float, float, float> v1,
           std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
                      const matrix<float,3,1>&> v2) noexcept
 {
-    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) *
-                     std::tie(std::get<0>(v2), std::get<1>(v2));
+    const auto r12 = std::tuple<float, float>(std::get<0>(v1), std::get<1>(v1)) *
+                                     std::tie(std::get<0>(v2), std::get<1>(v2));
     return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
                            std::get<2>(v1) * std::get<2>(v2));
 }
@@ -340,10 +340,10 @@ operator*(std::tuple<float, float, float, float> v1,
                      const matrix<float,3,1>&, const matrix<float,3,1>&> v2
           ) noexcept
 {
-    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) *
-                     std::tie(std::get<0>(v2), std::get<1>(v2));
-    const auto r34 = std::tie(std::get<2>(v1), std::get<3>(v1)) *
-                     std::tie(std::get<2>(v2), std::get<3>(v2));
+    const auto r12 = std::tuple<float, float>(std::get<0>(v1), std::get<1>(v1)) *
+                                     std::tie(std::get<0>(v2), std::get<1>(v2));
+    const auto r34 = std::tuple<float, float>(std::get<2>(v1), std::get<3>(v1)) *
+                                     std::tie(std::get<2>(v2), std::get<3>(v2));
     return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
                            std::get<0>(r34), std::get<1>(r34));
 }
@@ -378,8 +378,8 @@ operator*(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
                      const matrix<float,3,1>&> v1,
           std::tuple<float, float, float> v2) noexcept
 {
-    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) *
-                     std::tie(std::get<0>(v2), std::get<1>(v2));
+    const auto r12 =    std::tie(std::get<0>(v1), std::get<1>(v1)) *
+        std::tuple<float, float>(std::get<0>(v2), std::get<1>(v2));
     return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
                            std::get<2>(v1) * std::get<2>(v2));
 }
@@ -390,10 +390,10 @@ operator*(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
                      const matrix<float,3,1>&, const matrix<float,3,1>&> v1,
           std::tuple<float, float, float, float> v2) noexcept
 {
-    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) *
-                     std::tie(std::get<0>(v2), std::get<1>(v2));
-    const auto r34 = std::tie(std::get<2>(v1), std::get<3>(v1)) *
-                     std::tie(std::get<2>(v2), std::get<3>(v2));
+    const auto r12 =    std::tie(std::get<0>(v1), std::get<1>(v1)) *
+        std::tuple<float, float>(std::get<0>(v2), std::get<1>(v2));
+    const auto r34 =    std::tie(std::get<2>(v1), std::get<3>(v1)) *
+        std::tuple<float, float>(std::get<2>(v2), std::get<3>(v2));
     return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
                            std::get<0>(r34), std::get<1>(r34));
 }
@@ -436,8 +436,8 @@ operator/(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
                      const matrix<float,3,1>&> v1,
           std::tuple<float, float, float> v2) noexcept
 {
-    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) /
-                     std::tie(std::get<0>(v2), std::get<1>(v2));
+    const auto r12 =    std::tie(std::get<0>(v1), std::get<1>(v1)) /
+        std::tuple<float, float>(std::get<0>(v2), std::get<1>(v2));
     return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
                            std::get<2>(v1) / std::get<2>(v2));
 }
@@ -448,10 +448,10 @@ operator/(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
                      const matrix<float,3,1>&, const matrix<float,3,1>&> v1,
           std::tuple<float, float, float, float> v2) noexcept
 {
-    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) /
-                     std::tie(std::get<0>(v2), std::get<1>(v2));
-    const auto r34 = std::tie(std::get<2>(v1), std::get<3>(v1)) /
-                     std::tie(std::get<2>(v2), std::get<3>(v2));
+    const auto r12 =    std::tie(std::get<0>(v1), std::get<1>(v1)) /
+        std::tuple<float, float>(std::get<0>(v2), std::get<1>(v2));
+    const auto r34 =    std::tie(std::get<2>(v1), std::get<3>(v1)) /
+        std::tuple<float, float>(std::get<2>(v2), std::get<3>(v2));
     return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
                            std::get<0>(r34), std::get<1>(r34));
 }
