@@ -5,16 +5,24 @@
 #include "vector.hpp"
 #include "allocator.hpp"
 
-#if defined(__AVX512F__)
+// Skylake-X
+#if defined(__AVX512F__)  && defined(__AVX512CD__) &&\
+    defined(__AVX512VL__) && defined(__AVX512DQ__) && defined(__AVX512BW__)
 #  if defined(MAVE_USE_APPROXIMATION)
-#    include "avx512f/vector3f_approx.hpp"
-#    include "avx512f/vector3d_approx.hpp"
+#    include "avx512/vector3f_approx.hpp"
+#    include "avx512/vector3d_approx.hpp"
 #  else
-#    include "avx512f/vector3f.hpp"
-#    include "avx512f/vector3d.hpp"
+#    include "avx512/vector3f.hpp"
+#    include "avx512/vector3d.hpp"
 #  endif
-#  include "avx512f/matrix3x3f.hpp"
-#  include "avx512f/matrix3x3d.hpp"
+#  include "avx512/matrix3x3f.hpp"
+#  include "avx512/matrix3x3d.hpp"
+//  Xeon Phi Knights Landing...
+// #if defined(__AVX512F__)  && defined(__AVX512CD__) &&\
+//     defined(__AVX512ER__) && defined(__AVX512PF__)
+// not supported.
+//
+// Haswell, Broadwell, Skylake-S
 #elif defined(__AVX2__)
 #  if defined(MAVE_USE_APPROXIMATION)
 #    include "avx2/vector3f_approx.hpp"
@@ -25,6 +33,7 @@
 #  include "avx2/matrix3x3d.hpp"
 #  include "avx2/matrix3x3f.hpp"
 #  include "avx2/vector_matrix_mul.hpp"
+// Sandybridge
 #elif defined(__AVX__)
 #  include "avx/vector3d.hpp"
 #  include "avx/vector3f.hpp"
