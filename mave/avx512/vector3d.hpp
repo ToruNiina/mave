@@ -154,7 +154,7 @@ MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
 operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> ms
           ) noexcept
 {
-    const __m512 v12 = _mm512_sub_pd(_mm512_setzero_pd(), _mm512_insertf64x4(
+    const __m512d v12 = _mm512_sub_pd(_mm512_setzero_pd(), _mm512_insertf64x4(
         _mm512_castpd256_pd512(_mm256_load_pd(v1.data())),
                                _mm256_load_pd(v2.data()), 1));
 
@@ -195,11 +195,113 @@ MAVE_INLINE matrix<double, 3, 1> operator+(
     return _mm256_add_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
 }
 template<>
+MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator+(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+          std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+          ) noexcept
+{
+    const __m512d v11 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v1).data())),
+                               _mm256_load_pd(std::get<1>(v1).data()), 1);
+    const __m512d v22 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v2).data())),
+                               _mm256_load_pd(std::get<1>(v2).data()), 1);
+
+    const __m512d rslt = _mm512_add_pd(v11, v22);
+    return std::make_pair(matrix<double, 3, 1>(_mm512_castpd512_pd256(rslt)),
+                          matrix<double, 3, 1>(_mm512_extractf64x4_pd(rslt, 1)));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>>
+operator+(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&> v1,
+          std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&> v2) noexcept
+{
+    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) +
+                     std::tie(std::get<0>(v2), std::get<1>(v2));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<2>(v1) + std::get<2>(v2));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator+(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+          std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+          ) noexcept
+{
+    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) +
+                     std::tie(std::get<0>(v2), std::get<1>(v2));
+    const auto r34 = std::tie(std::get<2>(v1), std::get<3>(v1)) +
+                     std::tie(std::get<2>(v2), std::get<3>(v2));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<0>(r34), std::get<1>(r34));
+}
+
+// ---------------------------------------------------------------------------
+// subtraction
+// ---------------------------------------------------------------------------
+
+template<>
 MAVE_INLINE matrix<double, 3, 1> operator-(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
     return _mm256_sub_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
 }
+template<>
+MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+          std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+          ) noexcept
+{
+    const __m512d v11 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v1).data())),
+                               _mm256_load_pd(std::get<1>(v1).data()), 1);
+    const __m512d v22 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v2).data())),
+                               _mm256_load_pd(std::get<1>(v2).data()), 1);
+
+    const __m512d rslt = _mm512_sub_pd(v11, v22);
+    return std::make_pair(matrix<double, 3, 1>(_mm512_castpd512_pd256(rslt)),
+                          matrix<double, 3, 1>(_mm512_extractf64x4_pd(rslt, 1)));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>>
+operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&> v1,
+          std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&> v2) noexcept
+{
+    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) -
+                     std::tie(std::get<0>(v2), std::get<1>(v2));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<2>(v1) - std::get<2>(v2));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+          std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+          ) noexcept
+{
+    const auto r12 = std::tie(std::get<0>(v1), std::get<1>(v1)) -
+                     std::tie(std::get<0>(v2), std::get<1>(v2));
+    const auto r34 = std::tie(std::get<2>(v1), std::get<3>(v1)) -
+                     std::tie(std::get<2>(v2), std::get<3>(v2));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<0>(r34), std::get<1>(r34));
+}
+
+// ---------------------------------------------------------------------------
+// multiplication
+// ---------------------------------------------------------------------------
+
 template<>
 MAVE_INLINE matrix<double, 3, 1> operator*(
     const double v1, const matrix<double, 3, 1>& v2) noexcept
@@ -207,16 +309,149 @@ MAVE_INLINE matrix<double, 3, 1> operator*(
     return _mm256_mul_pd(_mm256_set1_pd(v1), _mm256_load_pd(v2.data()));
 }
 template<>
+MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator*(std::tuple<double, double> v1,
+          std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+          ) noexcept
+{
+    const __m512d v11 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_set1_pd(std::get<0>(v1))),
+                               _mm256_set1_pd(std::get<1>(v1)), 1);
+    const __m512d v22 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v2).data())),
+                               _mm256_load_pd(std::get<1>(v2).data()), 1);
+
+    const __m512d rslt = _mm512_mul_pd(v11, v22);
+    return std::make_pair(matrix<double, 3, 1>(_mm512_castpd512_pd256(rslt)),
+                          matrix<double, 3, 1>(_mm512_extractf64x4_pd(rslt, 1)));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator*(std::tuple<double, double, double> v1,
+          std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&> v2) noexcept
+{
+    const auto r12 = std::tuple<double, double>(std::get<0>(v1), std::get<1>(v1)) *
+                                       std::tie(std::get<0>(v2), std::get<1>(v2));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<2>(v1) * std::get<2>(v2));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+           matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator*(std::tuple<double, double, double, double> v1,
+          std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+          ) noexcept
+{
+    const auto r12 = std::tuple<double, double>(std::get<0>(v1), std::get<1>(v1)) *
+                                       std::tie(std::get<0>(v2), std::get<1>(v2));
+    const auto r34 = std::tuple<double, double>(std::get<2>(v1), std::get<3>(v1)) *
+                                       std::tie(std::get<2>(v2), std::get<3>(v2));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<0>(r34), std::get<1>(r34));
+}
+
+template<>
 MAVE_INLINE matrix<double, 3, 1> operator*(
     const matrix<double, 3, 1>& v1, const double v2) noexcept
 {
     return _mm256_mul_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(v2));
 }
 template<>
+MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator*(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+          std::tuple<double, double> v2) noexcept
+{
+    const __m512d v11 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v1).data())),
+                               _mm256_load_pd(std::get<1>(v1).data()), 1);
+    const __m512d v22 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_set1_pd(std::get<0>(v2))),
+                               _mm256_set1_pd(std::get<1>(v2)), 1);
+
+    const __m512d rslt = _mm512_mul_pd(v11, v22);
+    return std::make_pair(matrix<double, 3, 1>(_mm512_castpd512_pd256(rslt)),
+                          matrix<double, 3, 1>(_mm512_extractf64x4_pd(rslt, 1)));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>>
+operator*(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&> v1,
+          std::tuple<double, double, double> v2) noexcept
+{
+    const auto r12 =      std::tie(std::get<0>(v1), std::get<1>(v1)) *
+        std::tuple<double, double>(std::get<0>(v2), std::get<1>(v2));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<2>(v1) * std::get<2>(v2));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator*(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+          std::tuple<double, double, double, double> v2) noexcept
+{
+    const auto r12 =      std::tie(std::get<0>(v1), std::get<1>(v1)) *
+        std::tuple<double, double>(std::get<0>(v2), std::get<1>(v2));
+    const auto r34 =      std::tie(std::get<2>(v1), std::get<3>(v1)) *
+        std::tuple<double, double>(std::get<2>(v2), std::get<3>(v2));
+
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<0>(r34), std::get<1>(r34));
+}
+
+template<>
 MAVE_INLINE matrix<double, 3, 1> operator/(
     const matrix<double, 3, 1>& v1, const double v2) noexcept
 {
     return _mm256_div_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(v2));
+}
+template<>
+MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator/(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+          std::tuple<double, double> v2) noexcept
+{
+    const __m512d v11 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v1).data())),
+                               _mm256_load_pd(std::get<1>(v1).data()), 1);
+    const __m512d v22 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_set1_pd(std::get<0>(v2))),
+                               _mm256_set1_pd(std::get<1>(v2)), 1);
+
+    const __m512d rslt = _mm512_div_pd(v11, v22);
+    return std::make_pair(matrix<double, 3, 1>(_mm512_castpd512_pd256(rslt)),
+                          matrix<double, 3, 1>(_mm512_extractf64x4_pd(rslt, 1)));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>>
+operator/(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&> v1,
+          std::tuple<double, double, double> v2) noexcept
+{
+    const auto r12 =      std::tie(std::get<0>(v1), std::get<1>(v1)) /
+        std::tuple<double, double>(std::get<0>(v2), std::get<1>(v2));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<2>(v1) / std::get<2>(v2));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+operator/(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+                     const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+          std::tuple<double, double, double, double> v2) noexcept
+{
+    const auto r12 =      std::tie(std::get<0>(v1), std::get<1>(v1)) /
+        std::tuple<double, double>(std::get<0>(v2), std::get<1>(v2));
+    const auto r34 =      std::tie(std::get<2>(v1), std::get<3>(v1)) /
+        std::tuple<double, double>(std::get<2>(v2), std::get<3>(v2));
+
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<0>(r34), std::get<1>(r34));
 }
 
 // ---------------------------------------------------------------------------
