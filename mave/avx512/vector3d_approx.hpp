@@ -156,8 +156,8 @@ operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> ms
           ) noexcept
 {
     const __m512d v12 = _mm512_sub_pd(_mm512_setzero_pd(), _mm512_insertf64x4(
-        _mm512_castpd256_pd512(_mm256_load_pd(v1.data())),
-                               _mm256_load_pd(v2.data()), 1));
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(ms).data())),
+                               _mm256_load_pd(std::get<1>(ms).data()), 1));
 
     return std::make_pair(matrix<double, 3, 1>(_mm512_castpd512_pd256(v12)),
                           matrix<double, 3, 1>(_mm512_extractf64x4_pd(v12, 1)));
