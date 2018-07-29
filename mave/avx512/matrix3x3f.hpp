@@ -548,6 +548,101 @@ MAVE_INLINE matrix<float, 3, 3> operator*(
     return retval;
 }
 template<>
+MAVE_INLINE
+std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+operator*(std::tuple<float, float> ss,
+          std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms
+          ) noexcept
+{
+    matrix<float, 3, 3> r1, r2;
+    typename matrix<float, 3, 3>::pointer       ptr_r1 = r1.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r2 = r2.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m1 = std::get<0>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m2 = std::get<1>(ms).data();
+
+    const __m512 rslt1 = _mm512_mul_ps(
+        _mm512_insertf32x8(_mm512_castps256_512(_mm256_set1_ps(std::get<0>(ss))),
+                           _mm256_set1_ps(std::get<1>(ss)), 1),
+        _mm512_insertf32x8(_mm512_castps256_ps512(_mm256_load_ps(ptr_m1)),
+                           _mm256_load_ps(ptr_m2), 1));
+    _mm256_store_ps(ptr_r1, _mm512_castps512_ps256(rslt1));
+    _mm256_store_ps(ptr_r2, _mm512_extractf32x8_ps(rslt1, 1));
+
+    const __m256 rslt2 = _mm256_mul_ps(
+        _mm256_insertf128_ps(_mm256_castps128_ps256(
+            _mm_set1_ps(std::get<0>(ss))), _mm_set1_ps(std::get<1>(ss)), 1),
+        _mm256_insertf128_ps(_mm256_castps128_ps256(
+            _mm_load_ps(ptr_m1+8)),        _mm_load_ps(ptr_m2+8),        1));
+
+    _mm128_store_ps(ptr_r1+8, _mm256_extractf128_ps(rslt2, 0));
+    _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(rslt2, 1));
+    return std::make_pair(r1, r2);
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
+operator*(std::tuple<float, float, float> ss,
+          std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+                     const matrix<float, 3, 3>&> ms) noexcept
+{
+    const auto m12 = std::tuple<float, float>(std::get<0>(ss), std::get<1>(ss)) *
+                                     std::tie(std::get<0>(ms), std::get<1>(ms));
+    return std::make_tuple(std::get<0>(m12), std::get<1>(m12),
+                           std::get<2>(ss) * std::get<2>(ms));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+           matrix<float, 3, 3>, matrix<float, 3, 3>>
+operator*(std::tuple<float, float, float, float> ss,
+          std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+                     const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms
+          ) noexcept
+{
+    matrix<float, 3, 3> r1, r2, r3, r4;
+    typename matrix<float, 3, 3>::pointer       ptr_r1 = r1.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r2 = r2.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r3 = r3.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r4 = r4.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m1 = std::get<0>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m2 = std::get<1>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m3 = std::get<2>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m4 = std::get<3>(ms).data();
+
+    const __m512 rslt12 = _mm512_mul_ps(
+        _mm512_insertf32x8(_mm512_castps256_512(_mm256_set1_ps(std::get<0>(ss))),
+                           _mm256_set1_ps(std::get<1>(ss)), 1),
+        _mm512_insertf32x8(_mm512_castps256_ps512(_mm256_load_ps(ptr_m1)),
+                           _mm256_load_ps(ptr_m2), 1));
+    _mm256_store_ps(ptr_r1, _mm512_castps512_ps256(rslt12));
+    _mm256_store_ps(ptr_r2, _mm512_extractf32x8_ps(rslt12, 1));
+
+    const __m512 rslt34 = _mm512_mul_ps(
+        _mm512_insertf32x8(_mm512_castps256_512(_mm256_set1_ps(std::get<2>(ss))),
+                           _mm256_set1_ps(std::get<3>(ss)), 1),
+        _mm512_insertf32x8(_mm512_castps256_ps512(_mm256_load_ps(ptr_m3)),
+                           _mm256_load_ps(ptr_m4), 1));
+    _mm256_store_ps(ptr_r3, _mm512_castps512_ps256(rslt34));
+    _mm256_store_ps(ptr_r4, _mm512_extractf32x8_ps(rslt34, 1));
+
+    const __m512 rslt = _mm256_mul_ps(_mm512_insertf32x4(_mm512_insertf32x4(
+        _mm512_insertf32x4(_mm512_castps128_ps512(
+            _mm_set1_ps(std::get<0>(ss))),    _mm_set1_ps(std::get<1>(ss)), 1),
+            _mm_set1_ps(std::get<2>(ss)), 2), _mm_set1_ps(std::get<3>(ss)), 3),
+        _mm512_insertf32x4(_mm512_insertf32x4(_mm512_insertf32x4(_mm256_castps128_ps256(
+            _mm_load_ps(ptr_m1+8)),    _mm_load_ps(ptr_m2+8), 1),
+            _mm_load_ps(ptr_m3+8), 2), _mm_load_ps(ptr_m4+8), 3)
+        );
+
+    _mm128_store_ps(ptr_r1+8, _mm512_extractf32x4_ps(rslt, 0));
+    _mm128_store_ps(ptr_r2+8, _mm512_extractf32x4_ps(rslt, 1));
+    _mm128_store_ps(ptr_r3+8, _mm512_extractf32x4_ps(rslt, 2));
+    _mm128_store_ps(ptr_r4+8, _mm512_extractf32x4_ps(rslt, 3));
+
+    return std::make_tuple(r1, r2, r4, r4);
+}
+
+template<>
 MAVE_INLINE matrix<float, 3, 3> operator*(
     const matrix<float, 3, 3>& m1, const float s2) noexcept
 {
@@ -563,6 +658,98 @@ MAVE_INLINE matrix<float, 3, 3> operator*(
     _mm256_store_ps(ptr_r,   _mm512_extractf32x8_ps(result, 0));
     _mm128_store_ps(ptr_r+8, _mm512_extractf32x4_ps(result, 2));
     return retval;
+}
+template<>
+MAVE_INLINE
+std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms,
+          std::tuple<float, float> ss) noexcept
+{
+    matrix<float, 3, 3> r1, r2;
+    typename matrix<float, 3, 3>::pointer       ptr_r1 = r1.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r2 = r2.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m1 = std::get<0>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m2 = std::get<1>(ms).data();
+
+    const __m512 rslt1 = _mm512_mul_ps(
+        _mm512_insertf32x8(_mm512_castps256_512(_mm256_set1_ps(std::get<0>(ss))),
+                           _mm256_set1_ps(std::get<1>(ss)), 1),
+        _mm512_insertf32x8(_mm512_castps256_ps512(_mm256_load_ps(ptr_m1)),
+                           _mm256_load_ps(ptr_m2), 1));
+    _mm256_store_ps(ptr_r1, _mm512_castps512_ps256(rslt1));
+    _mm256_store_ps(ptr_r2, _mm512_extractf32x8_ps(rslt1, 1));
+
+    const __m256 rslt2 = _mm256_mul_ps(
+        _mm256_insertf128_ps(_mm256_castps128_ps256(
+            _mm_set1_ps(std::get<0>(ss))), _mm_set1_ps(std::get<1>(ss)), 1),
+        _mm256_insertf128_ps(_mm256_castps128_ps256(
+            _mm_load_ps(ptr_m1+8)),        _mm_load_ps(ptr_m2+8),        1));
+
+    _mm128_store_ps(ptr_r1+8, _mm256_extractf128_ps(rslt2, 0));
+    _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(rslt2, 1));
+    return std::make_pair(r1, r2);
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
+operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+                     const matrix<float, 3, 3>&> ms,
+          std::tuple<float, float, float> ss) noexcept
+{
+    const auto m12 =    std::tie(std::get<0>(ss), std::get<1>(ss)) *
+        std::tuple<float, float>(std::get<0>(ms), std::get<1>(ms));
+    return std::make_tuple(std::get<0>(m12), std::get<1>(m12),
+                           std::get<2>(ss) * std::get<2>(ms));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+           matrix<float, 3, 3>, matrix<float, 3, 3>>
+operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+                     const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms,
+          std::tuple<float, float, float, float> ss) noexcept
+{
+    matrix<float, 3, 3> r1, r2, r3, r4;
+    typename matrix<float, 3, 3>::pointer       ptr_r1 = r1.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r2 = r2.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r3 = r3.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r4 = r4.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m1 = std::get<0>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m2 = std::get<1>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m3 = std::get<2>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m4 = std::get<3>(ms).data();
+
+    const __m512 rslt12 = _mm512_mul_ps(
+        _mm512_insertf32x8(_mm512_castps256_512(_mm256_set1_ps(std::get<0>(ss))),
+                           _mm256_set1_ps(std::get<1>(ss)), 1),
+        _mm512_insertf32x8(_mm512_castps256_ps512(_mm256_load_ps(ptr_m1)),
+                           _mm256_load_ps(ptr_m2), 1));
+    _mm256_store_ps(ptr_r1, _mm512_castps512_ps256(rslt12));
+    _mm256_store_ps(ptr_r2, _mm512_extractf32x8_ps(rslt12, 1));
+
+    const __m512 rslt34 = _mm512_mul_ps(
+        _mm512_insertf32x8(_mm512_castps256_512(_mm256_set1_ps(std::get<2>(ss))),
+                           _mm256_set1_ps(std::get<3>(ss)), 1),
+        _mm512_insertf32x8(_mm512_castps256_ps512(_mm256_load_ps(ptr_m3)),
+                           _mm256_load_ps(ptr_m4), 1));
+    _mm256_store_ps(ptr_r3, _mm512_castps512_ps256(rslt34));
+    _mm256_store_ps(ptr_r4, _mm512_extractf32x8_ps(rslt34, 1));
+
+    const __m512 rslt = _mm256_mul_ps(_mm512_insertf32x4(_mm512_insertf32x4(
+        _mm512_insertf32x4(_mm512_castps128_ps512(
+            _mm_set1_ps(std::get<0>(ss))),    _mm_set1_ps(std::get<1>(ss)), 1),
+            _mm_set1_ps(std::get<2>(ss)), 2), _mm_set1_ps(std::get<3>(ss)), 3),
+        _mm512_insertf32x4(_mm512_insertf32x4(_mm512_insertf32x4(_mm256_castps128_ps256(
+            _mm_load_ps(ptr_m1+8)),    _mm_load_ps(ptr_m2+8), 1),
+            _mm_load_ps(ptr_m3+8), 2), _mm_load_ps(ptr_m4+8), 3)
+        );
+
+    _mm128_store_ps(ptr_r1+8, _mm512_extractf32x4_ps(rslt, 0));
+    _mm128_store_ps(ptr_r2+8, _mm512_extractf32x4_ps(rslt, 1));
+    _mm128_store_ps(ptr_r3+8, _mm512_extractf32x4_ps(rslt, 2));
+    _mm128_store_ps(ptr_r4+8, _mm512_extractf32x4_ps(rslt, 3));
+
+    return std::make_tuple(r1, r2, r4, r4);
 }
 
 // division
@@ -584,6 +771,100 @@ MAVE_INLINE matrix<float, 3, 3> operator/(
     _mm128_store_ps(ptr_r+8, _mm512_extractf32x4_ps(result, 2));
     return retval;
 }
+template<>
+MAVE_INLINE
+std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms,
+          std::tuple<float, float> ss) noexcept
+{
+    matrix<float, 3, 3> r1, r2;
+    typename matrix<float, 3, 3>::pointer       ptr_r1 = r1.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r2 = r2.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m1 = std::get<0>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m2 = std::get<1>(ms).data();
+
+    const __m512 rslt1 = _mm512_div_ps(
+        _mm512_insertf32x8(_mm512_castps256_512(_mm256_set1_ps(std::get<0>(ss))),
+                           _mm256_set1_ps(std::get<1>(ss)), 1),
+        _mm512_insertf32x8(_mm512_castps256_ps512(_mm256_load_ps(ptr_m1)),
+                           _mm256_load_ps(ptr_m2), 1));
+    _mm256_store_ps(ptr_r1, _mm512_castps512_ps256(rslt1));
+    _mm256_store_ps(ptr_r2, _mm512_extractf32x8_ps(rslt1, 1));
+
+    const __m256 rslt2 = _mm256_div_ps(
+        _mm256_insertf128_ps(_mm256_castps128_ps256(
+            _mm_set1_ps(std::get<0>(ss))), _mm_set1_ps(std::get<1>(ss)), 1),
+        _mm256_insertf128_ps(_mm256_castps128_ps256(
+            _mm_load_ps(ptr_m1+8)),        _mm_load_ps(ptr_m2+8),        1));
+
+    _mm128_store_ps(ptr_r1+8, _mm256_extractf128_ps(rslt2, 0));
+    _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(rslt2, 1));
+    return std::make_pair(r1, r2);
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>, matrix<float, 3, 3>>
+operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+                     const matrix<float, 3, 3>&> ms,
+          std::tuple<float, float, float> ss) noexcept
+{
+    const auto m12 = std::tuple<float, float>(std::get<0>(ss), std::get<1>(ss)) /
+                                     std::tie(std::get<0>(ms), std::get<1>(ms));
+    return std::make_tuple(std::get<0>(m12), std::get<1>(m12),
+                           std::get<2>(ss) / std::get<2>(ms));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>,
+           matrix<float, 3, 3>, matrix<float, 3, 3>>
+operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+                     const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms,
+          std::tuple<float, float, float, float> ss) noexcept
+{
+    matrix<float, 3, 3> r1, r2, r3, r4;
+    typename matrix<float, 3, 3>::pointer       ptr_r1 = r1.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r2 = r2.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r3 = r3.data();
+    typename matrix<float, 3, 3>::pointer       ptr_r4 = r4.data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m1 = std::get<0>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m2 = std::get<1>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m3 = std::get<2>(ms).data();
+    typename matrix<float, 3, 3>::const_pointer ptr_m4 = std::get<3>(ms).data();
+
+    const __m512 rslt12 = _mm512_div_ps(
+        _mm512_insertf32x8(_mm512_castps256_512(_mm256_set1_ps(std::get<0>(ss))),
+                           _mm256_set1_ps(std::get<1>(ss)), 1),
+        _mm512_insertf32x8(_mm512_castps256_ps512(_mm256_load_ps(ptr_m1)),
+                           _mm256_load_ps(ptr_m2), 1));
+    _mm256_store_ps(ptr_r1, _mm512_castps512_ps256(rslt12));
+    _mm256_store_ps(ptr_r2, _mm512_extractf32x8_ps(rslt12, 1));
+
+    const __m512 rslt34 = _mm512_div_ps(
+        _mm512_insertf32x8(_mm512_castps256_512(_mm256_set1_ps(std::get<2>(ss))),
+                           _mm256_set1_ps(std::get<3>(ss)), 1),
+        _mm512_insertf32x8(_mm512_castps256_ps512(_mm256_load_ps(ptr_m3)),
+                           _mm256_load_ps(ptr_m4), 1));
+    _mm256_store_ps(ptr_r3, _mm512_castps512_ps256(rslt34));
+    _mm256_store_ps(ptr_r4, _mm512_extractf32x8_ps(rslt34, 1));
+
+    const __m512 rslt = _mm256_div_ps(_mm512_insertf32x4(_mm512_insertf32x4(
+        _mm512_insertf32x4(_mm512_castps128_ps512(
+            _mm_set1_ps(std::get<0>(ss))),    _mm_set1_ps(std::get<1>(ss)), 1),
+            _mm_set1_ps(std::get<2>(ss)), 2), _mm_set1_ps(std::get<3>(ss)), 3),
+        _mm512_insertf32x4(_mm512_insertf32x4(_mm512_insertf32x4(_mm256_castps128_ps256(
+            _mm_load_ps(ptr_m1+8)),    _mm_load_ps(ptr_m2+8), 1),
+            _mm_load_ps(ptr_m3+8), 2), _mm_load_ps(ptr_m4+8), 3)
+        );
+
+    _mm128_store_ps(ptr_r1+8, _mm512_extractf32x4_ps(rslt, 0));
+    _mm128_store_ps(ptr_r2+8, _mm512_extractf32x4_ps(rslt, 1));
+    _mm128_store_ps(ptr_r3+8, _mm512_extractf32x4_ps(rslt, 2));
+    _mm128_store_ps(ptr_r4+8, _mm512_extractf32x4_ps(rslt, 3));
+
+    return std::make_tuple(r1, r2, r4, r4);
+}
+
+
 
 // ---------------------------------------------------------------------------
 // matrix3x3-matrix3x3 multiplication

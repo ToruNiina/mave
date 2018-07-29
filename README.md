@@ -12,7 +12,7 @@ It focuses on 3D vector operations (e.g. physical simulation, graphics, etc).
 |  CPU         | Sandy Bridge, Ivy Bridge | Haswell, Broadwell, Skylake   | Skylake-SP,X,W,DE |
 |              |                          | Kaby Lake, Coffee Lake        |                   |
 |  matrix3x3d  | --                       | OK                            | partially         |
-|  matrix3x3f  | --                       | OK                            | partially         |
+|  matrix3x3f  | --                       | OK                            | OK                |
 |  vector3d    | OK                       | OK                            | OK                |
 |  vector3f    | OK                       | OK                            | OK                |
 
