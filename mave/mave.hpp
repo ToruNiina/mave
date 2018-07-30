@@ -5,6 +5,7 @@
 #include "vector.hpp"
 #include "allocator.hpp"
 
+#if !defined(MAVE_NO_SIMD)
 // Skylake-X
 #if defined(__AVX512F__)  && defined(__AVX512CD__) &&\
     defined(__AVX512VL__) && defined(__AVX512DQ__) && defined(__AVX512BW__)
@@ -39,6 +40,11 @@
 #  include "avx/vector3f.hpp"
 #endif
 
+#if __FMA__
+#  include "fma/fma.hpp"
+#endif //__FMA__
+#endif
+
 #ifndef   MAVE_VECTOR3_DOUBLE_IMPLEMENTATION
 #  define MAVE_VECTOR3_DOUBLE_IMPLEMENTATION    "none"
 #endif
@@ -52,9 +58,6 @@
 #  define MAVE_MATRIX_3X3_FLOAT_IMPLEMENTATION  "none"
 #endif //__AVX__
 
-#if __FMA__
-#include "fma/fma.hpp"
-#endif //__FMA__
 
 namespace mave
 {
