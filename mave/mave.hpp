@@ -35,8 +35,12 @@
 #  include "avx2/vector_matrix_mul.hpp"
 // Sandybridge
 #elif defined(__AVX__)
+#  if defined(MAVE_USE_APPROXIMATION)
+#    include "avx/vector3f_approx.hpp"
+#  else
+#    include "avx/vector3f.hpp"
+#  endif
 #  include "avx/vector3d.hpp"
-#  include "avx/vector3f.hpp"
 #endif
 
 #ifndef   MAVE_VECTOR3_DOUBLE_IMPLEMENTATION
