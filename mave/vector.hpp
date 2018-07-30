@@ -167,6 +167,60 @@ inline T dot_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept
     return lhs[0]*rhs[0] + lhs[1]*rhs[1] + lhs[2]*rhs[2];
 }
 template<typename T>
+inline std::pair<T, T>
+dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&> lhs,
+            std::tuple<const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept
+{
+    return std::make_pair(
+            std::get<0>(lhs)[0] * std::get<0>(rhs)[0] +
+            std::get<0>(lhs)[1] * std::get<0>(rhs)[1] +
+            std::get<0>(lhs)[2] * std::get<0>(rhs)[2],
+            std::get<1>(lhs)[0] * std::get<1>(rhs)[0] +
+            std::get<1>(lhs)[1] * std::get<1>(rhs)[1] +
+            std::get<1>(lhs)[2] * std::get<1>(rhs)[2]);
+}
+template<typename T>
+inline std::tuple<T, T, T>
+dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                       const vector<T, 3>&> lhs,
+            std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                       const vector<T, 3>&> rhs) noexcept
+{
+    return std::make_pair(
+            std::get<0>(lhs)[0] * std::get<0>(rhs)[0] +
+            std::get<0>(lhs)[1] * std::get<0>(rhs)[1] +
+            std::get<0>(lhs)[2] * std::get<0>(rhs)[2],
+            std::get<1>(lhs)[0] * std::get<1>(rhs)[0] +
+            std::get<1>(lhs)[1] * std::get<1>(rhs)[1] +
+            std::get<1>(lhs)[2] * std::get<1>(rhs)[2],
+            std::get<2>(lhs)[0] * std::get<2>(rhs)[0] +
+            std::get<2>(lhs)[1] * std::get<2>(rhs)[1] +
+            std::get<2>(lhs)[2] * std::get<2>(rhs)[2]
+            );
+}
+template<typename T>
+inline std::tuple<T, T, T, T>
+dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                       const vector<T, 3>&, const vector<T, 3>&> lhs,
+            std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                       const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept
+{
+    return std::make_pair(
+            std::get<0>(lhs)[0] * std::get<0>(rhs)[0] +
+            std::get<0>(lhs)[1] * std::get<0>(rhs)[1] +
+            std::get<0>(lhs)[2] * std::get<0>(rhs)[2],
+            std::get<1>(lhs)[0] * std::get<1>(rhs)[0] +
+            std::get<1>(lhs)[1] * std::get<1>(rhs)[1] +
+            std::get<1>(lhs)[2] * std::get<1>(rhs)[2],
+            std::get<2>(lhs)[0] * std::get<2>(rhs)[0] +
+            std::get<2>(lhs)[1] * std::get<2>(rhs)[1] +
+            std::get<2>(lhs)[2] * std::get<2>(rhs)[2],
+            std::get<3>(lhs)[0] * std::get<3>(rhs)[0] +
+            std::get<3>(lhs)[1] * std::get<3>(rhs)[1] +
+            std::get<3>(lhs)[2] * std::get<3>(rhs)[2]);
+}
+
+template<typename T>
 inline vector<T, 3>
 cross_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept
 {
