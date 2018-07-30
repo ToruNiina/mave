@@ -3,6 +3,7 @@ set(TEST_NAMES
     test_length
     test_rlength
     test_regularize
+    test_dot_product
     test_add
     test_sub
     test_mul
