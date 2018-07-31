@@ -1013,6 +1013,9 @@ ceil(const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2,
     return std::make_tuple(std::get<0>(v12), std::get<1>(v12),
                            std::get<0>(v34), std::get<1>(v34));
 }
+
+// ---------------------------------------------------------------------------
+// dot_product
 // ---------------------------------------------------------------------------
 
 template<>
@@ -1023,6 +1026,121 @@ MAVE_INLINE float dot_product(
         _mm_mul_ps(_mm_load_ps(lhs.data()), _mm_load_ps(rhs.data())));
     return sq[0] + sq[1] + sq[2];
 }
+template<>
+MAVE_INLINE std::pair<float, float> dot_product(
+    std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> lhs,
+    std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> rhs
+    ) noexcept
+{
+    // gcc does not support _mm256_set_m128(arg2, arg1)
+    const __m256 vl12 = _mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(std::get<0>(lhs).data())), _mm_load_ps(std::get<1>(lhs).data()), 1);
+    const __m256 vr12 = _mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(std::get<0>(rhs).data())), _mm_load_ps(std::get<1>(rhs).data()), 1);
+
+    const __m256 mul = _mm256_mul_ps(vl12, vr12);
+
+    // |a1|a2|a3|00|b1|b2|b3|00| mul
+    //  +--'  |  |  +--'  |  |
+    //  |  .--+--'  |  .--+--'
+    //  |  |        |  |
+    // |aa|a0|xx|xx|bb|b0|xx|xx| hadd1
+    //  +--'  |  |  +--'  |  |
+    //  |  .--+--'  |  .--+--'
+    //  |  |        |  |
+    // |as|xx|xx|xx|bs|xx|xx|xx| hadd2
+
+    const __m256 hadd1 = _mm256_hadd_ps(mul,   mul);
+    const __m256 hadd2 = _mm256_hadd_ps(hadd1, hadd1);
+
+    return std::make_pair(
+            _mm_cvtss_f32(_mm256_extractf128_ps(hadd2, 0)),
+            _mm_cvtss_f32(_mm256_extractf128_ps(hadd2, 1)));
+}
+
+template<>
+MAVE_INLINE std::tuple<float, float, float> dot_product(
+    std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&,
+               const matrix<float, 3, 1>&> lhs,
+    std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&,
+               const matrix<float, 3, 1>&> rhs) noexcept
+{
+    const __m256 vl12   = _mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(std::get<0>(lhs).data())), _mm_load_ps(std::get<1>(lhs).data()), 1);
+    const __m256 vr12   = _mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(std::get<0>(rhs).data())), _mm_load_ps(std::get<1>(rhs).data()), 1);
+
+    const __m256 vl3x   = _mm256_castps128_ps256(_mm_load_ps(std::get<2>(lhs).data()));
+    const __m256 vr3x   = _mm256_castps128_ps256(_mm_load_ps(std::get<2>(rhs).data()));
+    const __m256 mul12 = _mm256_mul_ps(vl12, vr12);
+    const __m256 mul3x = _mm256_mul_ps(vl3x, vr3x);
+
+    // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|
+    //  +--'  |  |  +--'  |  |    +--'  +--'
+    //  |  .--+--'  |  .--+--'    |     |
+    //  |  |  .--.--|--|----------+-----'
+    // |aa|a0|cc|c0|bb|b0|xx|xx|
+    //  +--'  |  |  +--'  |  |
+    //  |  .--+--'  |  .--+--'
+    // |as|cs|xx|xx|bs|xx|xx|xx| result
+
+    const __m256 hadd1 = _mm256_hadd_ps(mul12, mul3x);
+    const __m256 hadd2 = _mm256_hadd_ps(hadd1, hadd1);
+
+    const __m128 acxx = _mm256_extractf128_ps(hadd2, 0);
+    const __m128 bxxx = _mm256_extractf128_ps(hadd2, 1);
+
+    // 01010101 == 85
+    return std::make_tuple(_mm_cvtss_f32(acxx), _mm_cvtss_f32(bxxx),
+                           _mm_cvtss_f32(_mm_permute_ps(acxx, 85u)));
+}
+
+template<>
+MAVE_INLINE std::tuple<float, float, float, float> dot_product(
+    std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&,
+               const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> lhs,
+    std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&,
+               const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> rhs
+               ) noexcept
+{
+    const __m256 vl13   = _mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(std::get<0>(lhs).data())), _mm_load_ps(std::get<2>(lhs).data()), 1);
+    const __m256 vl24   = _mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(std::get<1>(lhs).data())), _mm_load_ps(std::get<3>(lhs).data()), 1);
+
+    const __m256 vr13   = _mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(std::get<0>(rhs).data())), _mm_load_ps(std::get<2>(rhs).data()), 1);
+    const __m256 vr24   = _mm256_insertf128_ps(_mm256_castps128_ps256(
+        _mm_load_ps(std::get<1>(rhs).data())), _mm_load_ps(std::get<3>(rhs).data()), 1);
+
+    const __m256 mul13 = _mm256_mul_ps(vl13, vr13);
+    const __m256 mul24 = _mm256_mul_ps(vl24, vr24);
+
+    // |a1|a2|a3|00|c1|c2|c3|00| |b1|b2|b3|00|d1|d2|d3|00|
+    //  +--'  |  |  +--'  |  |    +--'  +--'  |  |  |  |
+    //  |  .--+--'  |  .--+--'    |     |     |  |  |  |
+    //  |  |  .--.--|--|--.--.----+-----'-----+--'--+--'
+    // |aa|a0|bb|b0|cc|c0|dd|d0| hadd1
+    //  +--'  |  |  +--'  |  |
+    //  |  .--+--'  |  .--+--'
+    // |as|bs|as|bs|cs|ds|cs|ds| hadd2
+
+    const __m256 hadd1 = _mm256_hadd_ps(mul13, mul24);
+    const __m256 hadd2 = _mm256_hadd_ps(hadd1, hadd1);
+
+    const __m128 abab = _mm256_extractf128_ps(hadd2, 0);
+    const __m128 cdcd = _mm256_extractf128_ps(hadd2, 1);
+    // 1100 == 12
+    const __m128 abcd = _mm_blend_ps(abab, cdcd, 12u);
+
+    alignas(16) float result[4];
+    _mm_store_ps(result, abcd);
+    return std::make_tuple(result[0], result[1], result[2], result[3]);
+}
+
+// ---------------------------------------------------------------------------
+// cross_product
+// ---------------------------------------------------------------------------
 
 template<>
 MAVE_INLINE matrix<float, 3, 1> cross_product(
