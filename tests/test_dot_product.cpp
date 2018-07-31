@@ -7,7 +7,7 @@
 #include <tests/tolerance.hpp>
 
 typedef boost::mpl::list<
-    mave::vector<double, 3>,    mave::vector<float, 3>,
+    mave::vector<double, 3>,    mave::vector<float, 3>
     > test_targets;
 
 constexpr std::size_t N = 12000;
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(dot_product_3arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(addition_4arg, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(dot_product_4arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
     const auto vectors1 = mave::test::generate_random<T>(N, mt);

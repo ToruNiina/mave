@@ -971,11 +971,6 @@ std::pair<double, double> dot_product(
     ) noexcept
 {
     alignas(16) double pack[2];
-    const __m256d arg_l1 = ;
-    const __m256d arg_l2 = ;
-    const __m256d arg_r1 = ;
-    const __m256d arg_r2 = ;
-
     // |a1|a2|a3|00| |b1|b2|b3|00|
     //  +--'  +--'    +--'  |  |
     //  |  .--|-------'     |  | hadd

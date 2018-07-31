@@ -1021,9 +1021,9 @@ MAVE_INLINE std::pair<float, float> dot_product(
 {
     // gcc does not support _mm256_set_m128(arg2, arg1)
     const __m256 vl12 = _mm256_insertf128_ps(_mm256_castps128_ps256(
-        _mm_load_ps(std::get<0>(lhs))), _mm_load_ps(std::get<1>(lhs)), 1);
+        _mm_load_ps(std::get<0>(lhs).data())), _mm_load_ps(std::get<1>(lhs).data()), 1);
     const __m256 vr12 = _mm256_insertf128_ps(_mm256_castps128_ps256(
-        _mm_load_ps(std::get<0>(rhs))), _mm_load_ps(std::get<1>(rhs)), 1);
+        _mm_load_ps(std::get<0>(rhs).data())), _mm_load_ps(std::get<1>(rhs).data()), 1);
 
     const __m256 mul = _mm256_mul_ps(vl12, vr12);
 
@@ -1053,12 +1053,12 @@ MAVE_INLINE std::tuple<float, float, float> dot_product(
                const matrix<float, 3, 1>&> rhs) noexcept
 {
     const __m256 vl12   = _mm256_insertf128_ps(_mm256_castps128_ps256(
-        _mm_load_ps(std::get<0>(lhs))), _mm_load_ps(std::get<1>(lhs)), 1);
+        _mm_load_ps(std::get<0>(lhs).data())), _mm_load_ps(std::get<1>(lhs).data()), 1);
     const __m256 vr12   = _mm256_insertf128_ps(_mm256_castps128_ps256(
-        _mm_load_ps(std::get<0>(rhs))), _mm_load_ps(std::get<1>(rhs)), 1);
+        _mm_load_ps(std::get<0>(rhs).data())), _mm_load_ps(std::get<1>(rhs).data()), 1);
 
-    const __m256 vl3x   = _mm256_castps128_ps256(_mm_load_ps(std::get<2>(lhs)));
-    const __m256 vr3x   = _mm256_castps128_ps256(_mm_load_ps(std::get<2>(rhs)));
+    const __m256 vl3x   = _mm256_castps128_ps256(_mm_load_ps(std::get<2>(lhs).data()));
+    const __m256 vr3x   = _mm256_castps128_ps256(_mm_load_ps(std::get<2>(rhs).data()));
     const __m256 mul12 = _mm256_mul_ps(vl12, vr12);
     const __m256 mul3x = _mm256_mul_ps(vl3x, vr3x);
 
@@ -1091,14 +1091,14 @@ MAVE_INLINE std::tuple<float, float, float, float> dot_product(
                ) noexcept
 {
     const __m256 vl13   = _mm256_insertf128_ps(_mm256_castps128_ps256(
-        _mm_load_ps(std::get<0>(lhs))), _mm_load_ps(std::get<2>(lhs)), 1);
+        _mm_load_ps(std::get<0>(lhs).data())), _mm_load_ps(std::get<2>(lhs).data()), 1);
     const __m256 vl24   = _mm256_insertf128_ps(_mm256_castps128_ps256(
-        _mm_load_ps(std::get<1>(lhs))), _mm_load_ps(std::get<3>(lhs)), 1);
+        _mm_load_ps(std::get<1>(lhs).data())), _mm_load_ps(std::get<3>(lhs).data()), 1);
 
     const __m256 vr13   = _mm256_insertf128_ps(_mm256_castps128_ps256(
-        _mm_load_ps(std::get<0>(rhs))), _mm_load_ps(std::get<2>(rhs)), 1);
+        _mm_load_ps(std::get<0>(rhs).data())), _mm_load_ps(std::get<2>(rhs).data()), 1);
     const __m256 vr24   = _mm256_insertf128_ps(_mm256_castps128_ps256(
-        _mm_load_ps(std::get<1>(rhs))), _mm_load_ps(std::get<3>(rhs)), 1);
+        _mm_load_ps(std::get<1>(rhs).data())), _mm_load_ps(std::get<3>(rhs).data()), 1);
 
     const __m256 mul13 = _mm256_mul_ps(vl13, vr13);
     const __m256 mul24 = _mm256_mul_ps(vl24, vr24);
