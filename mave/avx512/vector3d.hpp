@@ -998,6 +998,8 @@ ceil(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
 }
 
 // ---------------------------------------------------------------------------
+// dot_product
+// ---------------------------------------------------------------------------
 
 template<>
 MAVE_INLINE double dot_product(
@@ -1008,6 +1010,122 @@ MAVE_INLINE double dot_product(
         _mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data())));
     return pack[0] + pack[1] + pack[2];
 }
+template<>
+MAVE_INLINE std::pair<double, double> dot_product(
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> lhs,
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> rhs
+    ) noexcept
+{
+    alignas(16) double pack[2];
+    // |a1|a2|a3|00| |b1|b2|b3|00|
+    //  +--'  +--'    +--'  |  |
+    //  |  .--|-------'     |  | hadd
+    //  |  |  |  .----------+--'
+    // |aa|bb|a3|b3| hadd
+    //  |  |   |  |
+    //  v  v   |  |
+    // |aa|bb| |  | extractf128_pd
+    // |a3|b3|<+--+
+
+    const __m256d hadd = _mm256_hadd_pd(
+        _mm256_mul_pd(_mm256_load_pd(std::get<0>(lhs).data()),
+                      _mm256_load_pd(std::get<0>(rhs).data())),
+        _mm256_mul_pd(_mm256_load_pd(std::get<1>(lhs).data()),
+                      _mm256_load_pd(std::get<1>(rhs).data())));
+
+    _mm_store_pd(pack, _mm_add_pd(_mm256_extractf128_pd(hadd, 0),
+                                  _mm256_extractf128_pd(hadd, 1)));
+    return std::make_pair(pack[0], pack[1]);
+}
+
+template<>
+MAVE_INLINE std::tuple<double, double, double> dot_product(
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&,
+               const matrix<double, 3, 1>&> lhs,
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&,
+               const matrix<double, 3, 1>&> rhs) noexcept
+{
+    alignas(32) double pack[4];
+    const __m512d argl12 = _mm512_insertf64x4(_mm512_castpd256_pd512(
+        _mm256_load_pd(std::get<0>(lhs).data())),
+        _mm256_load_pd(std::get<1>(lhs).data()), 1);
+    const __m512d argr12 = _mm512_insertf64x4(_mm512_castpd256_pd512(
+        _mm256_load_pd(std::get<0>(rhs).data())),
+        _mm256_load_pd(std::get<1>(rhs).data()), 1);
+
+    const __m512d mul12 = _mm512_mul_pd(argl12, argr12);
+    const __m512d mul3x = _mm512_castpd256_pd512(_mm256_mul_pd(
+        _mm256_load_pd(std::get<2>(lhs).data()),
+        _mm256_load_pd(std::get<2>(rhs).data())));
+
+    // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|xx|xx|xx|xx|
+    //   0  1  2  3  4  5  6  7    8  9  A  B  C  D  E  F
+    //
+    //   0  4  8  3  1  5  9  7  _mm512_permutex2var_pd
+    // |a1|b1|c1|00|a2|b2|c2|00|
+    //   2  6  A  3  2  6  A  3  _mm512_permutex2var_pd
+    // |a3|b3|c3|00|a3|b3|c3|00|
+
+    const __m512d abc12 = _mm512_permutex2var_pd(mul12,_mm512_set_epi64(
+            0x07, 0x09, 0x05, 0x01, 0x03, 0x08, 0x04, 0x00), mul3x);
+    const __m512d abc3x = _mm512_permutex2var_pd(mul12,_mm512_set_epi64(
+            0x03, 0x0A, 0x06, 0x02, 0x03, 0x0A, 0x06, 0x02), mul3x);
+
+    _mm256_store_pd(pack, _mm256_add_pd(_mm256_add_pd(
+            _mm512_castpd512_pd256(abc12), _mm512_extractf64x4_pd(abc12, 1)
+            ), _mm512_castpd512_pd256(abc3x)));
+    return std::make_tuple(pack[0], pack[1], pack[2]);
+}
+
+template<>
+MAVE_INLINE std::tuple<double, double, double, double> dot_product(
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&,
+               const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> lhs,
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&,
+               const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> rhs
+               ) noexcept
+{
+    alignas(32) double pack[4];
+    const __m512d argl12 = _mm512_insertf64x4(_mm512_castpd256_pd512(
+        _mm256_load_pd(std::get<0>(lhs).data())),
+        _mm256_load_pd(std::get<1>(lhs).data()), 1);
+    const __m512d argl34 = _mm512_insertf64x4(_mm512_castpd256_pd512(
+        _mm256_load_pd(std::get<2>(lhs).data())),
+        _mm256_load_pd(std::get<3>(lhs).data()), 1);
+
+    const __m512d argr12 = _mm512_insertf64x4(_mm512_castpd256_pd512(
+        _mm256_load_pd(std::get<0>(rhs).data())),
+        _mm256_load_pd(std::get<1>(rhs).data()), 1);
+    const __m512d argr34 = _mm512_insertf64x4(_mm512_castpd256_pd512(
+        _mm256_load_pd(std::get<2>(rhs).data())),
+        _mm256_load_pd(std::get<3>(rhs).data()), 1);
+
+    const __m512d mul12 = _mm512_mul_pd(argl12, argr12);
+    const __m512d mul34 = _mm512_mul_pd(argl34, argr34);
+
+    // |a1|a2|a3|00|b1|b2|b3|00| |c1|c2|c3|00|d1|d2|d3|00|
+    //   0  1  2  3  4  5  6  7    8  9  A  B  C  D  E  F
+    //
+    //   0  4  8  C  1  5  9  D  _mm512_permutex2var_pd
+    // |a1|b1|c1|d1|a2|b2|c2|d2|
+    //   2  6  A  E  2  6  A  E  _mm512_permutex2var_pd
+    // |a3|b3|c3|d3|a3|b3|c3|d3|
+
+    const __m512d abc12 = _mm512_permutex2var_pd(mul12,_mm512_set_epi64(
+            0x0D, 0x09, 0x05, 0x01, 0x0C, 0x08, 0x04, 0x00), mul34);
+    const __m512d abc3x = _mm512_permutex2var_pd(mul12,_mm512_set_epi64(
+            0x0E, 0x0A, 0x06, 0x02, 0x0E, 0x0A, 0x06, 0x02), mul34);
+
+    _mm256_store_pd(pack, _mm256_add_pd(_mm256_add_pd(
+            _mm512_castpd512_pd256(abc12), _mm512_extractf64x4_pd(abc12, 1)
+            ), _mm512_castpd512_pd256(abc3x)));
+
+    return std::make_tuple(pack[0], pack[1], pack[2], pack[3]);
+}
+
+// ---------------------------------------------------------------------------
+// cross_product
+// ---------------------------------------------------------------------------
 
 template<>
 MAVE_INLINE matrix<double, 3, 1> cross_product(
