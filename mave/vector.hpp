@@ -186,7 +186,7 @@ dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
             std::tuple<const vector<T, 3>&, const vector<T, 3>&,
                        const vector<T, 3>&> rhs) noexcept
 {
-    return std::make_pair(
+    return std::make_tuple(
             std::get<0>(lhs)[0] * std::get<0>(rhs)[0] +
             std::get<0>(lhs)[1] * std::get<0>(rhs)[1] +
             std::get<0>(lhs)[2] * std::get<0>(rhs)[2],
@@ -205,7 +205,7 @@ dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
             std::tuple<const vector<T, 3>&, const vector<T, 3>&,
                        const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept
 {
-    return std::make_pair(
+    return std::make_tuple(
             std::get<0>(lhs)[0] * std::get<0>(rhs)[0] +
             std::get<0>(lhs)[1] * std::get<0>(rhs)[1] +
             std::get<0>(lhs)[2] * std::get<0>(rhs)[2],
