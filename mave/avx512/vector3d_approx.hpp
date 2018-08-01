@@ -1164,8 +1164,8 @@ MAVE_INLINE matrix<double, 3, 1> cross_product(
     const __m256d arg2 = _mm256_load_pd(y.data());
 
     // 3 0 2 1 --> 0b 11 00 10 01 == 201
-    const __m256d y_ = _mm256_permute4x64_pd(arg1, 201u);
-    const __m256d x_ = _mm256_permute4x64_pd(arg2, 201u);
+    const __m256d x_ = _mm256_permute4x64_pd(arg1, 201u);
+    const __m256d y_ = _mm256_permute4x64_pd(arg2, 201u);
 
     const __m256d z =
 #ifdef __FMA__

@@ -1136,8 +1136,8 @@ MAVE_INLINE matrix<float, 3, 1> cross_product(
     const __m128 y_ = _mm_set_ps(0.0, y[0], y[2], y[1]);
     const __m128 x_ = _mm_set_ps(0.0, x[0], x[2], x[1]);
 
-    const matrix<float, 3, 1> tmp(_mm_sub_ps(
-            _mm_mul_ps(_mm_load_ps(x.data()), y_),
+    const matrix<float, 3, 1> tmp(_mm_fmsub_ps(
+            _mm_load_ps(x.data()), y_,
             _mm_mul_ps(_mm_load_ps(y.data()), x_)));
 
     return matrix<float, 3, 1>(tmp[1], tmp[2], tmp[0]);

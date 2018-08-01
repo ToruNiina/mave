@@ -5,6 +5,10 @@
 #error "mave/avx2/vector3d.hpp requires avx support but __AVX2__ is not defined."
 #endif
 
+#ifndef __FMA__
+#error "mave/avx2/vector3d.hpp requires fma support but __FMA__ is not defined."
+#endif
+
 #ifndef MAVE_VECTOR_HPP
 #error "do not use mave/avx/vector3d.hpp alone. please include mave/vector.hpp."
 #endif
@@ -1079,17 +1083,12 @@ MAVE_INLINE matrix<double, 3, 1> cross_product(
     const __m256d arg2 = _mm256_load_pd(y.data());
 
     // 3 0 2 1 --> 0b 11 00 10 01 == 201
-    const __m256d y_ = _mm256_permute4x64_pd(arg1, 201u);
-    const __m256d x_ = _mm256_permute4x64_pd(arg2, 201u);
+    const __m256d x_ = _mm256_permute4x64_pd(arg1, 201);
+    const __m256d y_ = _mm256_permute4x64_pd(arg2, 201);
 
-    const __m256d z =
-#ifdef __FMA__
-        _mm256_fmsub_pd(arg1, y_, _mm256_mul_pd(arg2, x_));
-#else
-        _mm256_sub_pd(_mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_));
-#endif
+    const __m256d z = _mm256_fmsub_pd(arg1, y_, _mm256_mul_pd(arg2, x_));
 
-    return _mm256_permute4x64_pd(z, 201u);
+    return _mm256_permute4x64_pd(z, 201);
 }
 
 template<>
@@ -1103,8 +1102,8 @@ MAVE_INLINE double scalar_triple_product(
     const __m256d arg3 = _mm256_load_pd(v3.data());
 
     // 3 0 2 1 --> 0b 11 00 10 01 == 201
-    const __m256d y_ = _mm256_permute4x64_pd(arg1, 201u);
-    const __m256d x_ = _mm256_permute4x64_pd(arg2, 201u);
+    const __m256d x_ = _mm256_permute4x64_pd(arg1, 201);
+    const __m256d y_ = _mm256_permute4x64_pd(arg2, 201);
 
     _mm256_store_pd(pack, _mm256_mul_pd(_mm256_permute4x64_pd(arg3, 201u),
 #ifdef __FMA__
