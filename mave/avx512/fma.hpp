@@ -1,12 +1,12 @@
-#ifndef MAVE_AVX2_FMA_HPP
-#define MAVE_AVX2_FMA_HPP
+#ifndef MAVE_AVX512_FMA_HPP
+#define MAVE_AVX512_FMA_HPP
 
 #ifndef __FMA__
-#error "mave/fma.hpp requires fma support but __FMA__ is not defined."
+#error "mave/avx512/fma.hpp requires fma support but __FMA__ is not defined."
 #endif
 
 #ifndef MAVE_VECTOR_HPP
-#error "do not use mave/fma/fma.hpp alone. please include mave/vector.hpp."
+#error "do not use mave/fma/fma.hpp alone. please include mave/mave.hpp."
 #endif
 
 #include <x86intrin.h> // for *nix

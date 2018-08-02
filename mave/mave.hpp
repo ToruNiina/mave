@@ -9,6 +9,10 @@
 #  if defined(__AVX512F__)  && defined(__AVX512CD__) &&\
       defined(__AVX512VL__) && defined(__AVX512DQ__) && defined(__AVX512BW__)
 // Skylake-X
+#    if !defined(__FMA__)
+#      error "mave avx2 implementation requires FMA instruction set."
+#    endif
+#    include "avx512/fma.hpp"
 #    if defined(MAVE_USE_APPROXIMATION)
 #      include "avx512/vector3f_approx.hpp"
 #      include "avx512/vector3d_approx.hpp"
@@ -23,6 +27,7 @@
 #    if !defined(__FMA__)
 #      error "mave avx2 implementation requires FMA instruction set."
 #    endif
+#    include "avx2/fma.hpp"
 #    if defined(MAVE_USE_APPROXIMATION)
 #      include "avx2/vector3f_approx.hpp"
 #    else
