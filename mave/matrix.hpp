@@ -572,6 +572,8 @@ ceil(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2,
 // Fused Multiply Add
 // ---------------------------------------------------------------------------
 
+// fmadd : a * b + c
+
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE matrix<T, R, C> fmadd(
     const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
@@ -584,6 +586,61 @@ MAVE_INLINE matrix<T, R, C> fmadd(
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+fmadd(std::tuple<T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(std::get<0>(a), std::get<0>(b)[i], std::get<0>(c)[i]);
+        r2[i] = std::fma(std::get<1>(a), std::get<1>(b)[i], std::get<1>(c)[i]);
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+fmadd(std::tuple<T, T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(std::get<0>(a), std::get<0>(b)[i], std::get<0>(c)[i]);
+        r2[i] = std::fma(std::get<1>(a), std::get<1>(b)[i], std::get<1>(c)[i]);
+        r3[i] = std::fma(std::get<2>(a), std::get<2>(b)[i], std::get<2>(c)[i]);
+    }
+    return std::make_pair(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+fmadd(std::tuple<T, T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&, const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(std::get<0>(a), std::get<0>(b)[i], std::get<0>(c)[i]);
+        r2[i] = std::fma(std::get<1>(a), std::get<1>(b)[i], std::get<1>(c)[i]);
+        r3[i] = std::fma(std::get<2>(a), std::get<2>(b)[i], std::get<2>(c)[i]);
+        r4[i] = std::fma(std::get<3>(a), std::get<3>(b)[i], std::get<3>(c)[i]);
+    }
+    return std::make_pair(r1, r2, r3, r4);
+}
+
+// fmsub : a * b - c
+
+template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE matrix<T, R, C> fmsub(
     const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
 {
@@ -594,10 +651,64 @@ MAVE_INLINE matrix<T, R, C> fmsub(
     }
     return retval;
 }
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+fmsub(std::tuple<T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(std::get<0>(a), std::get<0>(b)[i], -std::get<0>(c)[i]);
+        r2[i] = std::fma(std::get<1>(a), std::get<1>(b)[i], -std::get<1>(c)[i]);
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+fmsub(std::tuple<T, T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(std::get<0>(a), std::get<0>(b)[i], -std::get<0>(c)[i]);
+        r2[i] = std::fma(std::get<1>(a), std::get<1>(b)[i], -std::get<1>(c)[i]);
+        r3[i] = std::fma(std::get<2>(a), std::get<2>(b)[i], -std::get<2>(c)[i]);
+    }
+    return std::make_pair(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+fmsub(std::tuple<T, T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&, const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(std::get<0>(a), std::get<0>(b)[i], -std::get<0>(c)[i]);
+        r2[i] = std::fma(std::get<1>(a), std::get<1>(b)[i], -std::get<1>(c)[i]);
+        r3[i] = std::fma(std::get<2>(a), std::get<2>(b)[i], -std::get<2>(c)[i]);
+        r4[i] = std::fma(std::get<3>(a), std::get<3>(b)[i], -std::get<3>(c)[i]);
+    }
+    return std::make_pair(r1, r2, r3, r4);
+}
+
+// fnmadd : -a * b + c
 
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE matrix<T, R, C> fnmadd(
-    const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
+MAVE_INLINE matrix<T, R, C>
+fnmadd(const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
 {
     matrix<T, R, C> retval;
     for(std::size_t i=0; i<R*C; ++i)
@@ -607,8 +718,63 @@ MAVE_INLINE matrix<T, R, C> fnmadd(
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE matrix<T, R, C> fnmsub(
-    const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
+MAVE_INLINE
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+fnmadd(std::tuple<T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(-std::get<0>(a), std::get<0>(b)[i], std::get<0>(c)[i]);
+        r2[i] = std::fma(-std::get<1>(a), std::get<1>(b)[i], std::get<1>(c)[i]);
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+fnmadd(std::tuple<T, T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(-std::get<0>(a), std::get<0>(b)[i], std::get<0>(c)[i]);
+        r2[i] = std::fma(-std::get<1>(a), std::get<1>(b)[i], std::get<1>(c)[i]);
+        r3[i] = std::fma(-std::get<2>(a), std::get<2>(b)[i], std::get<2>(c)[i]);
+    }
+    return std::make_pair(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+fnmadd(std::tuple<T, T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&, const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(-std::get<0>(a), std::get<0>(b)[i], std::get<0>(c)[i]);
+        r2[i] = std::fma(-std::get<1>(a), std::get<1>(b)[i], std::get<1>(c)[i]);
+        r3[i] = std::fma(-std::get<2>(a), std::get<2>(b)[i], std::get<2>(c)[i]);
+        r4[i] = std::fma(-std::get<3>(a), std::get<3>(b)[i], std::get<3>(c)[i]);
+    }
+    return std::make_pair(r1, r2, r3, r4);
+}
+
+// fnmsub : -a * b - c
+
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE matrix<T, R, C>
+fnmsub(const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
 {
     matrix<T, R, C> retval;
     for(std::size_t i=0; i<R*C; ++i)
@@ -617,6 +783,58 @@ MAVE_INLINE matrix<T, R, C> fnmsub(
     }
     return retval;
 }
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::pair<matrix<T, R, C>, matrix<T, R, C>>
+fnmsub(std::tuple<T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(-std::get<0>(a), std::get<0>(b)[i], -std::get<0>(c)[i]);
+        r2[i] = std::fma(-std::get<1>(a), std::get<1>(b)[i], -std::get<1>(c)[i]);
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+fnmsub(std::tuple<T, T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(-std::get<0>(a), std::get<0>(b)[i], -std::get<0>(c)[i]);
+        r2[i] = std::fma(-std::get<1>(a), std::get<1>(b)[i], -std::get<1>(c)[i]);
+        r3[i] = std::fma(-std::get<2>(a), std::get<2>(b)[i], -std::get<2>(c)[i]);
+    }
+    return std::make_pair(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+fnmsub(std::tuple<T, T, T> a,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&, const matrix<T, R, C>&> b,
+      std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+                 const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::fma(-std::get<0>(a), std::get<0>(b)[i], -std::get<0>(c)[i]);
+        r2[i] = std::fma(-std::get<1>(a), std::get<1>(b)[i], -std::get<1>(c)[i]);
+        r3[i] = std::fma(-std::get<2>(a), std::get<2>(b)[i], -std::get<2>(c)[i]);
+        r4[i] = std::fma(-std::get<3>(a), std::get<3>(b)[i], -std::get<3>(c)[i]);
+    }
+    return std::make_pair(r1, r2, r3, r4);
+}
 
 } // mave
-#endif
+#endif // MAVE_MATRIX_HPP
