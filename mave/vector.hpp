@@ -228,14 +228,42 @@ cross_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept
                         lhs[2] * rhs[0] - lhs[0] * rhs[2],
                         lhs[0] * rhs[1] - lhs[1] * rhs[0]);
 }
+
 template<typename T>
-inline T scalar_triple_product(
-    const vector<T, 3>& lhs, const vector<T, 3>& mid, const vector<T, 3>& rhs
-    ) noexcept
+std::pair<vector<T, 3>, vector<T, 3>>
+cross_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&> lhs,
+              std::tuple<const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept
 {
-    return (lhs[1] * mid[2] - lhs[2] * mid[1]) * rhs[0] +
-           (lhs[2] * mid[0] - lhs[0] * mid[2]) * rhs[1] +
-           (lhs[0] * mid[1] - lhs[1] * mid[0]) * rhs[2];
+    return std::make_pair(
+            cross_product(std::get<0>(lhs), std::get<0>(rhs)),
+            cross_product(std::get<1>(lhs), std::get<1>(rhs)));
+}
+
+template<typename T>
+std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>>
+cross_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                         const vector<T, 3>&> lhs,
+              std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                         const vector<T, 3>&> rhs) noexcept
+{
+    return std::make_tuple(
+            cross_product(std::get<0>(lhs), std::get<0>(rhs)),
+            cross_product(std::get<1>(lhs), std::get<1>(rhs)),
+            cross_product(std::get<2>(lhs), std::get<2>(rhs)));
+}
+
+template<typename T>
+std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>, vector<T, 3>>
+cross_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                         const vector<T, 3>&, const vector<T, 3>&> lhs,
+              std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                         const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept
+{
+    return std::make_tuple(
+            cross_product(std::get<0>(lhs), std::get<0>(rhs)),
+            cross_product(std::get<1>(lhs), std::get<1>(rhs)),
+            cross_product(std::get<2>(lhs), std::get<2>(rhs)),
+            cross_product(std::get<3>(lhs), std::get<3>(rhs)));
 }
 
 } // mave

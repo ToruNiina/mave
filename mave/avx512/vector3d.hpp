@@ -1148,30 +1148,5 @@ MAVE_INLINE matrix<double, 3, 1> cross_product(
     return _mm256_permute4x64_pd(z, 201u);
 }
 
-template<>
-MAVE_INLINE double scalar_triple_product(
-    const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
-    const matrix<double, 3, 1>& v3) noexcept
-{
-    alignas(32) double pack[4];
-    const __m256d arg1 = _mm256_load_pd(v1.data());
-    const __m256d arg2 = _mm256_load_pd(v2.data());
-    const __m256d arg3 = _mm256_load_pd(v3.data());
-
-    // 3 0 2 1 --> 0b 11 00 10 01 == 201
-    const __m256d x_ = _mm256_permute4x64_pd(arg1, 201u);
-    const __m256d y_ = _mm256_permute4x64_pd(arg2, 201u);
-
-    _mm256_store_pd(pack, _mm256_mul_pd(_mm256_permute4x64_pd(arg3, 201u),
-#ifdef __FMA__
-        _mm256_fmsub_pd(arg1, y_, _mm256_mul_pd(arg2, x_))
-#else
-        _mm256_sub_pd(_mm256_mul_pd(arg1, y_), _mm256_mul_pd(arg2, x_))
-#endif
-        ));
-
-    return pack[0] + pack[1] + pack[2];
-}
-
 } // mave
 #endif // MAVE_MATH_MATRIX_HPP

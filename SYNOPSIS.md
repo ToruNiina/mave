@@ -313,7 +313,7 @@ regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
            const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept;
 ```
 
-### vector products
+### `dot_product`
 
 
 ```cpp
@@ -321,12 +321,50 @@ template<typename T>
 T dot_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept;
 
 template<typename T>
+std::pair<T, T>
+dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&> lhs,
+            std::tuple<const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept;
+
+template<typename T>
+std::tuple<T, T, T>
+dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                       const vector<T, 3>&> lhs,
+            std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                       const vector<T, 3>&> rhs) noexcept;
+
+template<typename T>
+std::tuple<T, T, T, T>
+dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                       const vector<T, 3>&, const vector<T, 3>&> lhs,
+            std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                       const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept;
+```
+
+### `cross_product`
+
+```cpp
+template<typename T>
 vector<T, 3>
 cross_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept;
 
 template<typename T>
-T scalar_triple_product(const vector<T, 3>& v1, const vector<T, 3>& v2,
-                        const vector<T, 3>& v3) noexcept;
+std::pair<vector<T, 3>, vector<T, 3>>
+cross_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&> lhs,
+              std::tuple<const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept;
+
+template<typename T>
+std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>>
+cross_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                         const vector<T, 3>&> lhs,
+              std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                         const vector<T, 3>&> rhs) noexcept;
+
+template<typename T>
+std::tuple<vector<T, 3>, vector<T, 3>, vector<T, 3>, vector<T, 3>>
+cross_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                         const vector<T, 3>&, const vector<T, 3>&> lhs,
+              std::tuple<const vector<T, 3>&, const vector<T, 3>&,
+                         const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept;
 ```
 
 ## allocator

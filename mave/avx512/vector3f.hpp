@@ -1343,15 +1343,5 @@ MAVE_INLINE matrix<float, 3, 1> cross_product(
     return matrix<float, 3, 1>(tmp[1], tmp[2], tmp[0]);
 }
 
-template<>
-MAVE_INLINE float scalar_triple_product(
-    const matrix<float, 3, 1>& lhs, const matrix<float, 3, 1>& mid,
-    const matrix<float, 3, 1>& rhs) noexcept
-{
-    return (lhs[1] * mid[2] - lhs[2] * mid[1]) * rhs[0] +
-           (lhs[2] * mid[0] - lhs[0] * mid[2]) * rhs[1] +
-           (lhs[0] * mid[1] - lhs[1] * mid[0]) * rhs[2];
-}
-
 } // mave
 #endif // MAVE_MATH_MATRIX_HPP
