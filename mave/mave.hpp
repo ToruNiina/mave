@@ -6,47 +6,41 @@
 #include "allocator.hpp"
 
 #if !defined(MAVE_NO_SIMD)
+#  if defined(__AVX512F__)  && defined(__AVX512CD__) &&\
+      defined(__AVX512VL__) && defined(__AVX512DQ__) && defined(__AVX512BW__)
 // Skylake-X
-#if defined(__AVX512F__)  && defined(__AVX512CD__) &&\
-    defined(__AVX512VL__) && defined(__AVX512DQ__) && defined(__AVX512BW__)
-#  if defined(MAVE_USE_APPROXIMATION)
-#    include "avx512/vector3f_approx.hpp"
-#    include "avx512/vector3d_approx.hpp"
-#  else
-#    include "avx512/vector3f.hpp"
-#    include "avx512/vector3d.hpp"
-#  endif
-#  include "avx512/matrix3x3f.hpp"
-#  include "avx512/matrix3x3d.hpp"
-//  Xeon Phi Knights Landing...
-// #if defined(__AVX512F__)  && defined(__AVX512CD__) &&\
-//     defined(__AVX512ER__) && defined(__AVX512PF__)
-// not supported.
-//
+#    if defined(MAVE_USE_APPROXIMATION)
+#      include "avx512/vector3f_approx.hpp"
+#      include "avx512/vector3d_approx.hpp"
+#    else
+#      include "avx512/vector3f.hpp"
+#      include "avx512/vector3d.hpp"
+#    endif
+#    include "avx512/matrix3x3f.hpp"
+#    include "avx512/matrix3x3d.hpp"
+#  elif defined(__AVX2__)
 // Haswell, Broadwell, Skylake-S
-#elif defined(__AVX2__)
-#  if defined(MAVE_USE_APPROXIMATION)
-#    include "avx2/vector3f_approx.hpp"
-#  else
-#    include "avx2/vector3f.hpp"
-#  endif
-#  include "avx2/vector3d.hpp"
-#  include "avx2/matrix3x3d.hpp"
-#  include "avx2/matrix3x3f.hpp"
-#  include "avx2/vector_matrix_mul.hpp"
+#    if !defined(__FMA__)
+#      error "mave avx2 implementation requires FMA instruction set."
+#    endif
+#    if defined(MAVE_USE_APPROXIMATION)
+#      include "avx2/vector3f_approx.hpp"
+#    else
+#      include "avx2/vector3f.hpp"
+#    endif
+#    include "avx2/vector3d.hpp"
+#    include "avx2/matrix3x3d.hpp"
+#    include "avx2/matrix3x3f.hpp"
+#    include "avx2/vector_matrix_mul.hpp"
+#  elif defined(__AVX__)
 // Sandybridge
-#elif defined(__AVX__)
-#  if defined(MAVE_USE_APPROXIMATION)
-#    include "avx/vector3f_approx.hpp"
-#  else
-#    include "avx/vector3f.hpp"
+#    if defined(MAVE_USE_APPROXIMATION)
+#      include "avx/vector3f_approx.hpp"
+#    else
+#      include "avx/vector3f.hpp"
+#    endif
+#    include "avx/vector3d.hpp"
 #  endif
-#  include "avx/vector3d.hpp"
-#endif
-
-#if __FMA__
-#  include "fma/fma.hpp"
-#endif //__FMA__
 #endif
 
 #ifndef   MAVE_VECTOR3_DOUBLE_IMPLEMENTATION
@@ -61,7 +55,6 @@
 #ifndef   MAVE_MATRIX_3X3_FLOAT_IMPLEMENTATION
 #  define MAVE_MATRIX_3X3_FLOAT_IMPLEMENTATION  "none"
 #endif //__AVX__
-
 
 namespace mave
 {
