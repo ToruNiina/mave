@@ -22,25 +22,25 @@ using vector = matrix<T, N, 1>;
 // length_sq -----------------------------------------------------------------
 
 template<typename T>
-inline T length_sq(const vector<T, 3>& v) noexcept
+MAVE_INLINE T length_sq(const vector<T, 3>& v) noexcept
 {
     return v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
 }
 template<typename T>
-inline std::pair<T, T>
+MAVE_INLINE std::pair<T, T>
 length_sq(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 {
     return std::make_pair(length_sq(v1), length_sq(v2));
 }
 template<typename T>
-inline std::tuple<T, T, T>
+MAVE_INLINE std::tuple<T, T, T>
 length_sq(const vector<T, 3>& v1, const vector<T, 3>& v2,
           const vector<T, 3>& v3) noexcept
 {
     return std::make_tuple(length_sq(v1), length_sq(v2), length_sq(v3));
 }
 template<typename T>
-inline std::tuple<T, T, T, T>
+MAVE_INLINE std::tuple<T, T, T, T>
 length_sq(const vector<T, 3>& v1, const vector<T, 3>& v2,
           const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
 {
@@ -51,25 +51,25 @@ length_sq(const vector<T, 3>& v1, const vector<T, 3>& v2,
 // length -------------------------------------------------------------------
 
 template<typename T>
-inline T length(const vector<T, 3>& v) noexcept
+MAVE_INLINE T length(const vector<T, 3>& v) noexcept
 {
     return std::sqrt(length_sq(v));
 }
 template<typename T>
-inline std::pair<T, T>
+MAVE_INLINE std::pair<T, T>
 length(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 {
     return std::make_pair(length(v1), length(v2));
 }
 template<typename T>
-inline std::tuple<T, T, T>
+MAVE_INLINE std::tuple<T, T, T>
 length(const vector<T, 3>& v1, const vector<T, 3>& v2,
        const vector<T, 3>& v3) noexcept
 {
     return std::make_tuple(length(v1), length(v2), length(v3));
 }
 template<typename T>
-inline std::tuple<T, T, T, T>
+MAVE_INLINE std::tuple<T, T, T, T>
 length(const vector<T, 3>& v1, const vector<T, 3>& v2,
        const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
 {
@@ -79,19 +79,19 @@ length(const vector<T, 3>& v1, const vector<T, 3>& v2,
 // rlength -------------------------------------------------------------------
 
 template<typename T>
-inline T rlength(const vector<T, 3>& v) noexcept
+MAVE_INLINE T rlength(const vector<T, 3>& v) noexcept
 {
     return 1.0 / std::sqrt(length_sq(v));
 }
 template<typename T>
-inline std::pair<T, T>
+MAVE_INLINE std::pair<T, T>
 rlength(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 {
     return std::make_pair(1.0 / std::sqrt(length_sq(v1)),
                           1.0 / std::sqrt(length_sq(v2)));
 }
 template<typename T>
-inline std::tuple<T, T, T>
+MAVE_INLINE std::tuple<T, T, T>
 rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
         const vector<T, 3>& v3) noexcept
 {
@@ -100,7 +100,7 @@ rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
                            1.0 / std::sqrt(length_sq(v3)));
 }
 template<typename T>
-inline std::tuple<T, T, T, T>
+MAVE_INLINE std::tuple<T, T, T, T>
 rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
         const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
 {
@@ -113,7 +113,7 @@ rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
 // regularize ----------------------------------------------------------------
 
 template<typename T>
-inline std::pair<vector<T, 3>, T>
+MAVE_INLINE std::pair<vector<T, 3>, T>
 regularize(const vector<T, 3>& v) noexcept
 {
     const auto l = length(v);
@@ -121,7 +121,7 @@ regularize(const vector<T, 3>& v) noexcept
 }
 
 template<typename T>
-inline std::pair<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>>
+MAVE_INLINE std::pair<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>>
 regularize(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 {
     const auto l = length(v1, v2);
@@ -131,7 +131,7 @@ regularize(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 }
 
 template<typename T>
-inline std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,
+MAVE_INLINE std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,
                   std::pair<vector<T, 3>, T>>
 regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
            const vector<T, 3>& v3) noexcept
@@ -144,7 +144,7 @@ regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
 }
 
 template<typename T>
-inline std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,
+MAVE_INLINE std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,
                   std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>>
 regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
            const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
@@ -162,12 +162,12 @@ regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
 // ---------------------------------------------------------------------------
 
 template<typename T>
-inline T dot_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept
+MAVE_INLINE T dot_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept
 {
     return lhs[0]*rhs[0] + lhs[1]*rhs[1] + lhs[2]*rhs[2];
 }
 template<typename T>
-inline std::pair<T, T>
+MAVE_INLINE std::pair<T, T>
 dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&> lhs,
             std::tuple<const vector<T, 3>&, const vector<T, 3>&> rhs) noexcept
 {
@@ -180,7 +180,7 @@ dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&> lhs,
             std::get<1>(lhs)[2] * std::get<1>(rhs)[2]);
 }
 template<typename T>
-inline std::tuple<T, T, T>
+MAVE_INLINE std::tuple<T, T, T>
 dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
                        const vector<T, 3>&> lhs,
             std::tuple<const vector<T, 3>&, const vector<T, 3>&,
@@ -199,7 +199,7 @@ dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
             );
 }
 template<typename T>
-inline std::tuple<T, T, T, T>
+MAVE_INLINE std::tuple<T, T, T, T>
 dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
                        const vector<T, 3>&, const vector<T, 3>&> lhs,
             std::tuple<const vector<T, 3>&, const vector<T, 3>&,
@@ -221,7 +221,7 @@ dot_product(std::tuple<const vector<T, 3>&, const vector<T, 3>&,
 }
 
 template<typename T>
-inline vector<T, 3>
+MAVE_INLINE vector<T, 3>
 cross_product(const vector<T, 3>& lhs, const vector<T, 3>& rhs) noexcept
 {
     return vector<T, 3>(lhs[1] * rhs[2] - lhs[2] * rhs[1],
