@@ -887,12 +887,82 @@ MAVE_INLINE matrix<double, 3, 1> max(
 {
     return _mm256_max_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
 }
+template<>
+MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+max(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+    ) noexcept
+{
+    return std::make_pair(max(std::get<0>(v1), std::get<0>(v2)),
+                          max(std::get<1>(v1), std::get<1>(v2)));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>>
+max(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&> v2) noexcept
+{
+    return std::make_tuple(max(std::get<0>(v1), std::get<0>(v2)),
+                           max(std::get<1>(v1), std::get<1>(v2)),
+                           max(std::get<2>(v1), std::get<2>(v2)));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+max(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+    ) noexcept
+{
+    return std::make_tuple(max(std::get<0>(v1), std::get<0>(v2)),
+                           max(std::get<1>(v1), std::get<1>(v2)),
+                           max(std::get<2>(v1), std::get<2>(v2)),
+                           max(std::get<3>(v1), std::get<3>(v2)));
+}
 
 template<>
 MAVE_INLINE matrix<double, 3, 1> min(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
     return _mm256_min_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
+}
+template<>
+MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+min(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+    ) noexcept
+{
+    return std::make_pair(min(std::get<0>(v1), std::get<0>(v2)),
+                          min(std::get<1>(v1), std::get<1>(v2)));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>>
+min(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&> v2) noexcept
+{
+    return std::make_tuple(min(std::get<0>(v1), std::get<0>(v2)),
+                           min(std::get<1>(v1), std::get<1>(v2)),
+                           min(std::get<2>(v1), std::get<2>(v2)));
+}
+template<>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
+                  matrix<double, 3, 1>, matrix<double, 3, 1>>
+min(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+    ) noexcept
+{
+    return std::make_tuple(min(std::get<0>(v1), std::get<0>(v2)),
+                           min(std::get<1>(v1), std::get<1>(v2)),
+                           min(std::get<2>(v1), std::get<2>(v2)),
+                           min(std::get<3>(v1), std::get<3>(v2)));
 }
 
 // floor ---------------------------------------------------------------------

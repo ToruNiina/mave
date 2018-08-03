@@ -911,12 +911,106 @@ MAVE_INLINE matrix<float, 3, 1> max(
 {
     return _mm_max_ps(_mm_load_ps(v1.data()), _mm_load_ps(v2.data()));
 }
+template<>
+MAVE_INLINE std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
+max(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&> v1,
+    std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&> v2
+    ) noexcept
+{
+    const __m256 v11 = _mm256_insertf128_ps(
+        _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1).data())),
+                               _mm_load_ps(std::get<1>(v1).data()), 1);
+    const __m256 v22 = _mm256_insertf128_ps(
+        _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v2).data())),
+                               _mm_load_ps(std::get<1>(v2).data()), 1);
+    const __m256 v12 = _mm256_max_ps(v11, v22);
+
+    return std::make_pair(matrix<float, 3, 1>(_mm256_castps256_ps128(v12)),
+                          matrix<float, 3, 1>(_mm256_extractf128_ps(v12, 1)));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>, matrix<float, 3, 1>>
+max(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
+               const matrix<float,3,1>&> v1,
+    std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
+               const matrix<float,3,1>&> v2) noexcept
+{
+    const auto r12 = max(std::tie(std::get<0>(v1), std::get<1>(v1)),
+                         std::tie(std::get<0>(v2), std::get<1>(v2)));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           max(std::get<2>(v1), std::get<2>(v2)));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
+           matrix<float, 3, 1>, matrix<float, 3, 1>>
+max(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
+               const matrix<float,3,1>&, const matrix<float,3,1>&> v1,
+    std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
+               const matrix<float,3,1>&, const matrix<float,3,1>&> v2
+    ) noexcept
+{
+    const auto r12 = max(std::tie(std::get<0>(v1), std::get<1>(v1)),
+                         std::tie(std::get<0>(v2), std::get<1>(v2)));
+    const auto r34 = max(std::tie(std::get<2>(v1), std::get<3>(v1)),
+                         std::tie(std::get<2>(v2), std::get<3>(v2)));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<0>(r34), std::get<1>(r34));
+}
 
 template<>
 MAVE_INLINE matrix<float, 3, 1> min(
     const matrix<float, 3, 1>& v1, const matrix<float, 3, 1>& v2) noexcept
 {
     return _mm_min_ps(_mm_load_ps(v1.data()), _mm_load_ps(v2.data()));
+}
+template<>
+MAVE_INLINE std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
+min(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&> v1,
+    std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&> v2
+    ) noexcept
+{
+    const __m256 v11 = _mm256_insertf128_ps(
+        _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1).data())),
+                               _mm_load_ps(std::get<1>(v1).data()), 1);
+    const __m256 v22 = _mm256_insertf128_ps(
+        _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v2).data())),
+                               _mm_load_ps(std::get<1>(v2).data()), 1);
+    const __m256 v12 = _mm256_min_ps(v11, v22);
+
+    return std::make_pair(matrix<float, 3, 1>(_mm256_castps256_ps128(v12)),
+                          matrix<float, 3, 1>(_mm256_extractf128_ps(v12, 1)));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>, matrix<float, 3, 1>>
+min(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
+               const matrix<float,3,1>&> v1,
+    std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
+               const matrix<float,3,1>&> v2) noexcept
+{
+    const auto r12 = min(std::tie(std::get<0>(v1), std::get<1>(v1)),
+                         std::tie(std::get<0>(v2), std::get<1>(v2)));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           min(std::get<2>(v1), std::get<2>(v2)));
+}
+template<>
+MAVE_INLINE
+std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>,
+           matrix<float, 3, 1>, matrix<float, 3, 1>>
+min(std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
+               const matrix<float,3,1>&, const matrix<float,3,1>&> v1,
+    std::tuple<const matrix<float,3,1>&, const matrix<float,3,1>&,
+               const matrix<float,3,1>&, const matrix<float,3,1>&> v2
+    ) noexcept
+{
+    const auto r12 = min(std::tie(std::get<0>(v1), std::get<1>(v1)),
+                         std::tie(std::get<0>(v2), std::get<1>(v2)));
+    const auto r34 = min(std::tie(std::get<2>(v1), std::get<3>(v1)),
+                         std::tie(std::get<2>(v2), std::get<3>(v2)));
+    return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
+                           std::get<0>(r34), std::get<1>(r34));
 }
 
 // floor ---------------------------------------------------------------------
