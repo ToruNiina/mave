@@ -485,6 +485,54 @@ max(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
     }
     return retval;
 }
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+max(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::max(std::get<0>(lhs)[i], std::get<0>(rhs)[i]);
+        r2[i] = std::max(std::get<1>(lhs)[i], std::get<1>(rhs)[i]);
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+max(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::max(std::get<0>(lhs)[i], std::get<0>(rhs)[i]);
+        r2[i] = std::max(std::get<1>(lhs)[i], std::get<1>(rhs)[i]);
+        r3[i] = std::max(std::get<2>(lhs)[i], std::get<2>(rhs)[i]);
+    }
+    return std::make_tuple(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+max(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::max(std::get<0>(lhs)[i], std::get<0>(rhs)[i]);
+        r2[i] = std::max(std::get<1>(lhs)[i], std::get<1>(rhs)[i]);
+        r3[i] = std::max(std::get<2>(lhs)[i], std::get<2>(rhs)[i]);
+        r4[i] = std::max(std::get<3>(lhs)[i], std::get<3>(rhs)[i]);
+    }
+    return std::make_tuple(r1, r2, r3, r4);
+}
+
 
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE matrix<T, R, C>
@@ -497,6 +545,54 @@ min(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
     }
     return retval;
 }
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+min(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::min(std::get<0>(lhs)[i], std::get<0>(rhs)[i]);
+        r2[i] = std::min(std::get<1>(lhs)[i], std::get<1>(rhs)[i]);
+    }
+    return std::make_pair(r1, r2);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+min(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::min(std::get<0>(lhs)[i], std::get<0>(rhs)[i]);
+        r2[i] = std::min(std::get<1>(lhs)[i], std::get<1>(rhs)[i]);
+        r3[i] = std::min(std::get<2>(lhs)[i], std::get<2>(rhs)[i]);
+    }
+    return std::make_tuple(r1, r2, r3);
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
+min(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
+{
+    matrix<T, R, C> r1, r2, r3, r4;
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        r1[i] = std::min(std::get<0>(lhs)[i], std::get<0>(rhs)[i]);
+        r2[i] = std::min(std::get<1>(lhs)[i], std::get<1>(rhs)[i]);
+        r3[i] = std::min(std::get<2>(lhs)[i], std::get<2>(rhs)[i]);
+        r4[i] = std::min(std::get<3>(lhs)[i], std::get<3>(rhs)[i]);
+    }
+    return std::make_tuple(r1, r2, r3, r4);
+}
+
 
 // floor ---------------------------------------------------------------------
 
