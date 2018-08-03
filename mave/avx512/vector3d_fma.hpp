@@ -2,7 +2,7 @@
 #define MAVE_AVX512_VECTOR_3_DOUBLE_FMA_HPP
 
 #if !defined(__FMA__) || !defined(__AVX512F__)
-#error "mave/fma.hpp requires fma and avx512f support.
+#error "mave/fma.hpp requires fma and avx512f support."
 #endif
 
 #ifndef MAVE_VECTOR_HPP

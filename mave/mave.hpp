@@ -18,8 +18,8 @@
 #    endif
 #    include "avx512/matrix3x3f.hpp"
 #    include "avx512/matrix3x3d.hpp"
-#    if !defined(__fma__)
-#      error "mave avx2 implementation requires FMA instruction set."
+#    if !defined(__FMA__)
+#      error "mave avx512 implementation requires FMA instruction set."
 #    endif
 #    include "avx512/vector3d_fma.hpp"
 #    include "avx512/vector3f_fma.hpp"
