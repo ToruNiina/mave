@@ -81,33 +81,33 @@ length(const vector<T, 3>& v1, const vector<T, 3>& v2,
 template<typename T>
 MAVE_INLINE T rlength(const vector<T, 3>& v) noexcept
 {
-    return 1.0 / std::sqrt(length_sq(v));
+    return T(1) / std::sqrt(length_sq(v));
 }
 template<typename T>
 MAVE_INLINE std::pair<T, T>
 rlength(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 {
-    return std::make_pair(1.0 / std::sqrt(length_sq(v1)),
-                          1.0 / std::sqrt(length_sq(v2)));
+    return std::make_pair(T(1) / std::sqrt(length_sq(v1)),
+                          T(1) / std::sqrt(length_sq(v2)));
 }
 template<typename T>
 MAVE_INLINE std::tuple<T, T, T>
 rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
         const vector<T, 3>& v3) noexcept
 {
-    return std::make_tuple(1.0 / std::sqrt(length_sq(v1)),
-                           1.0 / std::sqrt(length_sq(v2)),
-                           1.0 / std::sqrt(length_sq(v3)));
+    return std::make_tuple(T(1) / std::sqrt(length_sq(v1)),
+                           T(1) / std::sqrt(length_sq(v2)),
+                           T(1) / std::sqrt(length_sq(v3)));
 }
 template<typename T>
 MAVE_INLINE std::tuple<T, T, T, T>
 rlength(const vector<T, 3>& v1, const vector<T, 3>& v2,
         const vector<T, 3>& v3, const vector<T, 3>& v4) noexcept
 {
-    return std::make_tuple(1.0 / std::sqrt(length_sq(v1)),
-                           1.0 / std::sqrt(length_sq(v2)),
-                           1.0 / std::sqrt(length_sq(v3)),
-                           1.0 / std::sqrt(length_sq(v4)));
+    return std::make_tuple(T(1) / std::sqrt(length_sq(v1)),
+                           T(1) / std::sqrt(length_sq(v2)),
+                           T(1) / std::sqrt(length_sq(v3)),
+                           T(1) / std::sqrt(length_sq(v4)));
 }
 
 // regularize ----------------------------------------------------------------
@@ -117,7 +117,7 @@ MAVE_INLINE std::pair<vector<T, 3>, T>
 regularize(const vector<T, 3>& v) noexcept
 {
     const auto l = length(v);
-    return std::make_pair(v * (1.0 / l), l);
+    return std::make_pair(v * (T(1) / l), l);
 }
 
 template<typename T>
@@ -126,8 +126,8 @@ regularize(const vector<T, 3>& v1, const vector<T, 3>& v2) noexcept
 {
     const auto l = length(v1, v2);
     return std::make_pair(
-            std::make_pair(v1 * (1.0 / std::get<0>(l)), std::get<0>(l)),
-            std::make_pair(v2 * (1.0 / std::get<1>(l)), std::get<1>(l)));
+            std::make_pair(v1 * (T(1) / std::get<0>(l)), std::get<0>(l)),
+            std::make_pair(v2 * (T(1) / std::get<1>(l)), std::get<1>(l)));
 }
 
 template<typename T>
@@ -138,9 +138,9 @@ regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
 {
     const auto l = length(v1, v2, v3);
     return std::make_tuple(
-            std::make_pair(v1 * (1.0 / std::get<0>(l)), std::get<0>(l)),
-            std::make_pair(v2 * (1.0 / std::get<1>(l)), std::get<1>(l)),
-            std::make_pair(v3 * (1.0 / std::get<2>(l)), std::get<2>(l)));
+            std::make_pair(v1 * (T(1) / std::get<0>(l)), std::get<0>(l)),
+            std::make_pair(v2 * (T(1) / std::get<1>(l)), std::get<1>(l)),
+            std::make_pair(v3 * (T(1) / std::get<2>(l)), std::get<2>(l)));
 }
 
 template<typename T>
@@ -151,10 +151,10 @@ regularize(const vector<T, 3>& v1, const vector<T, 3>& v2,
 {
     const auto l = length(v1, v2, v3, v4);
     return std::make_tuple(
-            std::make_pair(v1 * (1.0 / std::get<0>(l)), std::get<0>(l)),
-            std::make_pair(v2 * (1.0 / std::get<1>(l)), std::get<1>(l)),
-            std::make_pair(v3 * (1.0 / std::get<2>(l)), std::get<2>(l)),
-            std::make_pair(v4 * (1.0 / std::get<3>(l)), std::get<3>(l)));
+            std::make_pair(v1 * (T(1) / std::get<0>(l)), std::get<0>(l)),
+            std::make_pair(v2 * (T(1) / std::get<1>(l)), std::get<1>(l)),
+            std::make_pair(v3 * (T(1) / std::get<2>(l)), std::get<2>(l)),
+            std::make_pair(v4 * (T(1) / std::get<3>(l)), std::get<3>(l)));
 }
 
 // ---------------------------------------------------------------------------
