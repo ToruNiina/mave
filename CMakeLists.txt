@@ -41,6 +41,12 @@ else()
 endif()
 include_directories(${PROJECT_SOURCE_DIR}/extlib/boost_1_67_0)
 
+OPTION(MAVE_DISABLE_SIMD_SPECIALIZATION
+       "disable function template specialization for SIMD intrinsics" OFF)
+if(MAVE_DISABLE_SIMD_SPECIALIZATION)
+    add_definitions(-DMAVE_NO_SIMD)
+endif(MAVE_DISABLE_SIMD_SPECIALIZATION)
+
 OPTION(MAVE_USE_APPROX "use approximation functions" OFF)
 if(MAVE_USE_APPROX)
     add_definitions(-DMAVE_USE_APPROXIMATION)
