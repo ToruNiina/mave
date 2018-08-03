@@ -7,6 +7,8 @@ SIMD-oriented small matrix and vector library
 
 It focuses on 3D vector operations (e.g. physical simulation, graphics, etc).
 
+![logo](https://github.com/ToruNiina/mave/blob/imgs/misc/logo1.png)
+
 |              |    AVX                   |  AVX2                         |  AVX512           |
 |:-------------|:-------------------------|:------------------------------|:------------------|
 |  CPU         | Sandy Bridge, Ivy Bridge | Haswell, Broadwell, Skylake   | Skylake-SP,X,W,DE |
