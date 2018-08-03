@@ -9,10 +9,6 @@
 #  if defined(__AVX512F__)  && defined(__AVX512CD__) &&\
       defined(__AVX512VL__) && defined(__AVX512DQ__) && defined(__AVX512BW__)
 // Skylake-X
-#    if !defined(__FMA__)
-#      error "mave avx2 implementation requires FMA instruction set."
-#    endif
-#    include "avx512/fma.hpp"
 #    if defined(MAVE_USE_APPROXIMATION)
 #      include "avx512/vector3f_approx.hpp"
 #      include "avx512/vector3d_approx.hpp"
@@ -22,12 +18,12 @@
 #    endif
 #    include "avx512/matrix3x3f.hpp"
 #    include "avx512/matrix3x3d.hpp"
-#  elif defined(__AVX2__)
-// Haswell, Broadwell, Skylake-S
-#    if !defined(__FMA__)
+#    if !defined(__fma__)
 #      error "mave avx2 implementation requires FMA instruction set."
 #    endif
-#    include "avx2/fma.hpp"
+#    include "avx512/fma.hpp"
+#  elif defined(__AVX2__)
+// Haswell, Broadwell, Skylake-S
 #    if defined(MAVE_USE_APPROXIMATION)
 #      include "avx2/vector3f_approx.hpp"
 #    else
@@ -37,6 +33,10 @@
 #    include "avx2/matrix3x3d.hpp"
 #    include "avx2/matrix3x3f.hpp"
 #    include "avx2/vector_matrix_mul.hpp"
+#    if !defined(__FMA__)
+#      error "mave avx2 implementation requires FMA instruction set."
+#    endif
+#    include "avx2/fma.hpp"
 #  elif defined(__AVX__)
 // Sandybridge
 #    if defined(MAVE_USE_APPROXIMATION)
