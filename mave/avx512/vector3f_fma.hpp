@@ -95,7 +95,7 @@ fmadd(std::tuple<float, float, float, float> a,
         _mm512_castps128_ps512(_mm_set1_ps(std::get<0>(a))),
                                _mm_set1_ps(std::get<1>(a)), 1),
                                _mm_set1_ps(std::get<2>(a)), 2),
-                               _mm_set1_ps(std::get<2>(a)), 3);
+                               _mm_set1_ps(std::get<3>(a)), 3);
 
     const __m512 b1234 = _mm512_insertf32x4(_mm512_insertf32x4(_mm512_insertf32x4(
         _mm512_castps128_ps512(_mm_load_ps(std::get<0>(b).data())),
@@ -193,7 +193,7 @@ fmsub(std::tuple<float, float, float, float> a,
         _mm512_castps128_ps512(_mm_set1_ps(std::get<0>(a))),
                                _mm_set1_ps(std::get<1>(a)), 1),
                                _mm_set1_ps(std::get<2>(a)), 2),
-                               _mm_set1_ps(std::get<2>(a)), 3);
+                               _mm_set1_ps(std::get<3>(a)), 3);
 
     const __m512 b1234 = _mm512_insertf32x4(_mm512_insertf32x4(_mm512_insertf32x4(
         _mm512_castps128_ps512(_mm_load_ps(std::get<0>(b).data())),
@@ -292,7 +292,7 @@ fnmadd(std::tuple<float, float, float, float> a,
         _mm512_castps128_ps512(_mm_set1_ps(std::get<0>(a))),
                                _mm_set1_ps(std::get<1>(a)), 1),
                                _mm_set1_ps(std::get<2>(a)), 2),
-                               _mm_set1_ps(std::get<2>(a)), 3);
+                               _mm_set1_ps(std::get<3>(a)), 3);
 
     const __m512 b1234 = _mm512_insertf32x4(_mm512_insertf32x4(_mm512_insertf32x4(
         _mm512_castps128_ps512(_mm_load_ps(std::get<0>(b).data())),
@@ -392,7 +392,7 @@ fnmsub(std::tuple<float, float, float, float> a,
         _mm512_castps128_ps512(_mm_set1_ps(std::get<0>(a))),
                                _mm_set1_ps(std::get<1>(a)), 1),
                                _mm_set1_ps(std::get<2>(a)), 2),
-                               _mm_set1_ps(std::get<2>(a)), 3);
+                               _mm_set1_ps(std::get<3>(a)), 3);
 
     const __m512 b1234 = _mm512_insertf32x4(_mm512_insertf32x4(_mm512_insertf32x4(
         _mm512_castps128_ps512(_mm_load_ps(std::get<0>(b).data())),
