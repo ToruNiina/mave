@@ -36,7 +36,8 @@
 #    if !defined(__FMA__)
 #      error "mave avx2 implementation requires FMA instruction set."
 #    endif
-#    include "avx2/fma.hpp"
+#    include "avx2/vector3f_fma.hpp"
+#    include "avx2/vector3d_fma.hpp"
 #  elif defined(__AVX__)
 // Sandybridge
 #    if defined(MAVE_USE_APPROXIMATION)
