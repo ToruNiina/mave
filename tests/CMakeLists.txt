@@ -9,7 +9,10 @@ set(TEST_NAMES
     test_sub
     test_mul
     test_div
-    test_fma
+    test_fmadd
+    test_fmsub
+    test_fnmadd
+    test_fnmsub
     test_neg
     test_ceil
     test_floor
@@ -18,7 +21,7 @@ set(TEST_NAMES
     test_mat_vec_mul
     )
 
-add_definitions("-std=c++11 -O3 -march=native -mtune=native")
+add_definitions("-std=c++11 -O2 -march=native -mtune=native")
 
 foreach(TEST_NAME ${TEST_NAMES})
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp)
