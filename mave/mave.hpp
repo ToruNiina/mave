@@ -21,7 +21,8 @@
 #    if !defined(__fma__)
 #      error "mave avx2 implementation requires FMA instruction set."
 #    endif
-#    include "avx512/fma.hpp"
+#    include "avx512/vector3d_fma.hpp"
+#    include "avx512/vector3f_fma.hpp"
 #  elif defined(__AVX2__)
 // Haswell, Broadwell, Skylake-S
 #    if defined(MAVE_USE_APPROXIMATION)
