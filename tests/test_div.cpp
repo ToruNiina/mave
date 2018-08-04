@@ -156,25 +156,147 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(division_4arg, T, test_targets)
     }
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(div_assignment, T, test_targets)
+BOOST_AUTO_TEST_CASE_TEMPLATE(div_assign_1arg, T, test_targets)
 {
     std::mt19937 mt(123456789);
-    const auto vectors = mave::test::generate_random<T>(N, mt);
     const auto scalars = mave::test::generate_random<typename T::value_type>(N, mt);
+    const auto vectors = mave::test::generate_random<T>(N, mt);
 
     for(std::size_t i=0; i<N; ++i)
     {
-        const auto& v = vectors.at(i);
-        const auto& s = scalars.at(i);
+        const auto& s  = scalars.at(i);
+        const auto& v1 = vectors.at(i);
 
-        auto v_(v);
-        v_ /= s;
-        for(std::size_t j=0; j<v.size(); ++j)
+        auto v2 = v1;
+        v2 /= s;
+        for(std::size_t j=0; j<v1.size(); ++j)
         {
-            BOOST_TEST(v_[j] == v[j] / s,
+            BOOST_TEST(v2[j] == v1[j] / s,
                        mave::test::tolerance<typename T::value_type>());
         }
-        BOOST_TEST(v.diagnosis());
-        BOOST_TEST(v_.diagnosis());
+        BOOST_TEST(v1.diagnosis());
+        BOOST_TEST(v2.diagnosis());
     }
 }
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(div_assign_2arg, T, test_targets)
+{
+    std::mt19937 mt(123456789);
+    const auto scalars = mave::test::generate_random<typename T::value_type>(N, mt);
+    const auto vectors = mave::test::generate_random<T>(N, mt);
+
+    for(std::size_t i=0; i<N; i+=2)
+    {
+        const auto& s1 = scalars.at(i);
+        const auto& s2 = scalars.at(i+1);
+        const auto& v11 = vectors.at(i);
+        const auto& v12 = vectors.at(i+1);
+
+        auto v21(v11);
+        auto v22(v12);
+        std::tie(v21, v22) /= std::make_tuple(s1, s2);
+
+        for(std::size_t j=0; j<v21.size(); ++j)
+        {
+            BOOST_TEST(v21[j] == v11[j] / s1,
+                       mave::test::tolerance<typename T::value_type>());
+            BOOST_TEST(v22[j] == v12[j] / s2,
+                       mave::test::tolerance<typename T::value_type>());
+        }
+
+        BOOST_TEST(v11.diagnosis());
+        BOOST_TEST(v12.diagnosis());
+
+        BOOST_TEST(v21.diagnosis());
+        BOOST_TEST(v22.diagnosis());
+    }
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(div_assign_3arg, T, test_targets)
+{
+    std::mt19937 mt(123456789);
+    const auto scalars = mave::test::generate_random<typename T::value_type>(N, mt);
+    const auto vectors = mave::test::generate_random<T>(N, mt);
+
+    for(std::size_t i=0; i<N; i+=3)
+    {
+        const auto& s1  = scalars.at(i);
+        const auto& s2  = scalars.at(i+1);
+        const auto& s3  = scalars.at(i+2);
+        const auto& v11 = vectors.at(i);
+        const auto& v12 = vectors.at(i+1);
+        const auto& v13 = vectors.at(i+2);
+
+        auto v21(v11);
+        auto v22(v12);
+        auto v23(v13);
+        std::tie(v21, v22, v23) /= std::make_tuple(s1, s2, s3);
+
+        for(std::size_t j=0; j<v21.size(); ++j)
+        {
+            BOOST_TEST(v21[j] == v11[j] / s1,
+                       mave::test::tolerance<typename T::value_type>());
+            BOOST_TEST(v22[j] == v12[j] / s2,
+                       mave::test::tolerance<typename T::value_type>());
+            BOOST_TEST(v23[j] == v13[j] / s3,
+                       mave::test::tolerance<typename T::value_type>());
+        }
+
+        BOOST_TEST(v11.diagnosis());
+        BOOST_TEST(v12.diagnosis());
+        BOOST_TEST(v13.diagnosis());
+
+        BOOST_TEST(v21.diagnosis());
+        BOOST_TEST(v22.diagnosis());
+        BOOST_TEST(v23.diagnosis());
+    }
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(div_assign_4arg, T, test_targets)
+{
+    std::mt19937 mt(123456789);
+    const auto scalars = mave::test::generate_random<typename T::value_type>(N, mt);
+    const auto vectors = mave::test::generate_random<T>(N, mt);
+
+    for(std::size_t i=0; i<N; i+=4)
+    {
+        const auto& s1  = scalars.at(i);
+        const auto& s2  = scalars.at(i+1);
+        const auto& s3  = scalars.at(i+2);
+        const auto& s4  = scalars.at(i+3);
+        const auto& v11 = vectors.at(i);
+        const auto& v12 = vectors.at(i+1);
+        const auto& v13 = vectors.at(i+2);
+        const auto& v14 = vectors.at(i+3);
+
+        auto v21(v11);
+        auto v22(v12);
+        auto v23(v13);
+        auto v24(v14);
+        std::tie(v21, v22, v23, v24) /= std::make_tuple(s1, s2, s3, s4);
+
+        for(std::size_t j=0; j<v21.size(); ++j)
+        {
+            BOOST_TEST(v21[j] == v11[j] / s1,
+                       mave::test::tolerance<typename T::value_type>());
+            BOOST_TEST(v22[j] == v12[j] / s2,
+                       mave::test::tolerance<typename T::value_type>());
+            BOOST_TEST(v23[j] == v13[j] / s3,
+                       mave::test::tolerance<typename T::value_type>());
+            BOOST_TEST(v24[j] == v14[j] / s4,
+                       mave::test::tolerance<typename T::value_type>());
+        }
+
+        BOOST_TEST(v11.diagnosis());
+        BOOST_TEST(v12.diagnosis());
+        BOOST_TEST(v13.diagnosis());
+        BOOST_TEST(v14.diagnosis());
+
+        BOOST_TEST(v21.diagnosis());
+        BOOST_TEST(v22.diagnosis());
+        BOOST_TEST(v23.diagnosis());
+        BOOST_TEST(v24.diagnosis());
+    }
+}
+
+
