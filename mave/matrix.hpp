@@ -218,6 +218,53 @@ operator+(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
     return std::make_tuple(r1, r2, r3, r4);
 }
 
+// assignment ----------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator+=(
+    std::tuple<      matrix<T, R, C>&,       matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] += std::get<0>(rhs)[i];
+        std::get<1>(lhs)[i] += std::get<1>(rhs)[i];
+    }
+    return;
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator+=(
+    std::tuple<      matrix<T, R, C>&, matrix<T, R, C>&,
+                     matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] += std::get<0>(rhs)[i];
+        std::get<1>(lhs)[i] += std::get<1>(rhs)[i];
+        std::get<2>(lhs)[i] += std::get<2>(rhs)[i];
+    }
+    return;
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator+=(
+    std::tuple<      matrix<T, R, C>&,       matrix<T, R, C>&,
+                     matrix<T, R, C>&,       matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
+    ) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] += std::get<0>(rhs)[i];
+        std::get<1>(lhs)[i] += std::get<1>(rhs)[i];
+        std::get<2>(lhs)[i] += std::get<2>(rhs)[i];
+        std::get<3>(lhs)[i] += std::get<3>(rhs)[i];
+    }
+    return;
+}
+
 // ---------------------------------------------------------------------------
 // subtraction operator-
 // ---------------------------------------------------------------------------
@@ -279,9 +326,58 @@ operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
     return std::make_tuple(r1, r2, r3, r4);
 }
 
+// assignment ----------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator-=(
+    std::tuple<      matrix<T, R, C>&,       matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] -= std::get<0>(rhs)[i];
+        std::get<1>(lhs)[i] -= std::get<1>(rhs)[i];
+    }
+    return;
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator-=(
+    std::tuple<      matrix<T, R, C>&, matrix<T, R, C>&,
+                     matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] -= std::get<0>(rhs)[i];
+        std::get<1>(lhs)[i] -= std::get<1>(rhs)[i];
+        std::get<2>(lhs)[i] -= std::get<2>(rhs)[i];
+    }
+    return;
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator-=(
+    std::tuple<      matrix<T, R, C>&,       matrix<T, R, C>&,
+                     matrix<T, R, C>&,       matrix<T, R, C>&> lhs,
+    std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
+               const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
+    ) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] -= std::get<0>(rhs)[i];
+        std::get<1>(lhs)[i] -= std::get<1>(rhs)[i];
+        std::get<2>(lhs)[i] -= std::get<2>(rhs)[i];
+        std::get<3>(lhs)[i] -= std::get<3>(rhs)[i];
+    }
+    return;
+}
+
 // ---------------------------------------------------------------------------
 // multiplication operator*
 // ---------------------------------------------------------------------------
+
+// matrix * scalar -----------------------------------------------------------
 
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE matrix<T, R, C>
@@ -320,7 +416,9 @@ operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
     return std::make_tuple(r1, r2, r3);
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::tuple<matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>, matrix<T,R,C>>
+MAVE_INLINE
+std::tuple<matrix<T, R, C>, matrix<T, R, C>,
+           matrix<T, R, C>, matrix<T, R, C>>
 operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
                      const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
           std::tuple<T, T, T, T> rhs) noexcept
@@ -335,6 +433,8 @@ operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
     }
     return std::make_tuple(r1, r2, r3, r4);
 }
+
+// scalar * matrix -----------------------------------------------------------
 
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE matrix<T, R, C>
@@ -389,6 +489,49 @@ operator*(std::tuple<T, T, T, T> lhs,
         r4[i] = std::get<3>(lhs) * std::get<3>(rhs)[i];
     }
     return std::make_tuple(r1, r2, r3, r4);
+}
+
+// assignment ----------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator*=(
+    std::tuple<matrix<T, R, C>&, matrix<T, R, C>&> lhs,
+    std::tuple<T, T> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] *= std::get<0>(rhs);
+        std::get<1>(lhs)[i] *= std::get<1>(rhs);
+    }
+    return;
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator*=(
+    std::tuple<matrix<T, R, C>&, matrix<T, R, C>&, matrix<T, R, C>&> lhs,
+    std::tuple<T, T, T> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] *= std::get<0>(rhs);
+        std::get<1>(lhs)[i] *= std::get<1>(rhs);
+        std::get<2>(lhs)[i] *= std::get<2>(rhs);
+    }
+    return;
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator*=(
+    std::tuple<matrix<T, R, C>&, matrix<T, R, C>&,
+               matrix<T, R, C>&, matrix<T, R, C>&> lhs,
+    std::tuple<T, T, T, T> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] *= std::get<0>(rhs);
+        std::get<1>(lhs)[i] *= std::get<1>(rhs);
+        std::get<2>(lhs)[i] *= std::get<2>(rhs);
+        std::get<3>(lhs)[i] *= std::get<3>(rhs);
+    }
+    return;
 }
 
 // ---------------------------------------------------------------------------
@@ -446,6 +589,50 @@ operator/(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,
         r4[i] = std::get<3>(lhs)[i] / std::get<3>(rhs);
     }
     return std::make_tuple(r1, r2, r3, r4);
+}
+
+// assignment ----------------------------------------------------------------
+
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator/=(
+    std::tuple<      matrix<T, R, C>&,       matrix<T, R, C>&> lhs,
+    std::tuple<T, T> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] /= std::get<0>(rhs);
+        std::get<1>(lhs)[i] /= std::get<1>(rhs);
+    }
+    return;
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator/=(
+    std::tuple<      matrix<T, R, C>&, matrix<T, R, C>&,
+                     matrix<T, R, C>&> lhs,
+    std::tuple<T, T, T> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] /= std::get<0>(rhs);
+        std::get<1>(lhs)[i] /= std::get<1>(rhs);
+        std::get<2>(lhs)[i] /= std::get<2>(rhs);
+    }
+    return;
+}
+template<typename T, std::size_t R, std::size_t C>
+MAVE_INLINE void operator/=(
+    std::tuple<      matrix<T, R, C>&,       matrix<T, R, C>&,
+                     matrix<T, R, C>&,       matrix<T, R, C>&> lhs,
+    std::tuple<T, T, T, T> rhs) noexcept
+{
+    for(std::size_t i=0; i<R*C; ++i)
+    {
+        std::get<0>(lhs)[i] /= std::get<0>(rhs);
+        std::get<1>(lhs)[i] /= std::get<1>(rhs);
+        std::get<2>(lhs)[i] /= std::get<2>(rhs);
+        std::get<3>(lhs)[i] /= std::get<3>(rhs);
+    }
+    return;
 }
 
 // ---------------------------------------------------------------------------
