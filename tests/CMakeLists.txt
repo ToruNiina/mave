@@ -21,7 +21,7 @@ set(TEST_NAMES
     test_mat_vec_mul
     )
 
-add_definitions("-std=c++11 -O2 -march=native -mtune=native")
+add_definitions("-std=c++11 -pedantic -Wall -Wextra -O2 -march=native -mtune=native")
 
 foreach(TEST_NAME ${TEST_NAMES})
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp)
