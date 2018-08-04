@@ -53,3 +53,4 @@ if(MAVE_USE_APPROX)
 endif(MAVE_USE_APPROX)
 
 add_subdirectory(tests)
+add_subdirectory(samples)
