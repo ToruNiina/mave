@@ -105,6 +105,17 @@ If you want to use a non-default compiler, you need to pass it to cmake.
 $ cmake .. -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8
 ```
 
+## What is missing?
+
+- [] optimize `cross_product`
+- [] optimize matrix-vector multiplication
+- [] optimize matrix-matrix multiplication
+- [] approximate `operator/` by `rcp` for `matrix`
+- [] specialize `vector<float,  4>`
+- [] specialize `vector<dobule, 4>`
+- [] specialize `matrix<float,  4, 4>`
+- [] specialize `matrix<dobule, 4, 4>`
+
 ## Licensing terms
 
 This product is licensed under the terms of the [MIT License](LICENSE).
