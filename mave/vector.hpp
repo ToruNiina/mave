@@ -12,8 +12,8 @@ using vector = matrix<T, N, 1>;
 
 // here, mave defines fallback functions. in this file, no SIMD operations are
 // used. if there are no supported SIMD, this implementations are used. if
-// SIMD operations are supported, some specialization of these functions are
-// overwritten by altanative implementations that uses SIMD intrinsics.
+// SIMD operations are supported, these functions are overwritten by altanative
+// implementations that uses SIMD intrinsics.
 
 // ---------------------------------------------------------------------------
 // length
