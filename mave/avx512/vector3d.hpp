@@ -30,7 +30,7 @@ struct alignas(32) matrix<double, 3, 1>
     static constexpr std::size_t column_size = 1;
     static constexpr std::size_t total_size  = 3;
     using value_type      = double;
-    using storage_type    = std::array<double, 4>; // XXX for AVX packing
+    using storage_type    = std::array<double, 4>;
     using pointer         = value_type*;
     using const_pointer   = value_type const*;
     using reference       = value_type&;
@@ -241,6 +241,53 @@ operator+(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
                            std::get<0>(r34), std::get<1>(r34));
 }
 
+// assignment ----------------------------------------------------------------
+
+template<>
+MAVE_INLINE void operator+=(
+    std::tuple<      matrix<double,3,1>&,       matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+    ) noexcept
+{
+    const __m512d v11 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v1).data())),
+                               _mm256_load_pd(std::get<1>(v1).data()), 1);
+    const __m512d v22 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v2).data())),
+                               _mm256_load_pd(std::get<1>(v2).data()), 1);
+
+    const __m512d rslt = _mm512_add_pd(v11, v22);
+    _mm256_store_pd(std::get<0>(v1).data(), _mm512_castpd512_pd256(rslt));
+    _mm256_store_pd(std::get<1>(v1).data(), _mm512_extractf64x4_pd(rslt, 1));
+    return ;
+}
+template<>
+MAVE_INLINE void operator+=(
+    std::tuple<      matrix<double,3,1>&, matrix<double,3,1>&,
+                     matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&> v2) noexcept
+{
+    std::tie(std::get<0>(v1), std::get<1>(v1)) +=
+        std::tie(std::get<0>(v2), std::get<1>(v2));
+    std::get<2>(v1) += std::get<2>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator+=(
+    std::tuple<      matrix<double,3,1>&,       matrix<double,3,1>&,
+                     matrix<double,3,1>&,       matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+    ) noexcept
+{
+    std::tie(std::get<0>(v1), std::get<1>(v1)) +=
+        std::tie(std::get<0>(v2), std::get<1>(v2));
+    std::tie(std::get<2>(v1), std::get<3>(v1)) +=
+        std::tie(std::get<2>(v2), std::get<3>(v2));
+    return ;
+}
+
 // ---------------------------------------------------------------------------
 // subtraction
 // ---------------------------------------------------------------------------
@@ -298,9 +345,57 @@ operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
                            std::get<0>(r34), std::get<1>(r34));
 }
 
+// assignment ----------------------------------------------------------------
+
+template<>
+MAVE_INLINE void operator-=(
+    std::tuple<      matrix<double,3,1>&,       matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+    ) noexcept
+{
+    const __m512d v11 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v1).data())),
+                               _mm256_load_pd(std::get<1>(v1).data()), 1);
+    const __m512d v22 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v2).data())),
+                               _mm256_load_pd(std::get<1>(v2).data()), 1);
+
+    const __m512d rslt = _mm512_sub_pd(v11, v22);
+    _mm256_store_pd(std::get<0>(v1).data(), _mm512_castpd512_pd256(rslt));
+    _mm256_store_pd(std::get<1>(v1).data(), _mm512_extractf64x4_pd(rslt, 1));
+}
+template<>
+MAVE_INLINE void operator-=(
+    std::tuple<      matrix<double,3,1>&, matrix<double,3,1>&,
+                     matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&> v2) noexcept
+{
+    std::tie(std::get<0>(v1), std::get<1>(v1)) -=
+        std::tie(std::get<0>(v2), std::get<1>(v2));
+    std::get<2>(v1) -= std::get<2>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator-=(
+    std::tuple<      matrix<double,3,1>&,       matrix<double,3,1>&,
+                     matrix<double,3,1>&,       matrix<double,3,1>&> v1,
+    std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
+               const matrix<double,3,1>&, const matrix<double,3,1>&> v2
+    ) noexcept
+{
+    std::tie(std::get<0>(v1), std::get<1>(v1)) -=
+        std::tie(std::get<0>(v2), std::get<1>(v2));
+    std::tie(std::get<2>(v1), std::get<3>(v1)) -=
+        std::tie(std::get<2>(v2), std::get<3>(v2));
+    return ;
+}
+
 // ---------------------------------------------------------------------------
 // multiplication
 // ---------------------------------------------------------------------------
+
+// scalar * vector -----------------------------------------------------------
 
 template<>
 MAVE_INLINE matrix<double, 3, 1> operator*(
@@ -354,6 +449,8 @@ operator*(std::tuple<double, double, double, double> v1,
                            std::get<0>(r34), std::get<1>(r34));
 }
 
+// vector * scalar -----------------------------------------------------------
+
 template<>
 MAVE_INLINE matrix<double, 3, 1> operator*(
     const matrix<double, 3, 1>& v1, const double v2) noexcept
@@ -404,6 +501,53 @@ operator*(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
                            std::get<0>(r34), std::get<1>(r34));
 }
 
+// assignment ----------------------------------------------------------------
+
+template<>
+MAVE_INLINE void operator*=(
+    std::tuple<matrix<double,3,1>&, matrix<double,3,1>&> v1,
+    std::tuple<double, double> v2) noexcept
+{
+    const __m512d v11 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v1).data())),
+                               _mm256_load_pd(std::get<1>(v1).data()), 1);
+    const __m512d v22 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_set1_pd(std::get<0>(v2))),
+                               _mm256_set1_pd(std::get<1>(v2)), 1);
+
+    const __m512d rslt = _mm512_mul_pd(v11, v22);
+    _mm256_store_pd(std::get<0>(v1).data(), _mm512_castpd512_pd256(rslt));
+    _mm256_store_pd(std::get<1>(v1).data(), _mm512_extractf64x4_pd(rslt, 1));
+    return ;
+}
+template<>
+MAVE_INLINE void operator*=(
+    std::tuple<matrix<double,3,1>&, matrix<double,3,1>&, matrix<double,3,1>&> v1,
+    std::tuple<double, double, double> v2) noexcept
+{
+    std::tie(std::get<0>(v1), std::get<1>(v1)) *=
+        std::tie(std::get<0>(v2), std::get<1>(v2));
+    std::get<2>(v1) *= std::get<2>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator*=(
+    std::tuple<matrix<double,3,1>&, matrix<double,3,1>&,
+               matrix<double,3,1>&, matrix<double,3,1>&> v1,
+    std::tuple<double, double, double, double> v2
+    ) noexcept
+{
+    std::tie(std::get<0>(v1), std::get<1>(v1)) *=
+        std::tie(std::get<0>(v2), std::get<1>(v2));
+    std::tie(std::get<2>(v1), std::get<3>(v1)) *=
+        std::tie(std::get<2>(v2), std::get<3>(v2));
+    return ;
+}
+
+// ---------------------------------------------------------------------------
+// division operator/
+// ---------------------------------------------------------------------------
+
 template<>
 MAVE_INLINE matrix<double, 3, 1> operator/(
     const matrix<double, 3, 1>& v1, const double v2) noexcept
@@ -452,6 +596,47 @@ operator/(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&,
 
     return std::make_tuple(std::get<0>(r12), std::get<1>(r12),
                            std::get<0>(r34), std::get<1>(r34));
+}
+
+// assignment ----------------------------------------------------------------
+
+template<>
+MAVE_INLINE void operator/=(
+    std::tuple<matrix<double,3,1>&, matrix<double,3,1>&> v1,
+    std::tuple<double, double> v2) noexcept
+{
+    const __m512d v11 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_load_pd(std::get<0>(v1).data())),
+                               _mm256_load_pd(std::get<1>(v1).data()), 1);
+    const __m512d v22 = _mm512_insertf64x4(
+        _mm512_castpd256_pd512(_mm256_set1_pd(std::get<0>(v2))),
+                               _mm256_set1_pd(std::get<1>(v2)), 1);
+
+    const __m512d rslt = _mm512_div_pd(v11, v22);
+    _mm256_store_pd(std::get<0>(v1).data(), _mm512_castpd512_pd256(rslt));
+    _mm256_store_pd(std::get<1>(v1).data(), _mm512_extractf64x4_pd(rslt, 1));
+}
+template<>
+MAVE_INLINE void operator/=(
+    std::tuple<matrix<double,3,1>&, matrix<double,3,1>&, matrix<double,3,1>&> v1,
+    std::tuple<double, double, double> v2) noexcept
+{
+    std::tie(std::get<0>(v1), std::get<1>(v1)) /=
+        std::tie(std::get<0>(v2), std::get<1>(v2));
+    std::get<2>(v1) /= std::get<2>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator/=(
+    std::tuple<matrix<double,3,1>&, matrix<double,3,1>&,
+               matrix<double,3,1>&, matrix<double,3,1>&> v1,
+    std::tuple<double, double, double, double> v2) noexcept
+{
+    std::tie(std::get<0>(v1), std::get<1>(v1)) /=
+        std::tie(std::get<0>(v2), std::get<1>(v2));
+    std::tie(std::get<2>(v1), std::get<3>(v1)) /=
+        std::tie(std::get<2>(v2), std::get<3>(v2));
+    return ;
 }
 
 // ---------------------------------------------------------------------------
