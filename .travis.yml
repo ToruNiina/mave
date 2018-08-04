@@ -76,4 +76,5 @@ script:
 - cd build
 - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_CXX_STANDARD=$CXX_STANDARD -DMAVE_USE_APPROX=$APX ..
 - make
+- ./samples/check
 - ctest --output-on-failure
