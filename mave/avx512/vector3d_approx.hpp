@@ -527,7 +527,7 @@ MAVE_INLINE void operator*=(
     std::tuple<double, double, double> v2) noexcept
 {
     std::tie(std::get<0>(v1), std::get<1>(v1)) *=
-        std::tie(std::get<0>(v2), std::get<1>(v2));
+        std::tuple<double, double>(std::get<0>(v2), std::get<1>(v2));
     std::get<2>(v1) *= std::get<2>(v2);
     return ;
 }
@@ -539,9 +539,9 @@ MAVE_INLINE void operator*=(
     ) noexcept
 {
     std::tie(std::get<0>(v1), std::get<1>(v1)) *=
-        std::tie(std::get<0>(v2), std::get<1>(v2));
+        std::tuple<double, double>(std::get<0>(v2), std::get<1>(v2));
     std::tie(std::get<2>(v1), std::get<3>(v1)) *=
-        std::tie(std::get<2>(v2), std::get<3>(v2));
+        std::tuple<double, double>(std::get<2>(v2), std::get<3>(v2));
     return ;
 }
 
@@ -624,7 +624,7 @@ MAVE_INLINE void operator/=(
     std::tuple<double, double, double> v2) noexcept
 {
     std::tie(std::get<0>(v1), std::get<1>(v1)) /=
-        std::tie(std::get<0>(v2), std::get<1>(v2));
+        std::tuple<double, double>(std::get<0>(v2), std::get<1>(v2));
     std::get<2>(v1) /= std::get<2>(v2);
     return ;
 }
@@ -635,9 +635,9 @@ MAVE_INLINE void operator/=(
     std::tuple<double, double, double, double> v2) noexcept
 {
     std::tie(std::get<0>(v1), std::get<1>(v1)) /=
-        std::tie(std::get<0>(v2), std::get<1>(v2));
+        std::tuple<double, double>(std::get<0>(v2), std::get<1>(v2));
     std::tie(std::get<2>(v1), std::get<3>(v1)) /=
-        std::tie(std::get<2>(v2), std::get<3>(v2));
+        std::tuple<double, double>(std::get<2>(v2), std::get<3>(v2));
     return ;
 }
 

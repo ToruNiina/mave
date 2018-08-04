@@ -299,8 +299,8 @@ MAVE_INLINE void operator+=(
                                _mm_load_ps(std::get<1>(v2).data()), 1);
     const __m256 v12 = _mm256_add_ps(v11, v22);
 
-    _mm256_store_ps(std::get<0>(v1).data(), _mm256_castps256_ps128(v12));
-    _mm256_store_ps(std::get<1>(v1).data(), _mm256_extractf128_ps(v12, 1));
+    _mm_store_ps(std::get<0>(v1).data(), _mm256_castps256_ps128(v12));
+    _mm_store_ps(std::get<1>(v1).data(), _mm256_extractf128_ps(v12, 1));
     return ;
 }
 template<>
@@ -321,9 +321,9 @@ MAVE_INLINE void operator+=(
         _mm_load_ps(std::get<2>(v2).data()), 2);
 
     const __m512 rslt = _mm512_add_ps(v111, v222);
-    _mm256_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
-    _mm256_store_ps(std::get<1>(v1).data(), _mm512_extractf32x4_ps(rslt, 1));
-    _mm256_store_ps(std::get<2>(v1).data(), _mm512_extractf32x4_ps(rslt, 2));
+    _mm_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
+    _mm_store_ps(std::get<1>(v1).data(), _mm512_extractf32x4_ps(rslt, 1));
+    _mm_store_ps(std::get<2>(v1).data(), _mm512_extractf32x4_ps(rslt, 2));
     return ;
 }
 template<>
@@ -353,10 +353,10 @@ MAVE_INLINE void operator+=(
 
     const __m512 rslt = _mm512_add_ps(v1111, v2222);
 
-    _mm256_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
-    _mm256_store_ps(std::get<1>(v1).data(), _mm512_extractf32x4_ps(rslt, 1));
-    _mm256_store_ps(std::get<2>(v1).data(), _mm512_extractf32x4_ps(rslt, 2));
-    _mm256_store_ps(std::get<3>(v1).data(), _mm512_extractf32x4_ps(rslt, 3));
+    _mm_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
+    _mm_store_ps(std::get<1>(v1).data(), _mm512_extractf32x4_ps(rslt, 1));
+    _mm_store_ps(std::get<2>(v1).data(), _mm512_extractf32x4_ps(rslt, 2));
+    _mm_store_ps(std::get<3>(v1).data(), _mm512_extractf32x4_ps(rslt, 3));
     return ;
 }
 
@@ -463,8 +463,8 @@ MAVE_INLINE void operator-=(
                                _mm_load_ps(std::get<1>(v2).data()), 1);
     const __m256 v12 = _mm256_sub_ps(v11, v22);
 
-    _mm256_store_ps(std::get<0>(v1).data(), _mm256_castps256_ps128(v12));
-    _mm256_store_ps(std::get<1>(v1).data(), _mm256_extractf128_ps(v12, 1));
+    _mm_store_ps(std::get<0>(v1).data(), _mm256_castps256_ps128(v12));
+    _mm_store_ps(std::get<1>(v1).data(), _mm256_extractf128_ps(v12, 1));
     return ;
 }
 template<>
@@ -485,9 +485,9 @@ MAVE_INLINE void operator-=(
         _mm_load_ps(std::get<2>(v2).data()), 2);
 
     const __m512 rslt = _mm512_sub_ps(v111, v222);
-    _mm256_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
-    _mm256_store_ps(std::get<1>(v1).data(), _mm512_extractf32x4_ps(rslt, 1));
-    _mm256_store_ps(std::get<2>(v1).data(), _mm512_extractf32x4_ps(rslt, 2));
+    _mm_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
+    _mm_store_ps(std::get<1>(v1).data(), _mm512_extractf32x4_ps(rslt, 1));
+    _mm_store_ps(std::get<2>(v1).data(), _mm512_extractf32x4_ps(rslt, 2));
     return ;
 }
 template<>
@@ -517,10 +517,10 @@ MAVE_INLINE void operator-=(
 
     const __m512 rslt = _mm512_sub_ps(v1111, v2222);
 
-    _mm256_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
-    _mm256_store_ps(std::get<1>(v1).data(), _mm512_extractf32x4_ps(rslt, 1));
-    _mm256_store_ps(std::get<2>(v1).data(), _mm512_extractf32x4_ps(rslt, 2));
-    _mm256_store_ps(std::get<3>(v1).data(), _mm512_extractf32x4_ps(rslt, 3));
+    _mm_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
+    _mm_store_ps(std::get<1>(v1).data(), _mm512_extractf32x4_ps(rslt, 1));
+    _mm_store_ps(std::get<2>(v1).data(), _mm512_extractf32x4_ps(rslt, 2));
+    _mm_store_ps(std::get<3>(v1).data(), _mm512_extractf32x4_ps(rslt, 3));
     return ;
 }
 
@@ -701,15 +701,15 @@ MAVE_INLINE void operator*=(
     std::tuple<float, float> v2) noexcept
 {
     const __m256 v11 = _mm256_insertf128_ps(
-        _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1))),
-                               _mm_load_ps(std::get<1>(v1)), 1);
+        _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1).data())),
+                               _mm_load_ps(std::get<1>(v1).data()), 1);
     const __m256 v22 = _mm256_insertf128_ps(
-        _mm256_castps128_ps256(_mm_set1_ps(std::get<0>(v2).data())),
-                               _mm_set1_ps(std::get<1>(v2).data()), 1);
+        _mm256_castps128_ps256(_mm_set1_ps(std::get<0>(v2))),
+                               _mm_set1_ps(std::get<1>(v2)), 1);
     const __m256 v12 = _mm256_mul_ps(v11, v22);
 
-    _mm_store_pd(std::get<0>(v1).data(), _mm256_castps256_ps128(v12));
-    _mm_store_pd(std::get<1>(v1).data(), _mm256_extractf128_ps(v12, 1));
+    _mm_store_ps(std::get<0>(v1).data(), _mm256_castps256_ps128(v12));
+    _mm_store_ps(std::get<1>(v1).data(), _mm256_extractf128_ps(v12, 1));
     return ;
 }
 template<>
@@ -718,14 +718,14 @@ MAVE_INLINE void operator*=(
     std::tuple<float, float, float> v2) noexcept
 {
     const __m512 v111 = _mm512_insertf32x4(_mm512_insertf32x4(
-            _mm512_castps128_ps512(_mm_load_ps(std::get<0>(v1))),
-                                   _mm_load_ps(std::get<1>(v1)), 1),
-                                   _mm_load_ps(std::get<2>(v1)), 2);
+            _mm512_castps128_ps512(_mm_load_ps(std::get<0>(v1).data())),
+                                   _mm_load_ps(std::get<1>(v1).data()), 1),
+                                   _mm_load_ps(std::get<2>(v1).data()), 2);
 
     const __m512 v222 = _mm512_insertf32x4(_mm512_insertf32x4(
-            _mm512_castps128_ps512(_mm_set1_ps(std::get<0>(v2).data())),
-                                   _mm_set1_ps(std::get<1>(v2).data()), 1),
-                                   _mm_set1_ps(std::get<2>(v2).data()), 2);
+            _mm512_castps128_ps512(_mm_set1_ps(std::get<0>(v2))),
+                                   _mm_set1_ps(std::get<1>(v2)), 1),
+                                   _mm_set1_ps(std::get<2>(v2)), 2);
 
     const __m512 rslt = _mm512_mul_ps(v111, v222);
     _mm_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
@@ -741,18 +741,18 @@ MAVE_INLINE void operator*=(
     ) noexcept
 {
     const __m256 v11_1 = _mm256_insertf128_ps(
-            _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1))),
-                                   _mm_load_ps(std::get<1>(v1)), 1);
+            _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1).data())),
+                                   _mm_load_ps(std::get<1>(v1).data()), 1);
     const __m256 v11_2 = _mm256_insertf128_ps(
-            _mm256_castps128_ps256(_mm_load_ps(std::get<2>(v1))),
-                                   _mm_load_ps(std::get<3>(v1)), 1);
+            _mm256_castps128_ps256(_mm_load_ps(std::get<2>(v1).data())),
+                                   _mm_load_ps(std::get<3>(v1).data()), 1);
 
     const __m256 v22_1 = _mm256_insertf128_ps(
-            _mm256_castps128_ps256(_mm_set1_ps(std::get<0>(v2).data())),
-                                   _mm_set1_ps(std::get<1>(v2).data()), 1);
+            _mm256_castps128_ps256(_mm_set1_ps(std::get<0>(v2))),
+                                   _mm_set1_ps(std::get<1>(v2)), 1);
     const __m256 v22_2 = _mm256_insertf128_ps(
-            _mm256_castps128_ps256(_mm_set1_ps(std::get<2>(v2).data())),
-                                   _mm_set1_ps(std::get<3>(v2).data()), 1);
+            _mm256_castps128_ps256(_mm_set1_ps(std::get<2>(v2))),
+                                   _mm_set1_ps(std::get<3>(v2)), 1);
 
     const __m512 v1111 = _mm512_insertf32x8(_mm512_castps256_ps512(v11_1), v11_2, 1);
     const __m512 v2222 = _mm512_insertf32x8(_mm512_castps256_ps512(v22_1), v22_2, 1);
@@ -858,15 +858,15 @@ MAVE_INLINE void operator/=(
     std::tuple<float, float> v2) noexcept
 {
     const __m256 v11 = _mm256_insertf128_ps(
-        _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1))),
-                               _mm_load_ps(std::get<1>(v1)), 1);
+        _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1).data())),
+                               _mm_load_ps(std::get<1>(v1).data()), 1);
     const __m256 v22 = _mm256_insertf128_ps(
-        _mm256_castps128_ps256(_mm_rcp_ps(_mm_set1_ps(std::get<0>(v2).data()))),
-                               _mm_rcp_ps(_mm_set1_ps(std::get<1>(v2).data()), 1));
+        _mm256_castps128_ps256(_mm_rcp_ps(_mm_set1_ps(std::get<0>(v2)))),
+                               _mm_rcp_ps(_mm_set1_ps(std::get<1>(v2))), 1);
     const __m256 v12 = _mm256_mul_ps(v11, v22);
 
-    _mm_store_pd(std::get<0>(v1).data(), _mm256_castps256_ps128(v12));
-    _mm_store_pd(std::get<1>(v1).data(), _mm256_extractf128_ps(v12, 1));
+    _mm_store_ps(std::get<0>(v1).data(), _mm256_castps256_ps128(v12));
+    _mm_store_ps(std::get<1>(v1).data(), _mm256_extractf128_ps(v12, 1));
     return ;
 }
 template<>
@@ -875,14 +875,14 @@ MAVE_INLINE void operator/=(
     std::tuple<float, float, float> v2) noexcept
 {
     const __m512 v111 = _mm512_insertf32x4(_mm512_insertf32x4(
-            _mm512_castps128_ps512(_mm_load_ps(std::get<0>(v1))),
-                                   _mm_load_ps(std::get<1>(v1)), 1),
-                                   _mm_load_ps(std::get<2>(v1)), 2);
+            _mm512_castps128_ps512(_mm_load_ps(std::get<0>(v1).data())),
+                                   _mm_load_ps(std::get<1>(v1).data()), 1),
+                                   _mm_load_ps(std::get<2>(v1).data()), 2);
 
     const __m512 v222 = _mm512_insertf32x4(_mm512_insertf32x4(
-            _mm512_castps128_ps512(_mm_rcp_ps(_mm_set1_ps(std::get<0>(v2).data()))),
-                                   _mm_rcp_ps(_mm_set1_ps(std::get<1>(v2).data()), 1)),
-                                   _mm_rcp_ps(_mm_set1_ps(std::get<2>(v2).data()), 2));
+            _mm512_castps128_ps512(_mm_rcp_ps(_mm_set1_ps(std::get<0>(v2)))),
+                                   _mm_rcp_ps(_mm_set1_ps(std::get<1>(v2))), 1),
+                                   _mm_rcp_ps(_mm_set1_ps(std::get<2>(v2))), 2);
 
     const __m512 rslt = _mm512_mul_ps(v111, v222);
     _mm_store_ps(std::get<0>(v1).data(), _mm512_extractf32x4_ps(rslt, 0));
@@ -898,18 +898,18 @@ MAVE_INLINE void operator/=(
     ) noexcept
 {
     const __m256 v11_1 = _mm256_insertf128_ps(
-            _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1))),
-                                   _mm_load_ps(std::get<1>(v1)), 1);
+            _mm256_castps128_ps256(_mm_load_ps(std::get<0>(v1).data())),
+                                   _mm_load_ps(std::get<1>(v1).data()), 1);
     const __m256 v11_2 = _mm256_insertf128_ps(
-            _mm256_castps128_ps256(_mm_load_ps(std::get<2>(v1))),
-                                   _mm_load_ps(std::get<3>(v1)), 1);
+            _mm256_castps128_ps256(_mm_load_ps(std::get<2>(v1).data())),
+                                   _mm_load_ps(std::get<3>(v1).data()), 1);
 
     const __m256 v22_1 = _mm256_insertf128_ps(
-            _mm256_castps128_ps256(_mm_rcp_ps(_mm_set1_ps(std::get<0>(v2).data()))),
-                                   _mm_rcp_ps(_mm_set1_ps(std::get<1>(v2).data()), 1));
+            _mm256_castps128_ps256(_mm_rcp_ps(_mm_set1_ps(std::get<0>(v2)))),
+                                   _mm_rcp_ps(_mm_set1_ps(std::get<1>(v2))), 1);
     const __m256 v22_2 = _mm256_insertf128_ps(
-            _mm256_castps128_ps256(_mm_rcp_ps(_mm_set1_ps(std::get<2>(v2).data())),)
-                                   _mm_rcp_ps(_mm_set1_ps(std::get<3>(v2).data()), 1));
+            _mm256_castps128_ps256(_mm_rcp_ps(_mm_set1_ps(std::get<2>(v2)))),
+                                   _mm_rcp_ps(_mm_set1_ps(std::get<3>(v2))), 1);
 
     const __m512 v1111 = _mm512_insertf32x8(_mm512_castps256_ps512(v11_1), v11_2, 1);
     const __m512 v2222 = _mm512_insertf32x8(_mm512_castps256_ps512(v22_1), v22_2, 1);
