@@ -262,6 +262,45 @@ operator+(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                            std::get<0>(m34), std::get<1>(m34));
 }
 
+// assignment ----------------------------------------------------------------
+
+template<>
+MAVE_INLINE void operator+=(
+    std::tuple<      matrix<float, 3, 3>&,       matrix<float, 3, 3>&> v1,
+    std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> v2
+    ) noexcept
+{
+    std::get<0>(v1) += std::get<0>(v2);
+    std::get<1>(v1) += std::get<1>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator+=(
+    std::tuple<      matrix<float, 3, 3>&, matrix<float, 3, 3>&,
+                     matrix<float, 3, 3>&> v1,
+    std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+               const matrix<float, 3, 3>&> v2) noexcept
+{
+    std::get<0>(v1) += std::get<0>(v2);
+    std::get<1>(v1) += std::get<1>(v2);
+    std::get<2>(v1) += std::get<2>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator+=(
+    std::tuple<      matrix<float, 3, 3>&,       matrix<float, 3, 3>&,
+                     matrix<float, 3, 3>&,       matrix<float, 3, 3>&> v1,
+    std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+               const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> v2
+    ) noexcept
+{
+    std::get<0>(v1) += std::get<0>(v2);
+    std::get<1>(v1) += std::get<1>(v2);
+    std::get<2>(v1) += std::get<2>(v2);
+    std::get<3>(v1) += std::get<3>(v2);
+    return ;
+}
+
 // ---------------------------------------------------------------------------
 // subtraction operator-
 // ---------------------------------------------------------------------------
@@ -333,9 +372,50 @@ operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
                            std::get<0>(m34), std::get<1>(m34));
 }
 
+// assignment ----------------------------------------------------------------
+
+template<>
+MAVE_INLINE void operator-=(
+    std::tuple<      matrix<float, 3, 3>&,       matrix<float, 3, 3>&> v1,
+    std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> v2
+    ) noexcept
+{
+    std::get<0>(v1) -= std::get<0>(v2);
+    std::get<1>(v1) -= std::get<1>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator-=(
+    std::tuple<      matrix<float, 3, 3>&, matrix<float, 3, 3>&,
+                     matrix<float, 3, 3>&> v1,
+    std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+               const matrix<float, 3, 3>&> v2) noexcept
+{
+    std::get<0>(v1) -= std::get<0>(v2);
+    std::get<1>(v1) -= std::get<1>(v2);
+    std::get<2>(v1) -= std::get<2>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator-=(
+    std::tuple<      matrix<float, 3, 3>&,       matrix<float, 3, 3>&,
+                     matrix<float, 3, 3>&,       matrix<float, 3, 3>&> v1,
+    std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
+               const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> v2
+    ) noexcept
+{
+    std::get<0>(v1) -= std::get<0>(v2);
+    std::get<1>(v1) -= std::get<1>(v2);
+    std::get<2>(v1) -= std::get<2>(v2);
+    std::get<3>(v1) -= std::get<3>(v2);
+    return ;
+}
+
 // ---------------------------------------------------------------------------
 // multiplication operator*
 // ---------------------------------------------------------------------------
+
+// matrix * scalar -----------------------------------------------------------
 
 template<>
 MAVE_INLINE matrix<float, 3, 3> operator*(
@@ -398,6 +478,8 @@ operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
     return std::make_tuple(std::get<0>(m12), std::get<1>(m12),
                            std::get<0>(m34), std::get<1>(m34));
 }
+
+// scalar * matrix -----------------------------------------------------------
 
 template<>
 MAVE_INLINE matrix<float, 3, 3> operator*(
@@ -467,6 +549,41 @@ operator*(std::tuple<float, float, float, float> lhs,
                            std::get<0>(m34), std::get<1>(m34));
 }
 
+// assignment ----------------------------------------------------------------
+
+template<>
+MAVE_INLINE void operator*=(
+    std::tuple<matrix<float, 3, 3>&, matrix<float, 3, 3>&> v1,
+    std::tuple<float, float> v2) noexcept
+{
+    std::get<0>(v1) *= std::get<0>(v2);
+    std::get<1>(v1) *= std::get<1>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator*=(
+    std::tuple<matrix<float, 3, 3>&, matrix<float, 3, 3>&, matrix<float, 3, 3>&> v1,
+    std::tuple<float, float, float> v2) noexcept
+{
+    std::get<0>(v1) *= std::get<0>(v2);
+    std::get<1>(v1) *= std::get<1>(v2);
+    std::get<2>(v1) *= std::get<2>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator*=(
+    std::tuple<matrix<float, 3, 3>&, matrix<float, 3, 3>&,
+               matrix<float, 3, 3>&, matrix<float, 3, 3>&> v1,
+    std::tuple<float, float, float, float> v2
+    ) noexcept
+{
+    std::get<0>(v1) *= std::get<0>(v2);
+    std::get<1>(v1) *= std::get<1>(v2);
+    std::get<2>(v1) *= std::get<2>(v2);
+    std::get<3>(v1) *= std::get<3>(v2);
+    return ;
+}
+
 // ---------------------------------------------------------------------------
 // division operator/
 // ---------------------------------------------------------------------------
@@ -532,6 +649,41 @@ operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&,
     return std::make_tuple(std::get<0>(m12), std::get<1>(m12),
                            std::get<0>(m34), std::get<1>(m34));
 }
+
+// assignment ----------------------------------------------------------------
+
+template<>
+MAVE_INLINE void operator/=(
+    std::tuple<matrix<float, 3, 3>&, matrix<float, 3, 3>&> v1,
+    std::tuple<float, float> v2) noexcept
+{
+    std::get<0>(v1) /= std::get<0>(v2);
+    std::get<1>(v1) /= std::get<1>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator/=(
+    std::tuple<matrix<float, 3, 3>&, matrix<float, 3, 3>&, matrix<float, 3, 3>&> v1,
+    std::tuple<float, float, float> v2) noexcept
+{
+    std::get<0>(v1) /= std::get<0>(v2);
+    std::get<1>(v1) /= std::get<1>(v2);
+    std::get<2>(v1) /= std::get<2>(v2);
+    return ;
+}
+template<>
+MAVE_INLINE void operator/=(
+    std::tuple<matrix<float, 3, 3>&, matrix<float, 3, 3>&,
+               matrix<float, 3, 3>&, matrix<float, 3, 3>&> v1,
+    std::tuple<float, float, float, float> v2) noexcept
+{
+    std::get<0>(v1) /= std::get<0>(v2);
+    std::get<1>(v1) /= std::get<1>(v2);
+    std::get<2>(v1) /= std::get<2>(v2);
+    std::get<3>(v1) /= std::get<3>(v2);
+    return ;
+}
+
 
 
 // ---------------------------------------------------------------------------
