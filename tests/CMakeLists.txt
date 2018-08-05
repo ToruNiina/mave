@@ -1,4 +1,5 @@
 set(TEST_NAMES
+    test_construction
     test_length_sq
     test_length
     test_rlength
