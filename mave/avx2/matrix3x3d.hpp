@@ -39,8 +39,14 @@ struct alignas(32) matrix<double, 3, 3>
 
     matrix(double v00, double v01, double v02,
            double v10, double v11, double v12,
-           double v20, double v21, double v22)
+           double v20, double v21, double v22) noexcept
         : vs_{{v00, v01, v02, 0.0, v10, v11, v12, 0.0, v20, v21, v22, 0.0}}
+    {}
+
+    matrix(const std::array<double, 9>& arg) noexcept
+        : vs_{{arg[0], arg[1], arg[2], 0.0,
+               arg[3], arg[4], arg[5], 0.0,
+               arg[6], arg[7], arg[8], 0.0}}
     {}
 
     matrix(){vs_.fill(0.0);}

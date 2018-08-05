@@ -53,11 +53,17 @@ struct alignas(64) matrix<float, 3, 3>
 
     matrix(float v00, float v01, float v02,
            float v10, float v11, float v12,
-           float v20, float v21, float v22)
+           float v20, float v21, float v22) noexcept
         : vs_{{v00, v01, v02, 0.0f, v10, v11, v12, 0.0f, v20, v21, v22, 0.0f}}
     {}
 
-    matrix(){vs_.fill(0.0f);}
+    matrix(const std::array<float, 9>& arg) noexcept
+        : vs_{{arg[0], arg[1], arg[2], 0.0f,
+               arg[3], arg[4], arg[5], 0.0f,
+               arg[6], arg[7], arg[8], 0.0f}}
+    {}
+
+    matrix() noexcept {vs_.fill(0.0f);}
     ~matrix() = default;
     matrix(const matrix&) = default;
     matrix(matrix&&)      = default;

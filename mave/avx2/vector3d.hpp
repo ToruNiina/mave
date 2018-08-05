@@ -47,6 +47,10 @@ struct alignas(32) matrix<double, 3, 1>
                static_cast<double>(v3), 0.0}}
     {}
 
+    matrix(const std::array<double, 3>& arg) noexcept
+        : vs_{{arg[0], arg[1], arg[2], 0.0}}
+    {}
+
     matrix(__m256d pack) noexcept
     {
         _mm256_store_pd(this->data(), pack);
