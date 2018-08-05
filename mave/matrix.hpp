@@ -3,6 +3,7 @@
 #include "type_traits.hpp"
 #include <utility>
 #include <array>
+#include <algorithm>
 #include <tuple>
 #include <cmath>
 
@@ -34,7 +35,10 @@ struct matrix
         std::nullptr_t>::type = nullptr>
     matrix(Ts&& ... args) noexcept : vs_{{static_cast<T>(args)...}}{}
 
-    matrix(const std::array<T, total_size>& arg) noexcept : vs_{{arg}}{}
+    matrix(const std::array<T, total_size>& arg) noexcept
+    {
+        std::copy(arg.begin(), arg.end(), this->vs_.begin());
+    }
 
     matrix(){vs_.fill(value_type(0.0));}
     ~matrix() = default;
