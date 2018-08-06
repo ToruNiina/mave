@@ -69,8 +69,8 @@ script:
 - cmake --version
 - |
   cd extlib
-  travis_retry wget "https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz"
-  tar xf boost_1_67_0.tar.gz --strip-components=1
+  travis_retry wget "https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.bz2"
+  tar xf boost_1_67_0.tar.bz2
   cd ..
 - mkdir build
 - cd build
