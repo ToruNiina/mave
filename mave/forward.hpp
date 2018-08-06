@@ -9,7 +9,7 @@ namespace mave
 #undef  MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX
 #define MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX(FUNC_NAME, MODIFICATION)\
     template<typename T, std::size_t R, std::size_t C>\
-    MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>\
+    MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>\
     FUNC_NAME(std::tuple<matrix<T, R, C> MODIFICATION,\
                          matrix<T, R, C> MODIFICATION> ms) noexcept\
     {\
@@ -53,16 +53,9 @@ MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX(operator-, &)
 #undef  MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX
 #define MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX(FUNC_NAME, MODIFICATION)\
     template<typename T, std::size_t R, std::size_t C>\
-    MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>\
+    MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>\
     FUNC_NAME(std::tuple<matrix<T, R, C> MODIFICATION,\
                          matrix<T, R, C> MODIFICATION> ms) noexcept\
-    {\
-        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms));\
-    }\
-    template<typename T, std::size_t R, std::size_t C>\
-    MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>\
-    FUNC_NAME(std::pair<matrix<T, R, C> MODIFICATION,\
-                        matrix<T, R, C> MODIFICATION> ms) noexcept\
     {\
         return FUNC_NAME(std::get<0>(ms), std::get<1>(ms));\
     }\
@@ -205,7 +198,7 @@ MAVE_GENERATE_FORWARDING_OP_ASSIGN_MATRIX_SCALAR(operator/=, &)
 #undef  MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_MATRIX
 #define MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_MATRIX(FUNC_NAME, L_MODIFICATION, R_MODIFICATION)\
     template<typename T, std::size_t R, std::size_t C>\
-    MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>\
+    MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>\
     FUNC_NAME(std::tuple<matrix<T, R, C> L_MODIFICATION,\
                          matrix<T, R, C> L_MODIFICATION \
                          > lhs,\
@@ -303,7 +296,7 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_MATRIX(max,       &     
 #undef  MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_SCALAR
 #define MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_SCALAR(FUNC_NAME, L_MODIFICATION, R_MODIFICATION)\
     template<typename T, std::size_t R, std::size_t C>\
-    MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>\
+    MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>\
     FUNC_NAME(std::tuple<matrix<T, R, C> L_MODIFICATION,\
                          matrix<T, R, C> L_MODIFICATION \
                          > lhs,\
@@ -314,7 +307,7 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_MATRIX(max,       &     
         return FUNC_NAME(\
             std::tuple<matrix<T, R, C> const&, matrix<T, R, C> const&>(\
                 std::get<0>(lhs), std::get<1>(lhs)),                         \
-            std::tuple<matrix<T, R, C> const&, matrix<T, R, C> const&>(\
+            std::tuple<T, T>(\
                 std::get<0>(rhs), std::get<1>(rhs)));                        \
     }\
     template<typename T, std::size_t R, std::size_t C>\
@@ -332,8 +325,7 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_MATRIX(max,       &     
             std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,\
                        const matrix<T, R, C>&>(                       \
                 std::get<0>(lhs), std::get<1>(lhs), std::get<2>(lhs)),   \
-            std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,\
-                       const matrix<T, R, C>&>(                       \
+            std::tuple<T, T, T>(                                         \
                 std::get<0>(rhs), std::get<1>(rhs), std::get<2>(rhs)));  \
     }\
     template<typename T, std::size_t R, std::size_t C>\
@@ -354,8 +346,7 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_MATRIX(max,       &     
             std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&, \
                        const matrix<T, R, C>&, const matrix<T, R, C>&>(\
             std::get<0>(lhs), std::get<1>(lhs), std::get<2>(lhs), std::get<3>(lhs)),\
-            std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&, \
-                       const matrix<T, R, C>&, const matrix<T, R, C>&>(\
+            std::tuple<T, T, T, T>(\
             std::get<0>(rhs), std::get<1>(rhs), std::get<2>(rhs), std::get<3>(rhs)));\
     }\
     /**/
@@ -384,7 +375,7 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_SCALAR(operator/, &     
 #undef  MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_SCALAR_MATRIX
 #define MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_SCALAR_MATRIX(FUNC_NAME, L_MODIFICATION, R_MODIFICATION)\
     template<typename T, std::size_t R, std::size_t C>\
-    MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>\
+    MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>\
     FUNC_NAME(std::tuple<T L_MODIFICATION,\
                          T L_MODIFICATION \
                          > lhs,\
@@ -393,10 +384,9 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_SCALAR(operator/, &     
                          > rhs) noexcept\
     {\
         return FUNC_NAME(\
+            std::tuple<T, T>(std::get<0>(lhs), std::get<1>(lhs)),      \
             std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&>(\
-                std::get<0>(lhs), std::get<1>(lhs)),                         \
-            std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&>(\
-                std::get<0>(rhs), std::get<1>(rhs)));                        \
+                std::get<0>(rhs), std::get<1>(rhs)));                  \
     }\
     template<typename T, std::size_t R, std::size_t C>\
     MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>\
@@ -410,12 +400,11 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_SCALAR(operator/, &     
                          > rhs) noexcept\
     {\
         return FUNC_NAME(\
-            std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,\
-                       const matrix<T, R, C>&>(                       \
-                std::get<0>(lhs), std::get<1>(lhs), std::get<2>(lhs)),   \
-            std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&,\
-                       const matrix<T, R, C>&>(                       \
-                std::get<0>(rhs), std::get<1>(rhs), std::get<2>(rhs)));  \
+            std::tuple<T, T, T>(\
+                std::get<0>(lhs), std::get<1>(lhs), std::get<2>(lhs)), \
+            std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&, \
+                       const matrix<T, R, C>&>(                        \
+                std::get<0>(rhs), std::get<1>(rhs), std::get<2>(rhs)));\
     }\
     template<typename T, std::size_t R, std::size_t C>\
     MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>,\
@@ -432,8 +421,7 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_MATRIX_SCALAR(operator/, &     
                          > rhs) noexcept\
     {\
         return FUNC_NAME(\
-            std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&, \
-                       const matrix<T, R, C>&, const matrix<T, R, C>&>(\
+            std::tuple<T, T, T, T>(\
             std::get<0>(lhs), std::get<1>(lhs), std::get<2>(lhs), std::get<3>(lhs)),\
             std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&, \
                        const matrix<T, R, C>&, const matrix<T, R, C>&>(\
@@ -455,7 +443,7 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_SCALAR_MATRIX(operator*, &     
 #define MAVE_GENERATE_FORWARDING_TERNARY_FUNCTIONS_MATRIX_SCALAR_MATRIX_MATRIX(\
         FUNC_NAME, L_MODIFICATION, M_MODIFICATION, R_MODIFICATION)\
     template<typename T, std::size_t R, std::size_t C>\
-    MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>\
+    MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>\
     FUNC_NAME(std::tuple<T L_MODIFICATION,\
                          T L_MODIFICATION \
                          > lhs,\
@@ -517,8 +505,8 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_MATRIX_SCALAR_MATRIX(operator*, &     
                          > rhs) noexcept\
     {\
         return FUNC_NAME(\
-            std::tuple<T, T, T>(std::get<0>(lhs), std::get<1>(lhs), \
-                                std::get<2>(lhs), std::get<3>(lhs)),\
+            std::tuple<T, T, T, T>(std::get<0>(lhs), std::get<1>(lhs), \
+                                   std::get<2>(lhs), std::get<3>(lhs)),\
             std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&, \
                        const matrix<T, R, C>&, const matrix<T, R, C>&>(\
             std::get<0>(mid), std::get<1>(mid), std::get<2>(mid), std::get<3>(mid)),\
@@ -645,18 +633,10 @@ MAVE_GENERATE_FORWARDING_TERNARY_FUNCTIONS_MATRIX_SCALAR_MATRIX_MATRIX(fnmsub, &
 #undef  MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3
 #define MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(FUNC_NAME, MODIFICATION)\
     template<typename T>\
-    MAVE_INLINE std::pair<T, T>\
+    MAVE_INLINE std::tuple<T, T>\
     FUNC_NAME(std::tuple<matrix<T, 3, 1> MODIFICATION,\
                          matrix<T, 3, 1> MODIFICATION \
                          > ms) noexcept\
-    {\
-        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms));\
-    }\
-    template<typename T>\
-    MAVE_INLINE std::pair<T, T>\
-    FUNC_NAME(std::pair<matrix<T, 3, 1> MODIFICATION,\
-                        matrix<T, 3, 1> MODIFICATION \
-                        > ms) noexcept\
     {\
         return FUNC_NAME(std::get<0>(ms), std::get<1>(ms));\
     }\
@@ -697,7 +677,7 @@ MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(rlength,   &)
 #undef  MAVE_GENERATE_FORWARDING_REGULARIZE
 #define MAVE_GENERATE_FORWARDING_REGULARIZE(MODIFICATION)\
     template<typename T>\
-    MAVE_INLINE std::pair<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>>\
+    MAVE_INLINE std::tuple<std::tuple<vector<T, 3>, T>, std::tuple<vector<T, 3>, T>>\
     regularize(std::tuple<matrix<T, 3, 1> MODIFICATION,\
                           matrix<T, 3, 1> MODIFICATION \
                           > ms) noexcept\
@@ -707,8 +687,8 @@ MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(rlength,   &)
                 std::get<0>(ms), std::get<1>(ms)));\
     }\
     template<typename T>\
-    MAVE_INLINE std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,\
-                           std::pair<vector<T, 3>, T>>\
+    MAVE_INLINE std::tuple<std::tuple<vector<T, 3>, T>, std::tuple<vector<T, 3>, T>,\
+                           std::tuple<vector<T, 3>, T>>\
     regularize(std::tuple<matrix<T, 3, 1> MODIFICATION,\
                           matrix<T, 3, 1> MODIFICATION,\
                           matrix<T, 3, 1> MODIFICATION \
@@ -720,8 +700,8 @@ MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(rlength,   &)
                 std::get<0>(ms), std::get<1>(ms), std::get<2>(ms)));\
     }\
     template<typename T>\
-    MAVE_INLINE std::tuple<std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>,\
-                           std::pair<vector<T, 3>, T>, std::pair<vector<T, 3>, T>>\
+    MAVE_INLINE std::tuple<std::tuple<vector<T, 3>, T>, std::tuple<vector<T, 3>, T>,\
+                           std::tuple<vector<T, 3>, T>, std::tuple<vector<T, 3>, T>>\
     regularize(std::tuple<matrix<T, 3, 1> MODIFICATION,\
                           matrix<T, 3, 1> MODIFICATION,\
                           matrix<T, 3, 1> MODIFICATION,\
@@ -744,7 +724,7 @@ MAVE_GENERATE_FORWARDING_REGULARIZE(&)
 #define MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_SCALAR_VECTOR3_VECTOR3(\
         FUNC_NAME, L_MODIFICATION, R_MODIFICATION)\
     template<typename T>\
-    MAVE_INLINE std::pair<T, T>\
+    MAVE_INLINE std::tuple<T, T>\
     FUNC_NAME(std::tuple<matrix<T, 3, 1> L_MODIFICATION,\
                          matrix<T, 3, 1> L_MODIFICATION \
                          > lhs,\
@@ -814,7 +794,7 @@ MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_SCALAR_VECTOR3_VECTOR3(dot_product, &,
 #define MAVE_GENERATE_FORWARDING_BINARY_FUNCTIONS_VECTOR3_VECTOR3_VECTOR3(\
         FUNC_NAME, L_MODIFICATION, R_MODIFICATION)\
     template<typename T>\
-    MAVE_INLINE std::pair<matrix<T, 3, 1>, matrix<T, 3, 1>>\
+    MAVE_INLINE std::tuple<matrix<T, 3, 1>, matrix<T, 3, 1>>\
     FUNC_NAME(std::tuple<matrix<T, 3, 1> L_MODIFICATION,\
                          matrix<T, 3, 1> L_MODIFICATION \
                          > lhs,\

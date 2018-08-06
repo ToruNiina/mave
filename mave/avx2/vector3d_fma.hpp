@@ -31,12 +31,12 @@ MAVE_INLINE matrix<double, 3, 1> fmadd(const double a,
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 fmadd(std::tuple<double, double> a,
       std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> b,
       std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> c) noexcept
 {
-    return std::make_pair(
+    return std::make_tuple(
         fmadd(std::get<0>(a), std::get<0>(b), std::get<0>(c)),
         fmadd(std::get<1>(a), std::get<1>(b), std::get<1>(c)));
 }
@@ -83,12 +83,12 @@ MAVE_INLINE matrix<double, 3, 1> fmsub(const double a,
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 fmsub(std::tuple<double, double> a,
       std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> b,
       std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> c) noexcept
 {
-    return std::make_pair(
+    return std::make_tuple(
         fmsub(std::get<0>(a), std::get<0>(b), std::get<0>(c)),
         fmsub(std::get<1>(a), std::get<1>(b), std::get<1>(c)));
 }
@@ -135,12 +135,12 @@ MAVE_INLINE matrix<double, 3, 1> fnmadd(const double a,
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 fnmadd(std::tuple<double, double> a,
       std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> b,
       std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> c) noexcept
 {
-    return std::make_pair(
+    return std::make_tuple(
         fnmadd(std::get<0>(a), std::get<0>(b), std::get<0>(c)),
         fnmadd(std::get<1>(a), std::get<1>(b), std::get<1>(c)));
 }
@@ -187,12 +187,12 @@ MAVE_INLINE matrix<double, 3, 1> fnmsub(const double a,
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 fnmsub(std::tuple<double, double> a,
       std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> b,
       std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> c) noexcept
 {
-    return std::make_pair(
+    return std::make_tuple(
         fnmsub(std::get<0>(a), std::get<0>(b), std::get<0>(c)),
         fnmsub(std::get<1>(a), std::get<1>(b), std::get<1>(c)));
 }

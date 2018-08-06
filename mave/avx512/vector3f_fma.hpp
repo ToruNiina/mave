@@ -31,7 +31,7 @@ MAVE_INLINE matrix<float, 3, 1> fmadd(const float a,
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
+std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>>
 fmadd(std::tuple<float, float> a,
       std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> b,
       std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> c) noexcept
@@ -48,7 +48,7 @@ fmadd(std::tuple<float, float> a,
 
     const __m256 r01 = _mm256_fmadd_ps(a01, b01, c01);
 
-    return std::make_pair(matrix<float, 3, 1>(_mm256_castps256_ps128(r01)),
+    return std::make_tuple(matrix<float, 3, 1>(_mm256_castps256_ps128(r01)),
                           matrix<float, 3, 1>(_mm256_extractf128_ps(r01, 1)));
 }
 template<>
@@ -129,7 +129,7 @@ MAVE_INLINE matrix<float, 3, 1> fmsub(const float a,
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
+std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>>
 fmsub(std::tuple<float, float> a,
       std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> b,
       std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> c) noexcept
@@ -146,7 +146,7 @@ fmsub(std::tuple<float, float> a,
 
     const __m256 r01 = _mm256_fmsub_ps(a01, b01, c01);
 
-    return std::make_pair(matrix<float, 3, 1>(_mm256_castps256_ps128(r01)),
+    return std::make_tuple(matrix<float, 3, 1>(_mm256_castps256_ps128(r01)),
                           matrix<float, 3, 1>(_mm256_extractf128_ps(r01, 1)));
 }
 template<>
@@ -228,7 +228,7 @@ MAVE_INLINE matrix<float, 3, 1> fnmadd(const float a,
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
+std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>>
 fnmadd(std::tuple<float, float> a,
       std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> b,
       std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> c) noexcept
@@ -245,7 +245,7 @@ fnmadd(std::tuple<float, float> a,
 
     const __m256 r01 = _mm256_fnmadd_ps(a01, b01, c01);
 
-    return std::make_pair(matrix<float, 3, 1>(_mm256_castps256_ps128(r01)),
+    return std::make_tuple(matrix<float, 3, 1>(_mm256_castps256_ps128(r01)),
                           matrix<float, 3, 1>(_mm256_extractf128_ps(r01, 1)));
 }
 template<>
@@ -328,7 +328,7 @@ MAVE_INLINE matrix<float, 3, 1> fnmsub(const float a,
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<float, 3, 1>, matrix<float, 3, 1>>
+std::tuple<matrix<float, 3, 1>, matrix<float, 3, 1>>
 fnmsub(std::tuple<float, float> a,
       std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> b,
       std::tuple<const matrix<float, 3, 1>&, const matrix<float, 3, 1>&> c) noexcept
@@ -345,7 +345,7 @@ fnmsub(std::tuple<float, float> a,
 
     const __m256 r01 = _mm256_fnmsub_ps(a01, b01, c01);
 
-    return std::make_pair(matrix<float, 3, 1>(_mm256_castps256_ps128(r01)),
+    return std::make_tuple(matrix<float, 3, 1>(_mm256_castps256_ps128(r01)),
                           matrix<float, 3, 1>(_mm256_extractf128_ps(r01, 1)));
 }
 template<>

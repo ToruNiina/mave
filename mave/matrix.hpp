@@ -122,7 +122,7 @@ operator-(const matrix<T, R, C>& lhs) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> ms) noexcept
 {
     matrix<T, R, C> r1, r2;
@@ -131,7 +131,7 @@ operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> ms) noexcep
         r1[i] = -std::get<0>(ms)[i];
         r2[i] = -std::get<1>(ms)[i];
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -176,7 +176,7 @@ operator+(const matrix<T, R, C>& lhs, const matrix<T, R, C>& rhs) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 operator+(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
           std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
           ) noexcept
@@ -187,7 +187,7 @@ operator+(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
         r1[i] = std::get<0>(lhs)[i] + std::get<0>(rhs)[i];
         r2[i] = std::get<1>(lhs)[i] + std::get<1>(rhs)[i];
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -284,7 +284,7 @@ operator-(const matrix<T, R, C>& lhs, const matrix<T, R, C>& rhs) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
           std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
           ) noexcept
@@ -295,7 +295,7 @@ operator-(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
         r1[i] = std::get<0>(lhs)[i] - std::get<0>(rhs)[i];
         r2[i] = std::get<1>(lhs)[i] - std::get<1>(rhs)[i];
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -394,7 +394,7 @@ operator*(const matrix<T, R, C>& lhs, const T rhs) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
           std::tuple<T, T> rhs) noexcept
 {
@@ -404,7 +404,7 @@ operator*(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
         r1[i] = std::get<0>(lhs)[i] * std::get<0>(rhs);
         r2[i] = std::get<1>(lhs)[i] * std::get<1>(rhs);
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -451,7 +451,7 @@ operator*(const T lhs, const matrix<T, R, C>& rhs) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 operator*(std::tuple<T, T> lhs,
           std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs
           ) noexcept
@@ -462,7 +462,7 @@ operator*(std::tuple<T, T> lhs,
         r1[i] = std::get<0>(lhs) * std::get<0>(rhs)[i];
         r2[i] = std::get<1>(lhs) * std::get<1>(rhs)[i];
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -553,7 +553,7 @@ operator/(const matrix<T, R, C>& lhs, const T rhs) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 operator/(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
           std::tuple<T, T> rhs) noexcept
 {
@@ -563,7 +563,7 @@ operator/(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
         r1[i] = std::get<0>(lhs)[i] / std::get<0>(rhs);
         r2[i] = std::get<1>(lhs)[i] / std::get<1>(rhs);
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -679,7 +679,7 @@ max(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 max(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
     std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
 {
@@ -689,7 +689,7 @@ max(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
         r1[i] = std::max(std::get<0>(lhs)[i], std::get<0>(rhs)[i]);
         r2[i] = std::max(std::get<1>(lhs)[i], std::get<1>(rhs)[i]);
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -739,7 +739,7 @@ min(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 min(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
     std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> rhs) noexcept
 {
@@ -749,7 +749,7 @@ min(std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> lhs,
         r1[i] = std::min(std::get<0>(lhs)[i], std::get<0>(rhs)[i]);
         r2[i] = std::min(std::get<1>(lhs)[i], std::get<1>(rhs)[i]);
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -801,10 +801,10 @@ floor(const matrix<T, R, C>& v) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 floor(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
 {
-    return std::make_pair(floor(v1), floor(v2));
+    return std::make_tuple(floor(v1), floor(v2));
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -836,10 +836,10 @@ ceil(const matrix<T, R, C>& v) noexcept
     return retval;
 }
 template<typename T, std::size_t R, std::size_t C>
-MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>
+MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 ceil(const matrix<T, R, C>& v1, const matrix<T, R, C>& v2) noexcept
 {
-    return std::make_pair(ceil(v1), ceil(v2));
+    return std::make_tuple(ceil(v1), ceil(v2));
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>
@@ -876,7 +876,7 @@ MAVE_INLINE matrix<T, R, C> fmadd(
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE
-std::pair<matrix<T, R, C>, matrix<T, R, C>>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 fmadd(std::tuple<T, T> a,
       std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> b,
       std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
@@ -887,7 +887,7 @@ fmadd(std::tuple<T, T> a,
         r1[i] = std::fma(std::get<0>(a), std::get<0>(b)[i], std::get<0>(c)[i]);
         r2[i] = std::fma(std::get<1>(a), std::get<1>(b)[i], std::get<1>(c)[i]);
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE
@@ -942,7 +942,7 @@ MAVE_INLINE matrix<T, R, C> fmsub(
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE
-std::pair<matrix<T, R, C>, matrix<T, R, C>>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 fmsub(std::tuple<T, T> a,
       std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> b,
       std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
@@ -953,7 +953,7 @@ fmsub(std::tuple<T, T> a,
         r1[i] = std::fma(std::get<0>(a), std::get<0>(b)[i], -std::get<0>(c)[i]);
         r2[i] = std::fma(std::get<1>(a), std::get<1>(b)[i], -std::get<1>(c)[i]);
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE
@@ -1008,7 +1008,7 @@ fnmadd(const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE
-std::pair<matrix<T, R, C>, matrix<T, R, C>>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 fnmadd(std::tuple<T, T> a,
       std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> b,
       std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
@@ -1019,7 +1019,7 @@ fnmadd(std::tuple<T, T> a,
         r1[i] = std::fma(-std::get<0>(a), std::get<0>(b)[i], std::get<0>(c)[i]);
         r2[i] = std::fma(-std::get<1>(a), std::get<1>(b)[i], std::get<1>(c)[i]);
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE
@@ -1074,7 +1074,7 @@ fnmsub(const T a, const matrix<T, R, C>& b, const matrix<T, R, C>& c) noexcept
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE
-std::pair<matrix<T, R, C>, matrix<T, R, C>>
+std::tuple<matrix<T, R, C>, matrix<T, R, C>>
 fnmsub(std::tuple<T, T> a,
        std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> b,
        std::tuple<const matrix<T, R, C>&, const matrix<T, R, C>&> c) noexcept
@@ -1085,7 +1085,7 @@ fnmsub(std::tuple<T, T> a,
         r1[i] = std::fma(-std::get<0>(a), std::get<0>(b)[i], -std::get<0>(c)[i]);
         r2[i] = std::fma(-std::get<1>(a), std::get<1>(b)[i], -std::get<1>(c)[i]);
     }
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<typename T, std::size_t R, std::size_t C>
 MAVE_INLINE

@@ -154,11 +154,11 @@ MAVE_INLINE matrix<double, 3, 1> operator-(const matrix<double, 3, 1>& v) noexce
     return _mm256_sub_pd(_mm256_setzero_pd(), _mm256_load_pd(v.data()));
 }
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> ms
           ) noexcept
 {
-    return std::make_pair(-std::get<0>(ms), -std::get<1>(ms));
+    return std::make_tuple(-std::get<0>(ms), -std::get<1>(ms));
 }
 template<>
 MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
@@ -190,12 +190,12 @@ MAVE_INLINE matrix<double, 3, 1> operator+(
     return _mm256_add_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
 }
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 operator+(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
           std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
           ) noexcept
 {
-    return std::make_pair(std::get<0>(v1) + std::get<0>(v2),
+    return std::make_tuple(std::get<0>(v1) + std::get<0>(v2),
                           std::get<1>(v1) + std::get<1>(v2));
 }
 template<>
@@ -275,12 +275,12 @@ MAVE_INLINE matrix<double, 3, 1> operator-(
     return _mm256_sub_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
 }
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 operator-(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
           std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
           ) noexcept
 {
-    return std::make_pair(std::get<0>(v1) - std::get<0>(v2),
+    return std::make_tuple(std::get<0>(v1) - std::get<0>(v2),
                           std::get<1>(v1) - std::get<1>(v2));
 }
 template<>
@@ -362,12 +362,12 @@ MAVE_INLINE matrix<double, 3, 1> operator*(
     return _mm256_mul_pd(_mm256_set1_pd(v1), _mm256_load_pd(v2.data()));
 }
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 operator*(std::tuple<double, double> v1,
           std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
           ) noexcept
 {
-    return std::make_pair(std::get<0>(v1) * std::get<0>(v2),
+    return std::make_tuple(std::get<0>(v1) * std::get<0>(v2),
                           std::get<1>(v1) * std::get<1>(v2));
 }
 template<>
@@ -404,11 +404,11 @@ MAVE_INLINE matrix<double, 3, 1> operator*(
     return _mm256_mul_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(v2));
 }
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 operator*(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
           std::tuple<double, double> v2) noexcept
 {
-    return std::make_pair(std::get<0>(v1) * std::get<0>(v2),
+    return std::make_tuple(std::get<0>(v1) * std::get<0>(v2),
                           std::get<1>(v1) * std::get<1>(v2));
 }
 template<>
@@ -482,11 +482,11 @@ MAVE_INLINE matrix<double, 3, 1> operator/(
     return _mm256_div_pd(_mm256_load_pd(v1.data()), _mm256_set1_pd(v2));
 }
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 operator/(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
           std::tuple<double, double> v2) noexcept
 {
-    return std::make_pair(std::get<0>(v1) / std::get<0>(v2),
+    return std::make_tuple(std::get<0>(v1) / std::get<0>(v2),
                           std::get<1>(v1) / std::get<1>(v2));
 }
 template<>
@@ -563,7 +563,7 @@ MAVE_INLINE double length_sq(const matrix<double, 3, 1>& v) noexcept
 }
 
 template<>
-MAVE_INLINE std::pair<double, double> length_sq(
+MAVE_INLINE std::tuple<double, double> length_sq(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
     const __m256d arg1 = _mm256_load_pd(v1.data());
@@ -586,7 +586,7 @@ MAVE_INLINE std::pair<double, double> length_sq(
     _mm_store_pd(pack, _mm_add_pd(
         _mm256_castpd256_pd128(hadd), _mm256_extractf128_pd(hadd, 1)));
 
-    return std::make_pair(pack[0], pack[1]);
+    return std::make_tuple(pack[0], pack[1]);
 }
 
 template<>
@@ -646,7 +646,7 @@ MAVE_INLINE double length(const matrix<double, 3, 1>& v) noexcept
 }
 
 template<>
-MAVE_INLINE std::pair<double, double> length(
+MAVE_INLINE std::tuple<double, double> length(
     const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
     const __m256d arg1 = _mm256_load_pd(v1.data());
@@ -669,7 +669,7 @@ MAVE_INLINE std::pair<double, double> length(
     _mm_store_pd(pack, _mm_sqrt_pd(_mm_add_pd(
         _mm256_castpd256_pd128(hadd), _mm256_extractf128_pd(hadd, 1))));
 
-    return std::make_pair(pack[0], pack[1]);
+    return std::make_tuple(pack[0], pack[1]);
 }
 
 template<>
@@ -753,7 +753,7 @@ MAVE_INLINE double rlength(const matrix<double, 3, 1>& v) noexcept
     return 1.0 / std::sqrt(length_sq(v));
 }
 template<>
-MAVE_INLINE std::pair<double, double>
+MAVE_INLINE std::tuple<double, double>
 rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
     const __m256d arg1 = _mm256_load_pd(v1.data());
@@ -776,7 +776,7 @@ rlength(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
     _mm_store_pd(pack, _mm_div_pd(_mm_set1_pd(1.0), _mm_sqrt_pd(_mm_add_pd(
         _mm256_castpd256_pd128(hadd), _mm256_extractf128_pd(hadd, 1)))));
 
-    return std::make_pair(pack[0], pack[1]);
+    return std::make_tuple(pack[0], pack[1]);
 }
 template<>
 MAVE_INLINE std::tuple<double, double, double>
@@ -861,8 +861,8 @@ regularize(const matrix<double, 3, 1>& v) noexcept
     return std::make_pair(v * (1.0 / len), len);
 }
 template<>
-MAVE_INLINE std::pair<std::pair<matrix<double, 3, 1>, double>,
-                 std::pair<matrix<double, 3, 1>, double>>
+MAVE_INLINE std::tuple<std::pair<matrix<double, 3, 1>, double>,
+                       std::pair<matrix<double, 3, 1>, double>>
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2
            ) noexcept
 {
@@ -889,14 +889,14 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2
     _mm_store_pd(pack,   _mm_div_pd(_mm_set1_pd(1.0), len));
     _mm_store_pd(pack+2, len);
 
-    return std::make_pair(
+    return std::make_tuple(
         std::make_pair(_mm256_mul_pd(arg1, _mm256_set1_pd(pack[0])), pack[2]),
         std::make_pair(_mm256_mul_pd(arg2, _mm256_set1_pd(pack[1])), pack[3]));
 }
 template<>
 MAVE_INLINE std::tuple<std::pair<matrix<double, 3, 1>, double>,
-                  std::pair<matrix<double, 3, 1>, double>,
-                  std::pair<matrix<double, 3, 1>, double>>
+                       std::pair<matrix<double, 3, 1>, double>,
+                       std::pair<matrix<double, 3, 1>, double>>
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3) noexcept
 {
@@ -942,9 +942,9 @@ regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
 }
 template<>
 MAVE_INLINE std::tuple<std::pair<matrix<double, 3, 1>, double>,
-                  std::pair<matrix<double, 3, 1>, double>,
-                  std::pair<matrix<double, 3, 1>, double>,
-                  std::pair<matrix<double, 3, 1>, double>>
+                       std::pair<matrix<double, 3, 1>, double>,
+                       std::pair<matrix<double, 3, 1>, double>,
+                       std::pair<matrix<double, 3, 1>, double>>
 regularize(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
            const matrix<double, 3, 1>& v3, const matrix<double, 3, 1>& v4
            ) noexcept
@@ -1006,12 +1006,12 @@ MAVE_INLINE matrix<double, 3, 1> max(
     return _mm256_max_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
 }
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 max(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
     std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
     ) noexcept
 {
-    return std::make_pair(max(std::get<0>(v1), std::get<0>(v2)),
+    return std::make_tuple(max(std::get<0>(v1), std::get<0>(v2)),
                           max(std::get<1>(v1), std::get<1>(v2)));
 }
 template<>
@@ -1049,12 +1049,12 @@ MAVE_INLINE matrix<double, 3, 1> min(
     return _mm256_min_pd(_mm256_load_pd(v1.data()), _mm256_load_pd(v2.data()));
 }
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 min(std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v1,
     std::tuple<const matrix<double,3,1>&, const matrix<double,3,1>&> v2
     ) noexcept
 {
-    return std::make_pair(min(std::get<0>(v1), std::get<0>(v2)),
+    return std::make_tuple(min(std::get<0>(v1), std::get<0>(v2)),
                           min(std::get<1>(v1), std::get<1>(v2)));
 }
 template<>
@@ -1093,10 +1093,10 @@ MAVE_INLINE matrix<double, 3, 1> floor(const matrix<double, 3, 1>& v) noexcept
 }
 
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 floor(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    return std::make_pair(floor(v1), floor(v2));
+    return std::make_tuple(floor(v1), floor(v2));
 }
 template<>
 MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
@@ -1123,10 +1123,10 @@ MAVE_INLINE matrix<double, 3, 1> ceil(const matrix<double, 3, 1>& v) noexcept
     return _mm256_ceil_pd(_mm256_load_pd(v.data()));
 }
 template<>
-MAVE_INLINE std::pair<matrix<double, 3, 1>, matrix<double, 3, 1>>
+MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>>
 ceil(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2) noexcept
 {
-    return std::make_pair(ceil(v1), ceil(v2));
+    return std::make_tuple(ceil(v1), ceil(v2));
 }
 template<>
 MAVE_INLINE std::tuple<matrix<double, 3, 1>, matrix<double, 3, 1>,
@@ -1158,7 +1158,7 @@ MAVE_INLINE double dot_product(
     return sq[0] + sq[1] + sq[2];
 }
 template<>
-MAVE_INLINE std::pair<double, double>
+MAVE_INLINE std::tuple<double, double>
 dot_product(
     std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> lhs,
     std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> rhs
@@ -1183,7 +1183,7 @@ dot_product(
     _mm_store_pd(pack, _mm_add_pd(
         _mm256_castpd256_pd128(hadd), _mm256_extractf128_pd(hadd, 1)));
 
-    return std::make_pair(pack[0], pack[1]);
+    return std::make_tuple(pack[0], pack[1]);
 }
 
 template<>

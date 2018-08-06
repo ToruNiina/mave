@@ -190,7 +190,7 @@ MAVE_INLINE matrix<float, 3, 3> operator-(const matrix<float, 3, 3>& m) noexcept
     return retval;
 }
 template<>
-MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms
           ) noexcept
 {
@@ -212,7 +212,7 @@ operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms
     _mm128_store_ps(ptr_r1+8, _mm256_castps256_ps128(rslt2));
     _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(rslt2, 1));
 
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<>
 MAVE_INLINE
@@ -292,7 +292,7 @@ MAVE_INLINE matrix<float, 3, 3> operator+(
     return retval;
 }
 template<>
-MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator+(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> rhs
           ) noexcept
@@ -325,7 +325,7 @@ operator+(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs
 
     _mm128_store_ps(ptr_r1+8, _mm256_castps256_ps128(rslt2));
     _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(rslt2, 1));
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<>
 MAVE_INLINE
@@ -426,7 +426,7 @@ MAVE_INLINE matrix<float, 3, 3> operator-(
     return retval;
 }
 template<>
-MAVE_INLINE std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+MAVE_INLINE std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> rhs
           ) noexcept
@@ -459,7 +459,7 @@ operator-(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> lhs
 
     _mm128_store_ps(ptr_r1+8, _mm256_castps256_ps128(rslt2));
     _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(rslt2, 1));
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<>
 MAVE_INLINE
@@ -555,7 +555,7 @@ MAVE_INLINE matrix<float, 3, 3> operator*(
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator*(std::tuple<float, float> ss,
           std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms
           ) noexcept
@@ -582,7 +582,7 @@ operator*(std::tuple<float, float> ss,
 
     _mm128_store_ps(ptr_r1+8, _mm256_extractf128_ps(rslt2, 0));
     _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(rslt2, 1));
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<>
 MAVE_INLINE
@@ -667,7 +667,7 @@ MAVE_INLINE matrix<float, 3, 3> operator*(
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms,
           std::tuple<float, float> ss) noexcept
 {
@@ -693,7 +693,7 @@ operator*(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms,
 
     _mm128_store_ps(ptr_r1+8, _mm256_extractf128_ps(rslt2, 0));
     _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(rslt2, 1));
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<>
 MAVE_INLINE
@@ -781,7 +781,7 @@ MAVE_INLINE matrix<float, 3, 3> operator/(
 }
 template<>
 MAVE_INLINE
-std::pair<matrix<float, 3, 3>, matrix<float, 3, 3>>
+std::tuple<matrix<float, 3, 3>, matrix<float, 3, 3>>
 operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms,
           std::tuple<float, float> ss) noexcept
 {
@@ -809,7 +809,7 @@ operator/(std::tuple<const matrix<float, 3, 3>&, const matrix<float, 3, 3>&> ms,
 
     _mm128_store_ps(ptr_r1+8, _mm256_extractf128_ps(rslt2, 0));
     _mm128_store_ps(ptr_r2+8, _mm256_extractf128_ps(rslt2, 1));
-    return std::make_pair(r1, r2);
+    return std::make_tuple(r1, r2);
 }
 template<>
 MAVE_INLINE
