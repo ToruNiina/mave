@@ -3,6 +3,7 @@
 #include "macros.hpp"
 #include "matrix.hpp"
 #include "vector.hpp"
+#include "forward.hpp"
 #include "allocator.hpp"
 
 #if !defined(MAVE_NO_SIMD)
