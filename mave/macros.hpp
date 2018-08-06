@@ -9,4 +9,9 @@
 #define MAVE_INLINE inline
 #endif
 
+#ifdef  MAVE_EMPTY_ARGUMENT
+#undef  MAVE_EMPTY_ARGUMENT
+#endif
+#define MAVE_EMPTY_ARGUMENT
+
 #endif // MAVE_MACROS_HPP
