@@ -47,11 +47,55 @@ namespace mave
 
 MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX(operator-, MAVE_EMPTY_ARGUMENT);
 MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX(operator-, &);
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX(floor,     MAVE_EMPTY_ARGUMENT);
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX(floor,     &);
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX(ceil,      MAVE_EMPTY_ARGUMENT);
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX(ceil,      &);
 #undef MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_MATRIX
+
+
+#undef  MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX
+#define MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX(FUNC_NAME, MODIFICATION)\
+    template<typename T, std::size_t R, std::size_t C>\
+    MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>\
+    FUNC_NAME(std::tuple<matrix<T, R, C> MODIFICATION,\
+                         matrix<T, R, C> MODIFICATION> ms) noexcept\
+    {\
+        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms));\
+    }\
+    template<typename T, std::size_t R, std::size_t C>\
+    MAVE_INLINE std::pair<matrix<T, R, C>, matrix<T, R, C>>\
+    FUNC_NAME(std::pair<matrix<T, R, C> MODIFICATION,\
+                        matrix<T, R, C> MODIFICATION> ms) noexcept\
+    {\
+        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms));\
+    }\
+    template<typename T, std::size_t R, std::size_t C>\
+    MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>, matrix<T, R, C>>\
+    FUNC_NAME(std::tuple<matrix<T, R, C> MODIFICATION,\
+                         matrix<T, R, C> MODIFICATION,\
+                         matrix<T, R, C> MODIFICATION \
+                         > ms) noexcept\
+    {\
+        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms), std::get<2>(ms));\
+    }\
+    template<typename T, std::size_t R, std::size_t C>\
+    MAVE_INLINE std::tuple<matrix<T, R, C>, matrix<T, R, C>,\
+                           matrix<T, R, C>, matrix<T, R, C>>\
+    FUNC_NAME(std::tuple<matrix<T, R, C> MODIFICATION,\
+                         matrix<T, R, C> MODIFICATION,\
+                         matrix<T, R, C> MODIFICATION,\
+                         matrix<T, R, C> MODIFICATION \
+                         > ms) noexcept\
+    {\
+        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms),\
+                         std::get<2>(ms), std::get<3>(ms));\
+    }\
+    /**/
+
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX(floor,  MAVE_EMPTY_ARGUMENT);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX(floor,  const&);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX(floor,  &);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX(ceil,   MAVE_EMPTY_ARGUMENT);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX(ceil,   const&);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX(ceil,   &);
+#undef MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_MATRIX
 
 
 
@@ -598,17 +642,23 @@ MAVE_GENERATE_FORWARDING_TERNARY_FUNCTIONS_MATRIX_SCALAR_MATRIX_MATRIX(fnmsub, &
 // for vector<T, 3>: length, length_sq, rlength, regularize, dot_product, cross_product
 // -------------------------------------------------------------------------
 
-#undef  MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_SCALAR_VECTOR3
-#define MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(FUNC_NAME, MODIFICATION)\
+#undef  MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3
+#define MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(FUNC_NAME, MODIFICATION)\
     template<typename T>\
     MAVE_INLINE std::pair<T, T>\
     FUNC_NAME(std::tuple<matrix<T, 3, 1> MODIFICATION,\
                          matrix<T, 3, 1> MODIFICATION \
                          > ms) noexcept\
     {\
-        return FUNC_NAME(\
-            std::tuple<const matrix<T, 3, 1>&, const matrix<T, 3, 1>&>(\
-                std::get<0>(ms), std::get<1>(ms)));\
+        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms));\
+    }\
+    template<typename T>\
+    MAVE_INLINE std::pair<T, T>\
+    FUNC_NAME(std::pair<matrix<T, 3, 1> MODIFICATION,\
+                        matrix<T, 3, 1> MODIFICATION \
+                        > ms) noexcept\
+    {\
+        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms));\
     }\
     template<typename T>\
     MAVE_INLINE std::tuple<T, T, T>\
@@ -617,10 +667,7 @@ MAVE_GENERATE_FORWARDING_TERNARY_FUNCTIONS_MATRIX_SCALAR_MATRIX_MATRIX(fnmsub, &
                          matrix<T, 3, 1> MODIFICATION \
                          > ms) noexcept\
     {\
-        return FUNC_NAME(\
-            std::tuple<const matrix<T, 3, 1>&, const matrix<T, 3, 1>&,\
-                       const matrix<T, 3, 1>&>(\
-                std::get<0>(ms), std::get<1>(ms), std::get<2>(ms)));\
+        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms), std::get<2>(ms));\
     }\
     template<typename T>\
     MAVE_INLINE std::tuple<T, T, T, T>\
@@ -630,20 +677,21 @@ MAVE_GENERATE_FORWARDING_TERNARY_FUNCTIONS_MATRIX_SCALAR_MATRIX_MATRIX(fnmsub, &
                          matrix<T, 3, 1> MODIFICATION \
                          > ms) noexcept\
     {\
-        return FUNC_NAME(\
-            std::tuple<const matrix<T, 3, 1>&, const matrix<T, 3, 1>&,\
-                       const matrix<T, 3, 1>&, const matrix<T, 3, 1>&>(\
-            std::get<0>(ms), std::get<1>(ms), std::get<2>(ms), std::get<3>(ms)));\
+        return FUNC_NAME(std::get<0>(ms), std::get<1>(ms),\
+                         std::get<2>(ms), std::get<3>(ms));\
     }\
     /**/
 
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length_sq, MAVE_EMPTY_ARGUMENT);
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length_sq, &);
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length,    MAVE_EMPTY_ARGUMENT);
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length,    &);
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(rlength,   MAVE_EMPTY_ARGUMENT);
-MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(rlength,   &);
-#undef MAVE_GENERATE_FORWARDING_UNARY_FUNCTIONS_SCALAR_VECTOR3
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length_sq, MAVE_EMPTY_ARGUMENT);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length_sq, const &);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length_sq, &);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length,    MAVE_EMPTY_ARGUMENT);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length,    const&);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(length,    &);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(rlength,   MAVE_EMPTY_ARGUMENT);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(rlength,   const&);
+MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3(rlength,   &);
+#undef MAVE_GENERATE_EXPANDING_UNARY_FUNCTIONS_SCALAR_VECTOR3
 
 
 #undef  MAVE_GENERATE_FORWARDING_REGULARIZE
