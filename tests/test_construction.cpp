@@ -5,7 +5,7 @@
 #include <mave/mave.hpp>
 #include <random>
 
-constexpr std::size_t N = 100000;
+constexpr std::size_t N = 12000;
 
 typedef boost::mpl::list<float, double> floating_points;
 
