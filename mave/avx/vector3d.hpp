@@ -1146,6 +1146,8 @@ ceil(const matrix<double, 3, 1>& v1, const matrix<double, 3, 1>& v2,
 }
 
 // ---------------------------------------------------------------------------
+// dot_product
+// ---------------------------------------------------------------------------
 
 template<>
 MAVE_INLINE double dot_product(
@@ -1155,6 +1157,93 @@ MAVE_INLINE double dot_product(
         _mm256_load_pd(lhs.data()), _mm256_load_pd(rhs.data())));
     return sq[0] + sq[1] + sq[2];
 }
+template<>
+MAVE_INLINE std::pair<double, double>
+dot_product(
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> lhs,
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> rhs
+    ) noexcept
+{
+    const __m256d mul1 = _mm256_mul_pd(_mm256_load_pd(std::get<0>(lhs).data()),
+                                       _mm256_load_pd(std::get<0>(rhs).data()));
+    const __m256d mul2 = _mm256_mul_pd(_mm256_load_pd(std::get<1>(lhs).data()),
+                                       _mm256_load_pd(std::get<1>(rhs).data()));
+    const __m256d hadd = _mm256_hadd_pd(mul1, mul2);
+
+    // |ax|ay|az|00| |bx|by|bz|00|
+    //  |  |  |  |    |  |  |  |
+    //  +--'  +--'    +--'  +--'
+    //  |  .--|-------'     |
+    //  |  |  |  .----------'
+    // |aa|bb|a0|b0|
+    //         |  |  extract
+    // |a0|b0|<+--'
+
+    alignas(16) double pack[2];
+    _mm_store_pd(pack, _mm_add_pd(
+        _mm256_castpd256_pd128(hadd), _mm256_extractf128_pd(hadd, 1)));
+
+    return std::make_pair(pack[0], pack[1]);
+}
+
+template<>
+MAVE_INLINE std::tuple<double, double, double>
+dot_product(
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&,
+               const matrix<double, 3, 1>&> lhs,
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&,
+               const matrix<double, 3, 1>&> rhs) noexcept
+{
+    const auto d12 = dot_product(std::tie(std::get<0>(lhs), std::get<1>(lhs)),
+                                 std::tie(std::get<0>(rhs), std::get<1>(rhs)));
+    return std::make_tuple(std::get<0>(d12), std::get<1>(d12),
+                           dot_product(std::get<2>(lhs), std::get<2>(rhs)));
+}
+
+template<>
+MAVE_INLINE std::tuple<double, double, double, double>
+dot_product(
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&,
+               const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> lhs,
+    std::tuple<const matrix<double, 3, 1>&, const matrix<double, 3, 1>&,
+               const matrix<double, 3, 1>&, const matrix<double, 3, 1>&> rhs
+    ) noexcept
+{
+    const __m256d mul1 = _mm256_mul_pd(_mm256_load_pd(std::get<0>(lhs).data()),
+                                       _mm256_load_pd(std::get<0>(rhs).data()));
+    const __m256d mul2 = _mm256_mul_pd(_mm256_load_pd(std::get<1>(lhs).data()),
+                                       _mm256_load_pd(std::get<1>(rhs).data()));
+    const __m256d mul3 = _mm256_mul_pd(_mm256_load_pd(std::get<2>(lhs).data()),
+                                       _mm256_load_pd(std::get<2>(rhs).data()));
+    const __m256d mul4 = _mm256_mul_pd(_mm256_load_pd(std::get<3>(lhs).data()),
+                                       _mm256_load_pd(std::get<3>(rhs).data()));
+    // |a1|a2|a3|00| |b1|b2|b3|00| |c1|c2|c3|00| |d1|d2|d3|00|
+    //  +--'  |  |    +--'  |  |    +--'  |  |    +--'  |  |
+    //  |     +--'    |     |  |    |     +--'    |     |  |
+    //  |  .--|--.----+-----+--'    |  .--|--.----+-----+--'
+    // |aa|bb|a3|b3| hadd1         |cc|dd|c3|d3| hadd2
+    //   '--'-+--+----.--.  .--.----'--'  |  |
+    //        |  |   |aa|bb|cc|dd|        |  | extractf128 & insertf128
+    //        +--+-->|a3|b3|c3|d3| <------+--+
+    //               |a |b |c |d |
+
+    const __m256d hadd1 = _mm256_hadd_pd(mul1, mul2);
+    const __m256d hadd2 = _mm256_hadd_pd(mul3, mul4);
+
+    const __m256d v12 = _mm256_insertf128_pd(
+            hadd1, _mm256_extractf128_pd(hadd2, 0), 1);
+    const __m256d v34 = _mm256_insertf128_pd(_mm256_castpd128_pd256(
+            _mm256_extractf128_pd(hadd1, 1)),
+            _mm256_extractf128_pd(hadd2, 1), 1);
+
+    alignas(32) double pack[4];
+    _mm256_store_pd(pack, _mm256_add_pd(v12, v34));
+    return std::make_tuple(pack[0], pack[1], pack[2], pack[3]);
+}
+
+// -------------------------------------------------------------------------
+// cross_product
+// -------------------------------------------------------------------------
 
 template<>
 MAVE_INLINE matrix<double, 3, 1> cross_product(
