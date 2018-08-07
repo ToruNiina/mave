@@ -57,6 +57,16 @@ const mave::vector<float, 3> w1(/*...*/), w2(/*...*/);
 const auto [u1, u2] = std::tie(v1, v2) + std::tie(w1, w2);
 ```
 
+You can chain this expressions as you want.
+
+```cpp
+const auto [u1, u2] = length(std::tie(v1, v2) - std::tie(w1, w2)) *
+                      std::tie(v1, v2) / std::make_tuple(2.0, 4.0);
+// this is equivalent to
+const auto u1 = length(v1 - w1) * v1 / 2.0;
+const auto u2 = length(v2 - w2) * v2 / 4.0;
+```
+
 `mave` also supports small matrix.
 
 ```cpp
