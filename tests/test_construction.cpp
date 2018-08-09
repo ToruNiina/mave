@@ -3,11 +3,22 @@
 #include <boost/mpl/list.hpp>
 
 #include <mave/mave.hpp>
+#include <tests/generate_random_matrices.hpp>
 #include <random>
 
 constexpr std::size_t N = 12000;
 
 typedef boost::mpl::list<float, double> floating_points;
+typedef boost::mpl::list<
+    mave::vector<float,  3>,
+    mave::vector<double, 3>,
+    mave::vector<float,  4>,
+    mave::vector<double, 4>,
+    mave::matrix<float,  3, 3>,
+    mave::matrix<double, 3, 3>,
+    mave::matrix<float,  4, 4>,
+    mave::matrix<double, 4, 4>
+    > matrices_vectors;
 
 BOOST_AUTO_TEST_CASE(test_construct_defualt)
 {
@@ -30,6 +41,26 @@ BOOST_AUTO_TEST_CASE(test_construct_defualt)
     BOOST_TEST(m3x3f.diagnosis());
     BOOST_TEST(m4x4d.diagnosis());
     BOOST_TEST(m4x4f.diagnosis());
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(test_zero, T, matrices_vectors)
+{
+    std::mt19937 mt(123456789);
+    auto vs = mave::test::generate_random<T>(N, mt);
+
+    for(std::size_t i=0; i<N; ++i)
+    {
+        auto& v = vs[i];
+
+        BOOST_TEST(v.diagnosis());
+
+        v.zero();
+        for(std::size_t j=0; j<v.size(); ++j)
+        {
+            BOOST_TEST(v[j] == 0.0);
+        }
+        BOOST_TEST(v.diagnosis());
+    }
 }
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(test_construct_vector3, T, floating_points)

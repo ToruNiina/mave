@@ -140,6 +140,8 @@ struct alignas(32) matrix<double, 3, 1>
 
     bool diagnosis() const noexcept {return vs_[3] == 0.0;}
 
+    void zero() noexcept {_mm256_store_pd(this->data(), _mm256_setzero_pd());}
+
   private:
     alignas(32) storage_type vs_;
 };

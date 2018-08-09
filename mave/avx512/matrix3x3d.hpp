@@ -128,6 +128,14 @@ struct alignas(64) matrix<double, 3, 3>
     bool diagnosis() const noexcept
     {return (vs_[3]==0.0) && (vs_[7]==0.0) && (vs_[11]==0.0);}
 
+    void zero() noexcept
+    {
+        pointer self = this->data();
+        _mm512_store_pd(self,   _mm512_setzero_pd());
+        _mm256_store_pd(self+8, _mm256_setzero_pd());
+        return ;
+    }
+
   private:
     alignas(64) storage_type vs_;
 };

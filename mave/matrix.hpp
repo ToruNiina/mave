@@ -98,6 +98,8 @@ struct matrix
 
     bool diagnosis() const noexcept {return true;}
 
+    void zero() noexcept {vs_.fill(value_type(0.0));}
+
   private:
     storage_type vs_;
 };
